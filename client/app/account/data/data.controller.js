@@ -5,49 +5,44 @@
   class DataController {
 
 
-    constructor(Auth) {
+    constructor(Auth,$scope) {
       this.Auth = Auth;
-      this.enabled = true;
-      this.test = 'Hello';
-      this.items = [];
-      this.windowItems = [];
-      this.hItems = [];
-      this.more();
-      this.windowMore();
-
-      this.myDate = new Date();
-      this.minDate = new Date(this.myDate.getFullYear(),
-        this.myDate.getMonth() - 2,
-        this.myDate.getDate());
-      this.maxDate = new Date(
-        this.myDate.getFullYear(),
-        this.myDate.getMonth() + 2,
-        this.myDate.getDate());
-
-    }
-
-    onlyWeekendsPredicate(date) {
-      var day = date.getDay();
-      return day === 0 || day === 6;
-    }
-
-    more() {
-      var i = 0;
-      var limit = 20;
-
-      for (; i < limit; i++) {
-        this.items.push({name: 'item ' + (this.items.length + 1)});
+      this.$scope = $scope;
+      var currentTime = new Date();
+      this.currentTime = currentTime;
+      this.month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      this.monthShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      this.weekdaysFull = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      this.weekdaysLetter = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+      this.disable = [false, 1, 7];
+      this.today = 'Today';
+      this.clear = 'Clear';
+      this.close = 'Close';
+      var days = 15;
+      this.minDate = (new Date(this.currentTime.getTime() - ( 1000 * 60 * 60 *24 * days ))).toISOString();
+      this.maxDate = (new Date(this.currentTime.getTime() + ( 1000 * 60 * 60 *24 * days ))).toISOString();
+      this.slider = {
+        minValue: 10,
+        maxValue: 90,
+        options: {
+          floor: 0,
+          ceil: 100,
+          step: 1
+        }
       }
+
+      this.options = {width: 500, height: 300, 'bar': 'aaa'};
+      this.data = [1, 2, 3, 4];
+      this.barValue = 'None';
+
     }
 
-    windowMore() {
-
-      var i = 0;
-      var limit = 20;
-
-      for (; i < limit; i++) {
-        this.windowItems.push({name: 'item ' + (this.windowItems.length + 1)});
-      }
+    hovered(d){
+      this.barValue = d;
+      this.$scope.$apply();
+    }
+    clicked(d){
+      console.log(d);
     }
 
 

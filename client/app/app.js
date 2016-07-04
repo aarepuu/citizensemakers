@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('citizensemakersApp', ['d3', 'ngMaterial', 'ngMessages',   'angular-scrolled', 'citizensemakersApp.auth', 'citizensemakersApp.admin',
+angular.module('citizensemakersApp', ['d3', 'citizensemakersApp.auth', 'citizensemakersApp.admin',
     'citizensemakersApp.constants', 'ngCookies', 'ngResource', 'ngSanitize', 'btford.socket-io',
-    'ui.router', 'ui.bootstrap', 'validation.match'
+    'ui.router', 'ui.bootstrap', 'validation.match', 'ui.materialize', 'rzModule', 'charts'
   ])
   .config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider.otherwise('/');

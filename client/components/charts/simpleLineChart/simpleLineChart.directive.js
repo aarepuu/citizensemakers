@@ -1,6 +1,6 @@
 'use strict';
-
-angular.module('citizensemakersApp')
+//TODO - call module charts
+angular.module('charts')
   .directive('simpleLineChart', ['d3Service', function (d3Service) {
     return {
       restrict: 'EA',
@@ -12,19 +12,23 @@ angular.module('citizensemakersApp')
             width = 600 - margin.left - margin.right,
             height = 700 - margin.top - margin.bottom;
 
-          var parseDate = d3.timeParse('%d-%b-%y');
+          var parseDate = d3.time.format('%d-%b-%y').parse;
 
-          var x = d3.scaleTime()
+          var x = d3.time.scale()
             .range([0, width]);
 
-          var y = d3.scaleLinear()
+          var y = d3.scale.linear()
             .range([height, 0]);
 
-          var xAxis = d3.axisBottom(x);
+          var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient('bottom');
 
-          var yAxis = d3.axisLeft(y);
+          var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient('left');
 
-          var line = d3.line()
+          var line = d3.svg.line()
             .x(function (d) {
               return x(d.date);
             })
