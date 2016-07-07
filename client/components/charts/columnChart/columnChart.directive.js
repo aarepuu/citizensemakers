@@ -16,7 +16,6 @@ angular.module('charts')
       link: function (scope, element, attrs) {
         d3Service.d3().then(function (d3) {
 
-
           d3.custom = {};
 
           d3.custom.barChart = function module() {

@@ -82,7 +82,7 @@ angular.module('charts')
           svg.append('path')
             .datum(scope.data)
             .attr('class', 'line')
-            .attr('d', line);
+            .attr('d', line)
         });
       }
     };

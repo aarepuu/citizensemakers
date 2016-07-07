@@ -4,7 +4,24 @@ class SettingsController {
 
   constructor(Auth) {
     this.Auth = Auth;
+    this.isConnected = Auth.isConnected;
+    this.now = new Date();
+
+    this.dropzoneConfig = {
+      parallelUploads: 3,
+      maxFileSize: 30,
+      url: '/'
+    }
   }
+
+  dzAddedFile(file) {
+    console.log(file);
+  }
+
+  dzError(file, errorMessage) {
+    console.log(errorMessage);
+  }
+
 
   changePassword(form) {
     this.submitted = true;

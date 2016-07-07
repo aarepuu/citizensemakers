@@ -6,8 +6,10 @@
       <div class="row center">
         <h5 class="header col s12 light">Reclaim your data! </h5>
       </div>
+
       <div class="row center">
-        <a href="/connect.html" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">Get Started</a>
+        <a ng-hide="main.isLoggedIn()" ui-sref="login" id="login-button" class="btn-large waves-effect waves-light teal lighten-1">Get Started</a>
+        <a ng-show="main.showFitbit()" href="http://localhost:4000/fitbit" id="fitbit-button" class="btn-large waves-effect waves-light teal lighten-1">Connect with Your Fitbit</a>
       </div>
       <br><br>
 

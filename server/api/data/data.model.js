@@ -7,16 +7,12 @@ var DataSchema = new mongoose.Schema({
   info: String,
   active: Boolean
 });
-var restHrSchema = new mongoose.Schema({
-  userId: Number,
-  fitbitId: String,
-  studyWeek: Number,
-  treatment: String,
-  day: Number,
-  restHr: Number,
-  pos: Number,
-  neg: Number
+//TODO - change user to fitbitID and make link to users table
+var StepsSchema = new mongoose.Schema({
+  user: String,
+  time: Number,
+  value: Number
 });
 
 
-export default mongoose.model('Data', restHrSchema);
+export default mongoose.model('step', StepsSchema);

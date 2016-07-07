@@ -1,6 +1,7 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
  * GET     /api/data              ->  index
+ * GET     /api/data/minmax       ->  getMinMax
  * POST    /api/data              ->  create
  * GET     /api/data/:id          ->  show
  * PUT     /api/data/:id          ->  update
@@ -11,6 +12,7 @@
 
 import _ from 'lodash';
 import Data from './data.model';
+
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -62,6 +64,15 @@ function handleError(res, statusCode) {
 // Gets a list of Datas
 export function index(req, res) {
   return Data.find().exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
+
+//Get max and min value of Data
+export function getMinMax(req, res) {
+  return Data.aggregate([{$match: {"user": "46P577"} },{$group: {_id: "$user", "min": {$first: "$time"}, "max": {$last: "$time"}}}]).exec()
+  //return Data.find().exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 }

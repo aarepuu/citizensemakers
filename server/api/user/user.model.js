@@ -16,6 +16,10 @@ var UserSchema = new Schema({
     type: String,
     default: 'user'
   },
+  connected: {
+    type: Boolean,
+    default: false
+  },
   password: {
     type: String,
     required: true

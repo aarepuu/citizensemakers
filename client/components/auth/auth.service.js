@@ -1,6 +1,6 @@
 'use strict';
 
-(function() {
+(function () {
 
   function AuthService($location, $http, $cookies, $q, appConfig, Util, User) {
     var safeCb = Util.safeCb;
@@ -23,7 +23,7 @@
       login({
         email,
         password
-      }, callback) {
+        }, callback) {
         return $http.post('/auth/local', {
             email: email,
             password: password
@@ -60,14 +60,14 @@
        * @return {Promise}
        */
       createUser(user, callback) {
-        return User.save(user, function(data) {
-            $cookies.put('token', data.token);
-            currentUser = User.get();
-            return safeCb(callback)(null, user);
-          }, function(err) {
-            Auth.logout();
-            return safeCb(callback)(err);
-          })
+        return User.save(user, function (data) {
+          $cookies.put('token', data.token);
+          currentUser = User.get();
+          return safeCb(callback)(null, user);
+        }, function (err) {
+          Auth.logout();
+          return safeCb(callback)(err);
+        })
           .$promise;
       },
 
@@ -81,15 +81,15 @@
        */
       changePassword(oldPassword, newPassword, callback) {
         return User.changePassword({
-            id: currentUser._id
-          }, {
-            oldPassword: oldPassword,
-            newPassword: newPassword
-          }, function() {
-            return safeCb(callback)(null);
-          }, function(err) {
-            return safeCb(callback)(err);
-          })
+          id: currentUser._id
+        }, {
+          oldPassword: oldPassword,
+          newPassword: newPassword
+        }, function () {
+          return safeCb(callback)(null);
+        }, function (err) {
+          return safeCb(callback)(err);
+        })
           .$promise;
       },
 
@@ -117,7 +117,7 @@
       },
 
       /**
-       * Check if a user is logged in
+       * Check if a user has connected account
        *   (synchronous|asynchronous)
        *
        * @param  {Function|*} callback - optional, function(is)
@@ -137,6 +137,26 @@
       },
 
       /**
+       * Check if a user is logged in
+       *   (synchronous|asynchronous)
+       *
+       * @param  {Function|*} callback - optional, function(is)
+       * @return {Bool|Promise}
+       */
+      isConnected(callback) {
+        if (arguments.length === 0) {
+          return currentUser.connected;
+        }
+        return Auth.getCurrentUser(null)
+          .then(user => {
+            var is = user.connected;
+            safeCb(callback)(is);
+            return is;
+          });
+      },
+
+
+      /**
        * Check if a user has a specified role or higher
        *   (synchronous|asynchronous)
        *
@@ -145,7 +165,7 @@
        * @return {Bool|Promise}
        */
       hasRole(role, callback) {
-        var hasRole = function(r, h) {
+        var hasRole = function (r, h) {
           return userRoles.indexOf(r) >= userRoles.indexOf(h);
         };
 

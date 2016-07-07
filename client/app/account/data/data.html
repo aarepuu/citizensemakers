@@ -3,9 +3,9 @@
     <label for="inputStart">Start date</label>
     <input input-date
            type="text"
-           name="created"
+           name="start"
            id="inputStart"
-           ng-model="currentTime"
+           ng-model="vm.startDate"
            container=""
            format="dd/mm/yyyy"
            months-full="{{ vm.month }}"
@@ -31,7 +31,7 @@
            type="text"
            name="created"
            id="inputEnd"
-           ng-model="currentTime"
+           ng-model="vm.endDate"
            container=""
            format="dd/mm/yyyy"
            months-full="{{ vm.month }}"
@@ -48,9 +48,17 @@
            select-years="15"
     />
   </div>
-  <div simple-line-chart></div>
-  <chart-form></chart-form>
-  <column-chart height="vm.options.height" data="vm.data" hovered="vm.hovered(args)" ng-click="vm.clicked(args)" ></column-chart>
+  <div class="chip">
+    <img src="../../assets/images/me.jpeg" alt="Contact Person">
+    You
+  </div>
+  <br/><br/>
+  <div class="row">
+    <div line-chart data="vm.steps" clicked="vm.clicked(args)" interpolate="vm.interpolate"></div>
+  </div>
+
+  <column-chart height="vm.options.height" data="vm.data" hovered="vm.hovered(args)"
+                ng-click="vm.clicked(args)"></column-chart>
 
   <div class="container">
     <div id='graphic'>
@@ -64,7 +72,7 @@
           I see you did some exercise from <b>6 am </b> to <b> 7 am </b>
           <br/><br/>
           Totals
-          8,760 steps	24 floors	6.87 km	3,285 calories
+          8,760 steps 24 floors 6.87 km 3,285 calories
         </section>
         <section class="step" class="editable" contenteditable="true">
           <div class="title">Morning route to work</div>
