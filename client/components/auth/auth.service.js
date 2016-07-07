@@ -117,7 +117,7 @@
       },
 
       /**
-       * Check if a user has connected account
+       * Check if a user is logged in
        *   (synchronous|asynchronous)
        *
        * @param  {Function|*} callback - optional, function(is)
@@ -137,7 +137,7 @@
       },
 
       /**
-       * Check if a user is logged in
+       * Check if a user has connected account
        *   (synchronous|asynchronous)
        *
        * @param  {Function|*} callback - optional, function(is)
@@ -145,13 +145,13 @@
        */
       isConnected(callback) {
         if (arguments.length === 0) {
-          return currentUser.connected;
+          return currentUser.fitbitId ? true : false;
         }
         return Auth.getCurrentUser(null)
           .then(user => {
-            var is = user.connected;
-            safeCb(callback)(is);
-            return is;
+            var has = user.hasOwnProperty('fitbitId') ? currentUser.fitbitId ? true : false : false;
+            safeCb(callback)(has);
+            return has;
           });
       },
 

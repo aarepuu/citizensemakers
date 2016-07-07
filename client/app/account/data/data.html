@@ -8,6 +8,7 @@
            ng-model="vm.startDate"
            container=""
            format="dd/mm/yyyy"
+           formatSubmit="dd-mm-yyyy"
            months-full="{{ vm.month }}"
            months-short="{{ vm.monthShort }}"
            weekdays-full="{{ vm.weekdaysFull }}"
@@ -20,11 +21,21 @@
            clear="vm.clear"
            close="vm.close"
            select-years="15"
+           on-start="vm.onStart()"
+           on-render="vm.onRender()"
+           on-open="vm.onOpen()"
+           on-close="vm.onClose()"
+           on-set="vm.onSet()"
+           on-stop="vm.onStop()"
     />
 
-    <rzslider rz-slider-model="vm.slider.minValue"
+   <!-- <rzslider rz-slider-model="vm.slider.minValue"
               rz-slider-high="vm.slider.maxValue"
               rz-slider-options="vm.slider.options"></rzslider>
+
+               <column-chart height="vm.options.height" data="vm.data" hovered="vm.hovered(args)"
+                ng-click="vm.clicked(args)"></column-chart>
+              -->
 
     <label for="inputEnd">End date</label>
     <input input-date
@@ -46,6 +57,12 @@
            clear="vm.clear"
            close="vm.close"
            select-years="15"
+           on-start="vm.onStart()"
+           on-render="vm.onRender()"
+           on-open="vm.onOpen()"
+           on-close="vm.onClose()"
+           on-set="vm.onSet()"
+           on-stop="vm.onStop()"
     />
   </div>
   <div class="chip">
@@ -53,12 +70,8 @@
     You
   </div>
   <br/><br/>
-  <div class="row">
-    <div line-chart data="vm.steps" clicked="vm.clicked(args)" interpolate="vm.interpolate"></div>
-  </div>
 
-  <column-chart height="vm.options.height" data="vm.data" hovered="vm.hovered(args)"
-                ng-click="vm.clicked(args)"></column-chart>
+
 
   <div class="container">
     <div id='graphic'>
@@ -105,6 +118,9 @@
         </section>
       </div>
       <div id='vis'>
+        <div class="row">
+          <div line-chart data="vm.steps" clicked="vm.clicked(args)" interpolate="vm.interpolate"></div>
+        </div>
       </div>
       <div id="extra-space">
       </div>

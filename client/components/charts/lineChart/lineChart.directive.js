@@ -94,10 +94,13 @@ angular.module('charts')
               })
               .interpolate(scope.interpolate);
 
+
+
+            //TODO - better system of loading
             svg.append("svg:path")
               .attr({
                 d: line(data),
-                "stroke": "blue",
+                "stroke": "#009688",
                 "stroke-width": 2,
                 "fill": "none",
                 "class": pathClass
@@ -106,12 +109,15 @@ angular.module('charts')
 
           };
 
+          d3.select(window)
+            .on("scroll.scroller", log);
 
+          function log(){
+            console.log("scrolling");
+          }
           //Watch 'data' and run scope.render(newVal) whenever it changes
           //Use true for 'objectEquality' property so comparisons are done on equality and not reference
           scope.$watch('data', function (newVal) {
-            //TODO - find a better way
-            if(newVal === 'None') return;
             scope.render(newVal);
           });
 

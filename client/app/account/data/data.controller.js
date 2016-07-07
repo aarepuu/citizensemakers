@@ -7,6 +7,8 @@
 
     constructor($http, $scope, Auth) {
       this.Auth = Auth;
+      this.getCurrentUser = Auth.getCurrentUser;
+      this.fitbitId = this.getCurrentUser().fitbitId;
       this.$scope = $scope;
       this.$http = $http;
       this.startDate = null;
@@ -20,7 +22,7 @@
       this.clear = 'Clear';
       this.close = 'Close';
       var days = 15;
-      this.steps = 'None';
+      this.steps = [];
       this.interpolate = 'basis';
       this.slider = {
         minValue: 10,
@@ -30,28 +32,28 @@
           ceil: 100,
           step: 1
         }
-      }
+      };
 
       this.options = {width: 500, height: 300, 'bar': 'aaa'};
 
       this.data = [1, 2, 3, 4];
 
       this.barValue = 'None';
+      this.currentCalValues = [];
 
-      //TODO - build proper component
-      this.$http.get('/api/data/minmax')
+      //TODO - build proper component and only fetch data when query parameters change
+      //you can only select data from others which you have
+      this.$http.get('/api/data/' + this.fitbitId + '/minmax')
         .then(response => {
-          this.minDate = (new Date(response.data[0].min*1000)).toISOString();
-          this.maxDate = (new Date(response.data[0].max*1000)).toISOString();
+          this.minDate = (new Date(response.data[0].min * 1000)).toISOString();
+          this.maxDate = (new Date(response.data[0].max * 1000)).toISOString();
+          this.startDate = this.minDate;
+          this.endDate = this.maxDate;
+          this.getData();
         });
 
-      this.$http.get('/api/data')
-        .then(response => {
-          this.steps = response.data;
-        });
+
     }
-
-
 
     $onInit() {
       this.$http.get('/api/data')
@@ -60,15 +62,49 @@
         });
     }
 
-    hovered(d){
+    hovered(d) {
       //this.barValue = d;
       //this.$scope.$apply();
       //console.log(d);
     }
-    clicked(d){
+
+    clicked(d) {
       console.log(d);
     }
 
+
+    //TODO - remove these datepicker stuff to separate file
+    onRender() {
+      console.log('onRender');
+    }
+
+    onOpen(d) {
+      console.log('onOpen');
+      this.currentCalValues[0] = this.startDate;
+      this.currentCalValues[1] = this.endDate;
+    }
+
+    onClose() {
+      //TODO - there is better way, server side maybe
+      //avoid same queries
+      if(this.currentCalValues[0] == this.startDate && this.currentCalValues[1] == this.endDate) return;
+      this.getData();
+    }
+
+    onSet() {
+      console.log('onSet');
+    }
+
+    onStop() {
+      console.log('onStop');
+    }
+
+    getData(){
+      this.$http.get('/api/data/' + this.fitbitId + '/' + (new Date(this.startDate)).getTime()/1000 + '/' + (new Date(this.endDate)).getTime()/1000)
+        .then(response => {
+          this.steps = response.data;
+        });
+    }
 
   }
 

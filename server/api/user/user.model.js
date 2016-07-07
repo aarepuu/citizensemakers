@@ -16,9 +16,9 @@ var UserSchema = new Schema({
     type: String,
     default: 'user'
   },
-  connected: {
-    type: Boolean,
-    default: false
+  fitbitId: {
+    type: String,
+    default: ''
   },
   password: {
     type: String,

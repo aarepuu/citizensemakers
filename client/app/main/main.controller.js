@@ -10,7 +10,6 @@
       this.isLoggedIn = Auth.isLoggedIn;
       this.isConnected = Auth.isConnected;
       this.awesomeThings = [];
-
       $scope.$on('$destroy', function() {
         socket.unsyncUpdates('thing');
       });
@@ -20,7 +19,7 @@
       return this.isLoggedIn() ? this.isConnected() ? false : true : false ;
     }
 
-    $onInit() {
+    /*$onInit() {
       this.$http.get('/api/things')
         .then(response => {
           this.awesomeThings = response.data;
@@ -39,7 +38,7 @@
 
     deleteThing(thing) {
       this.$http.delete('/api/things/' + thing._id);
-    }
+    }*/
   }
 
   angular.module('citizensemakersApp')

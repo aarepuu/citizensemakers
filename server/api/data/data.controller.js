@@ -68,10 +68,23 @@ export function index(req, res) {
     .catch(handleError(res));
 }
 
+// Gets data for one user
+export function getData(req, res) {
+  return Data.find({"user": req.params.user}).exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
+// Get data limited with start end date
+export function getDataByDate(req, res) {
+  return Data.find({"user": req.params.user, "time" : { $gt :  req.params.start, $lt : req.params.end } }).exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
 
 //Get max and min value of Data
 export function getMinMax(req, res) {
-  return Data.aggregate([{$match: {"user": "46P577"} },{$group: {_id: "$user", "min": {$first: "$time"}, "max": {$last: "$time"}}}]).exec()
+  return Data.aggregate([{$match: {"user": req.params.user} },{$group: {"_id": "$user", "min": {$first: "$time"}, "max": {$last: "$time"}}}]).exec()
   //return Data.find().exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
