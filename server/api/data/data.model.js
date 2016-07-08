@@ -15,4 +15,4 @@ var StepsSchema = new mongoose.Schema({
 });
 
 
-export default mongoose.model('step', StepsSchema);
+export default mongoose.model('heartrate', StepsSchema);

@@ -77,7 +77,7 @@ export function getData(req, res) {
 
 // Get data limited with start end date
 export function getDataByDate(req, res) {
-  return Data.find({"user": req.params.user, "time" : { $gt :  req.params.start, $lt : req.params.end } }).exec()
+  return Data.find({"user": req.params.user, "time" : { $gte :  req.params.start, $lte : req.params.end } }).sort( { $time: 1 } ).exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 }

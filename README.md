@@ -1,6 +1,6 @@
 # citizensemakers
 
-Initial application for citizens to reclame and make sense of their data.
+Initial application for citizens to reclaim and make sense of their data.
 
 This project was generated with the [Angular Full-Stack Generator](https://github.com/DaftMonk/generator-angular-fullstack) version 3.7.6.
 
