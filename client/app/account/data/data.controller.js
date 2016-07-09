@@ -73,6 +73,9 @@
     clicked(d) {
       console.log(d);
     }
+    addData(d){
+      console.log("clicked");
+    }
 
 
     //TODO - remove these datepicker stuff to separate file
