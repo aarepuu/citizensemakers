@@ -21,6 +21,8 @@ import connectMongo from 'connect-mongo';
 import mongoose from 'mongoose';
 var MongoStore = connectMongo(session);
 
+import cors from 'cors';
+
 export default function(app) {
   var env = app.get('env');
 
@@ -45,6 +47,8 @@ export default function(app) {
   app.use(methodOverride());
   app.use(cookieParser());
   app.use(passport.initialize());
+  app.use(cors());
+  app.options('*', cors());
 
   // Persist sessions with MongoStore / sequelizeStore
   // We need to enable sessions for passport-twitter because it's an

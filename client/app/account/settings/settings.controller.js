@@ -2,7 +2,8 @@
 
 class SettingsController {
 
-  constructor(Auth) {
+  constructor($http, Auth, User) {
+    this.$http = $http;
     this.Auth = Auth;
     this.isConnected = Auth.isConnected;
     this.now = new Date();
@@ -12,7 +13,18 @@ class SettingsController {
       maxFileSize: 30,
       url: '/'
     }
+
+    this.connect = true;
+    this.value = [9,17];
+    this.weeksvalue = [9,17];
+
+    this.users = null;
+    this.$http.get('/api/users/all').then(response => {
+      this.users = response.data;
+    });
+
   }
+
 
   dzAddedFile(file) {
     console.log(file);
@@ -20,6 +32,12 @@ class SettingsController {
 
   dzError(file, errorMessage) {
     console.log(errorMessage);
+  }
+
+  check(box,user, el){
+    console.log(box);
+    console.log(user);
+    console.log(el);
   }
 
 

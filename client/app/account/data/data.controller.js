@@ -40,6 +40,7 @@
 
       this.barValue = 'None';
       this.currentCalValues = [];
+      console.log(moment(new Date).hour());
 
       //TODO - build proper component and only fetch data when query parameters change
       //you can only select data from others which you have

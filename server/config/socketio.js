@@ -17,6 +17,9 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+  require('../api/heartrate/heartrate.socket').register(socket);
+  require('../api/right/right.socket').register(socket);
+  require('../api/token/token.socket').register(socket);
   require('../api/data/data.socket').register(socket);
   require('../api/thing/thing.socket').register(socket);
 

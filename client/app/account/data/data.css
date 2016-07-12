@@ -148,3 +148,24 @@ rect.pane {
   fill: none;
   pointer-events: all;
 }
+
+/*
+Accordion
+*/
+
+.collapsible-header .circle {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  overflow: hidden;
+  left: 15px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.list-group-item.avatar {
+  min-height: 84px;
+  padding-left: 72px;
+  position: relative;
+}
+

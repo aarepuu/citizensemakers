@@ -9,7 +9,8 @@
 
       <div class="row center">
         <a ng-hide="main.isLoggedIn()" ui-sref="login" id="login-button" class="btn-large waves-effect waves-light teal lighten-1">Get Started</a>
-        <a ng-show="main.showFitbit()" href="http://localhost:4000/fitbit" id="fitbit-button" class="btn-large waves-effect waves-light teal lighten-1">Connect with Your Fitbit</a>
+        <a ng-show="main.showFitbit()" href="http://localhost:9000/api/token/fitbit"  target="_self" id="fitbit-button" class="btn-large waves-effect waves-light teal lighten-1">Connect with Your Fitbit</a>
+        <a ng-click="main.connectFitbit()" id="fitbit-button" class="btn-large waves-effect waves-light teal lighten-1">Connect with Your Fitbit</a>
       </div>
       <br><br>
 

@@ -8,7 +8,10 @@ import errors from './components/errors';
 import path from 'path';
 
 export default function(app) {
+
   // Insert routes below
+  app.use('/api/rights', require('./api/right'));
+  app.use('/api/token', require('./api/token'));
   app.use('/api/data', require('./api/data'));
   app.use('/api/things', require('./api/thing'));
   app.use('/api/users', require('./api/user'));
