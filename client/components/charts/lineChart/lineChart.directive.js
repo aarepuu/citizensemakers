@@ -12,23 +12,22 @@ angular.module('charts')
       },
       link: function (scope, element, attrs) {
         d3Service.d3().then(function (d3) {
-          //var chartData = scope.data;
+
           var padding = 25;
           var pathClass = "line";
           var xScale, yScale, xAxisGen, yAxisGen, line, path, color, zoom;
           var users = [];
+          var values = [];
 
           var rawSvg = element.find('svg');
           var svg = d3.select(rawSvg[0])
             .attr("xmlns", "http://www.w3.org/2000/svg");
 
           xScale = d3.time.scale()
-            //.domain([xMin, xMax])
             .range([padding + 5, rawSvg.attr("width") - padding]);
 
 
           yScale = d3.scale.linear()
-            //.domain([yMin, yMax])
             .range([rawSvg.attr("height") - padding, 0]);
 
 
@@ -70,20 +69,21 @@ angular.module('charts')
             });
 
             //Create map
-            users = [];
-            users.push(data[0].user)
+            //users = [];
+            //console.log(values);
+            users.push(data[data.length - 1].user)
             color.domain(users);
-
-            var datas = color.domain().map(function (user) {
+            //values.push(data);
+            console.log(users);
+            values.push(data);
+            //console.log(values);
+            var datas = color.domain().map(function (user, i) {
               return {
                 user: user,
-                values: data.map(function (d) {
-                  //console.log(d);
-                  return {time: d.time, value: d.value};
-                })
+                values: values[i]
               };
             });
-
+            console.log(datas);
             //Set our scale's domains
             xScale.domain(d3.extent(data, function (d) {
               return d.time;
@@ -139,14 +139,14 @@ angular.module('charts')
               .attr("class", "user");
 
             /*var user = svg.append("g")
-              .data(datas)
-              .attr("class", "user");*/
+             .data(datas)
+             .attr("class", "user");*/
 
             user.append("path")
               .attr("class", "line")
               /*.attr("d", function (d) {
-                return line(d.values);
-              })*/
+               return line(d.values);
+               })*/
               .attr("clip-path", "url(#clip)")
               .style("stroke", function (d) {
                 return color(d.user);
@@ -197,19 +197,20 @@ angular.module('charts')
             //console.log(svg.select("path.line").attr("d"));
             //svg.select("path.line").attr("d", line);
             //console.log(svg.select("path.line"));
-            svg.select("path.line").attr("d", function (d) {
+            var path = svg.selectAll("path.line").attr("d", function (d) {
               //console.log(d.values);
               return line(d.values);
             });
+            console.log(svg.selectAll(".user"));
             //animations
             /*var totalLength = path.node().getTotalLength();
-             path
-             .attr("stroke-dasharray", totalLength + " " + totalLength)
-             .attr("stroke-dashoffset", totalLength)
-             .transition()
-             .duration(1000)
-             .ease("linear")
-             .attr("stroke-dashoffset", 0);*/
+            path
+              .attr("stroke-dasharray", totalLength + " " + totalLength)
+              .attr("stroke-dashoffset", totalLength)
+              .transition()
+              .duration(2000)
+              .ease("linear")
+              .attr("stroke-dashoffset", 0);*/
           }
 
           d3.select(window)
@@ -223,11 +224,19 @@ angular.module('charts')
           //Use true for 'objectEquality' property so comparisons are done on equality and not reference
           scope.$watch('data', function (newVal, oldVal) {
             //console.log(newVal);
-            //if (oldVal.length > 1)
-              //console.log(oldVal[0].user);
-            if (newVal.length > 1)
-              //console.log(newVal);
-              scope.render(newVal);
+            //if (oldVal.length > 0) {
+            //values.concat(oldVal);
+            //}
+            //reset
+            if (newVal === null) {
+              users = [];
+              values = [];
+            } else {
+              if (newVal.length > 0) {
+                scope.render(newVal);
+              }
+            }
+
           });
 
         });

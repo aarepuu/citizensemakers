@@ -23,7 +23,7 @@
       this.clear = 'Clear';
       this.close = 'Close';
       this.days = 15;
-      this.steps = [];
+      this.steps = null;
       this.interpolate = 'linear';
       this.slider = {
         minValue: 10,
@@ -57,7 +57,7 @@
         });
 
 
-      console.log(this.rights);
+      //console.log(this.rights);
     }
 
     hovered(d) {
@@ -69,13 +69,14 @@
     clicked(d) {
       console.log(d);
     }
-    addData(right){
+
+    addData(right) {
       //add dates
       right.start = (moment(this.startDate, "DD/MM/YYYY").unix());
       right.end = (moment(this.endDate, "DD/MM/YYYY").unix());
       //console.log("clicked");
-      this.$http.post("/api/data/hearts/", right).success(function(data, status) {
-        //console.log(data);
+      this.$http.post("/api/data/hearts/", right).then(response => {
+        this.steps = response.data;
       });
     }
 
@@ -94,7 +95,10 @@
     onClose() {
       //TODO - there is better way, server side maybe
       //avoid same queries
-      if(this.currentCalValues[0] == this.startDate && this.currentCalValues[1] == this.endDate) return;
+      if (this.currentCalValues[0] == this.startDate && this.currentCalValues[1] == this.endDate) return;
+      //reset dataset
+      this.steps = null;
+      //get new data
       this.getData();
     }
 
@@ -106,7 +110,7 @@
       //console.log('onStop');
     }
 
-    getData(){
+    getData() {
 
       this.$http.get('/api/data/hearts/' + this.fitbitId + '/' + (moment(this.startDate, "DD/MM/YYYY").unix()) + '/' + (moment(this.endDate, "DD/MM/YYYY").unix()))
         .then(response => {

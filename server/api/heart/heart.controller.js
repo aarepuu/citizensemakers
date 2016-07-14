@@ -136,17 +136,15 @@ export function getDataByDate(req, res) {
 }
 
 
-
-
 // Get allowed data from user
 export function limitData(req, res) {
   var days = (req.body.week) ? (req.body.weekend) ? 7 : 5 : 0;
   return Heart.find({
     "user": req.body.user,
     "time": {$gte: req.body.start, $lte: req.body.end},
-    $and: [ {"day": {$lte: 5}}, {"hour": {$gte: req.body.weektime[0], $lte: req.body.weektime[1]}}],
-    $and: [ {"day": {$gt: 5}}, {"hour": {$gte: req.body.weekendtime[0], $lte: req.body.weekendtime[1]}}],
-    "day": {$lte: days}
+    $or: [
+      {$and: [{"day": {$lte: 5}}, {"hour": {$gte: req.body.weektime[0], $lte: req.body.weektime[1]}}]},
+      {$and: [{"day": {$gt: 5}}, {"hour": {$gte: req.body.weekendtime[0], $lte: req.body.weekendtime[1]}}]}]
   }, '-day -hour').sort({time: 1}).exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
