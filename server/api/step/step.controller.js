@@ -1,16 +1,16 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /api/rights              ->  index
- * POST    /api/rights              ->  create
- * GET     /api/rights/:id          ->  show
- * PUT     /api/rights/:id          ->  update
- * DELETE  /api/rights/:id          ->  destroy
+ * GET     /api/data/steps              ->  index
+ * POST    /api/data/steps              ->  create
+ * GET     /api/data/steps/:id          ->  show
+ * PUT     /api/data/steps/:id          ->  update
+ * DELETE  /api/data/steps/:id          ->  destroy
  */
 
 'use strict';
 
 import _ from 'lodash';
-import Right from './right.model';
+import Step from './step.model';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -59,52 +59,44 @@ function handleError(res, statusCode) {
   };
 }
 
-// Gets a list of Rights
+// Gets a list of Steps
 export function index(req, res) {
-  return Right.find().exec()
+  return Step.find().exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Gets a single Right from the DB
+// Gets a single Step from the DB
 export function show(req, res) {
-  return Right.findById(req.params.id).exec()
+  return Step.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Creates a new Right in the DB
+// Creates a new Step in the DB
 export function create(req, res) {
-  return Right.create(req.body)
+  return Step.create(req.body)
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 }
 
-// Updates an existing Right in the DB
+// Updates an existing Step in the DB
 export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
-  return Right.findById(req.params.id).exec()
+  return Step.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(saveUpdates(req.body))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Deletes a Right from the DB
+// Deletes a Step from the DB
 export function destroy(req, res) {
-  return Right.findById(req.params.id).exec()
+  return Step.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));
-}
-
-// Searches for existing document to update or creates when not found
-export function updateCreate(req, res){
-  var query = {},
-    update = { expire: new Date() },
-    options = { upsert: true, new: true, setDefaultsOnInsert: true };
-  return Right.findOneAndUpdate()
 }

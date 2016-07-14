@@ -37,7 +37,8 @@ export function index(req, res) {
  *
  */
 export function getNames(req, res) {
-  return User.find({_id: {$ne: req.user._id}}, '-salt -password -email -fitbitId -provider -role').exec()
+  console.log(req.user._id);
+  return User.find({_id: {$ne: req.user._id}}, '-salt -password -email -provider -role -rights').exec()
     .then(users => {
       res.status(200).json(users);
     })
@@ -134,3 +135,25 @@ export function me(req, res, next) {
 export function authCallback(req, res, next) {
   res.redirect('/');
 }
+
+export function rights(req, res, next) {
+  console.log(req.body);
+
+}
+
+
+/*
+
+
+ var query = {},
+ update = { expire: new Date() },
+ options = { upsert: true, new: true, setDefaultsOnInsert: true };
+
+ // Find the document
+ Model.findOneAndUpdate(query, update, options, function(error, result) {
+ if (error) return;
+
+ // do something with the document
+ });
+
+ */

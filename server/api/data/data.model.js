@@ -8,11 +8,11 @@ var DataSchema = new mongoose.Schema({
   active: Boolean
 });
 //TODO - change user to fitbitID and make link to users table
-var StepsSchema = new mongoose.Schema({
+var HeartSchema = new mongoose.Schema({
   user: String,
   time: Number,
   value: Number
 });
 
 
-export default mongoose.model('heartrate', StepsSchema);
+export default mongoose.model('heartrate', HeartSchema);

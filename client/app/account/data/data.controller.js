@@ -9,6 +9,7 @@
       this.Auth = Auth;
       this.getCurrentUser = Auth.getCurrentUser;
       this.fitbitId = this.getCurrentUser().fitbitId;
+      this.rights = this.getCurrentUser().rights.them;
       this.$scope = $scope;
       this.$http = $http;
       this.startDate = null;
@@ -21,7 +22,7 @@
       this.today = 'Today';
       this.clear = 'Clear';
       this.close = 'Close';
-      var days = 15;
+      this.days = 15;
       this.steps = [];
       this.interpolate = 'linear';
       this.slider = {
@@ -40,11 +41,11 @@
 
       this.barValue = 'None';
       this.currentCalValues = [];
-      console.log(moment(new Date).hour());
+      //console.log(moment(new Date).hour());
 
       //TODO - build proper component and only fetch data when query parameters change
       //you can only select data from others which you have
-      this.$http.get('/api/data/' + this.fitbitId + '/minmax')
+      this.$http.get('/api/data/hearts/' + this.fitbitId + '/minmax')
         .then(response => {
           var minM = moment.unix(response.data[0].min);
           var maxM = moment.unix(response.data[0].max);
@@ -56,13 +57,7 @@
         });
 
 
-    }
-
-    $onInit() {
-      this.$http.get('/api/data')
-        .then(response => {
-          console.log(response.data);
-        });
+      console.log(this.rights);
     }
 
     hovered(d) {
@@ -74,8 +69,14 @@
     clicked(d) {
       console.log(d);
     }
-    addData(d){
-      console.log("clicked");
+    addData(right){
+      //add dates
+      right.start = (moment(this.startDate, "DD/MM/YYYY").unix());
+      right.end = (moment(this.endDate, "DD/MM/YYYY").unix());
+      //console.log("clicked");
+      this.$http.post("/api/data/hearts/", right).success(function(data, status) {
+        //console.log(data);
+      });
     }
 
 
@@ -106,7 +107,8 @@
     }
 
     getData(){
-      this.$http.get('/api/data/' + this.fitbitId + '/' + (moment(this.startDate, "DD/MM/YYYY").unix()) + '/' + (moment(this.endDate, "DD/MM/YYYY").unix()))
+
+      this.$http.get('/api/data/hearts/' + this.fitbitId + '/' + (moment(this.startDate, "DD/MM/YYYY").unix()) + '/' + (moment(this.endDate, "DD/MM/YYYY").unix()))
         .then(response => {
           this.steps = response.data;
         });

@@ -4,7 +4,7 @@
 
 'use strict';
 
-import RightEvents from './right.events';
+import HeartEvents from './heart.events';
 
 // Model events to emit
 var events = ['save', 'remove'];
@@ -13,9 +13,9 @@ export function register(socket) {
   // Bind model events to socket events
   for (var i = 0, eventsLength = events.length; i < eventsLength; i++) {
     var event = events[i];
-    var listener = createListener('right:' + event, socket);
+    var listener = createListener('heart:' + event, socket);
 
-    RightEvents.on(event, listener);
+    HeartEvents.on(event, listener);
     socket.on('disconnect', removeListener(event, listener));
   }
 }
@@ -29,6 +29,6 @@ function createListener(event, socket) {
 
 function removeListener(event, listener) {
   return function() {
-    RightEvents.removeListener(event, listener);
+    HeartEvents.removeListener(event, listener);
   };
 }

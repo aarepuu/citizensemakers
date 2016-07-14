@@ -3,40 +3,40 @@
 var app = require('../..');
 import request from 'supertest';
 
-var newRight;
+var newStep;
 
-describe('Right API:', function() {
+describe('Step API:', function() {
 
-  describe('GET /api/rights', function() {
-    var rights;
+  describe('GET /api/data/steps', function() {
+    var steps;
 
     beforeEach(function(done) {
       request(app)
-        .get('/api/rights')
+        .get('/api/data/steps')
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
           if (err) {
             return done(err);
           }
-          rights = res.body;
+          steps = res.body;
           done();
         });
     });
 
     it('should respond with JSON array', function() {
-      rights.should.be.instanceOf(Array);
+      steps.should.be.instanceOf(Array);
     });
 
   });
 
-  describe('POST /api/rights', function() {
+  describe('POST /api/data/steps', function() {
     beforeEach(function(done) {
       request(app)
-        .post('/api/rights')
+        .post('/api/data/steps')
         .send({
-          name: 'New Right',
-          info: 'This is the brand new right!!!'
+          name: 'New Step',
+          info: 'This is the brand new step!!!'
         })
         .expect(201)
         .expect('Content-Type', /json/)
@@ -44,55 +44,55 @@ describe('Right API:', function() {
           if (err) {
             return done(err);
           }
-          newRight = res.body;
+          newStep = res.body;
           done();
         });
     });
 
-    it('should respond with the newly created right', function() {
-      newRight.name.should.equal('New Right');
-      newRight.info.should.equal('This is the brand new right!!!');
+    it('should respond with the newly created step', function() {
+      newStep.name.should.equal('New Step');
+      newStep.info.should.equal('This is the brand new step!!!');
     });
 
   });
 
-  describe('GET /api/rights/:id', function() {
-    var right;
+  describe('GET /api/data/steps/:id', function() {
+    var step;
 
     beforeEach(function(done) {
       request(app)
-        .get('/api/rights/' + newRight._id)
+        .get('/api/data/steps/' + newStep._id)
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
           if (err) {
             return done(err);
           }
-          right = res.body;
+          step = res.body;
           done();
         });
     });
 
     afterEach(function() {
-      right = {};
+      step = {};
     });
 
-    it('should respond with the requested right', function() {
-      right.name.should.equal('New Right');
-      right.info.should.equal('This is the brand new right!!!');
+    it('should respond with the requested step', function() {
+      step.name.should.equal('New Step');
+      step.info.should.equal('This is the brand new step!!!');
     });
 
   });
 
-  describe('PUT /api/rights/:id', function() {
-    var updatedRight;
+  describe('PUT /api/data/steps/:id', function() {
+    var updatedStep;
 
     beforeEach(function(done) {
       request(app)
-        .put('/api/rights/' + newRight._id)
+        .put('/api/data/steps/' + newStep._id)
         .send({
-          name: 'Updated Right',
-          info: 'This is the updated right!!!'
+          name: 'Updated Step',
+          info: 'This is the updated step!!!'
         })
         .expect(200)
         .expect('Content-Type', /json/)
@@ -100,27 +100,27 @@ describe('Right API:', function() {
           if (err) {
             return done(err);
           }
-          updatedRight = res.body;
+          updatedStep = res.body;
           done();
         });
     });
 
     afterEach(function() {
-      updatedRight = {};
+      updatedStep = {};
     });
 
-    it('should respond with the updated right', function() {
-      updatedRight.name.should.equal('Updated Right');
-      updatedRight.info.should.equal('This is the updated right!!!');
+    it('should respond with the updated step', function() {
+      updatedStep.name.should.equal('Updated Step');
+      updatedStep.info.should.equal('This is the updated step!!!');
     });
 
   });
 
-  describe('DELETE /api/rights/:id', function() {
+  describe('DELETE /api/data/steps/:id', function() {
 
     it('should respond with 204 on successful removal', function(done) {
       request(app)
-        .delete('/api/rights/' + newRight._id)
+        .delete('/api/data/steps/' + newStep._id)
         .expect(204)
         .end((err, res) => {
           if (err) {
@@ -130,9 +130,9 @@ describe('Right API:', function() {
         });
     });
 
-    it('should respond with 404 when right does not exist', function(done) {
+    it('should respond with 404 when step does not exist', function(done) {
       request(app)
-        .delete('/api/rights/' + newRight._id)
+        .delete('/api/data/steps/' + newStep._id)
         .expect(404)
         .end((err, res) => {
           if (err) {

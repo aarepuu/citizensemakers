@@ -73,14 +73,20 @@
         <p> Sharing data with {{user.name}} during weekdays from {{vm.weeksvalue[0]}} am to {{vm.weeksvalue[1]}} pm </p>
       </div>
       <div class="collapsible-body">
-        <input type="checkbox" ng-model="hasweeks" id="week_{{user._id}}" ng-change="vm.check(1, user._id, hasweeks)"/>
+        <input type="checkbox" ng-checked="vm.getRights(user.fitbitId, user.name).week" ng-model="hasweeks"
+               id="week_{{user._id}}"
+               ng-change="vm.check(1, user._id, hasweeks)"/>
         <label for="week_{{user._id}}">Weekdays</label>
-        <div uislider ng-disabled="!hasweeks" connect="vm.connect" tooltips="vm.connect" ng-model="vm.weeksvalue" min="0" max="24" step="1"></div>
+        <div uislider ng-disabled="!hasweeks" connect="vm.connect" tooltips="vm.connect"
+             ng-model="vm.getRights(user.fitbitId,user.name).weektime"
+             min="0" max="24" step="1"></div>
         </br></br>
-        <input type="checkbox" ng-model="hasweekends" id="weekends_{{user._id}}" ng-change="vm.check(2, user._id, hasweekends)"/>
+        <input type="checkbox" ng-checked="vm.getRights(user.fitbitId, user.name).weekend" ng-model="hasweekends"
+               id="weekends_{{user._id}}"
+               ng-change="vm.check(2, user._id, hasweekends)"/>
         <label for="weekends_{{user._id}}">Weekends</label>
         <div ng-disabled="!hasweekends" id="slider_{{user._id}}" uislider connect="vm.connect" tooltips="vm.connect"
-             ng-model="vm.value" min="0" max="24" step="1"></div>
+             ng-model="vm.getRights(user.fitbitId, user.name).weekendtime" min="0" max="24" step="1"></div>
       </div>
     </li>
   </ul>

@@ -61,8 +61,11 @@ angular.module('charts')
 
           //Render graph based on 'data'
           scope.render = function (data) {
+            //Sort done in backend
+            //data.sort(function(a,b) {return b.time-a.time;});
             //proccess data
             data.forEach(function (d) {
+              //console.log(d.time)
               d.time = new Date(d.time * 1000);
             });
 
@@ -128,7 +131,7 @@ angular.module('charts')
               .text("Beats per minute");
 
 
-            console.log(svg.selectAll(".user"))
+            //console.log(svg.selectAll(".user"))
 
             var user = svg.selectAll(".user")
               .data(datas)
@@ -219,8 +222,9 @@ angular.module('charts')
           //Watch 'data' and run scope.render(newVal) whenever it changes
           //Use true for 'objectEquality' property so comparisons are done on equality and not reference
           scope.$watch('data', function (newVal, oldVal) {
-            if (oldVal.length > 1)
-              console.log(oldVal[0].user);
+            //console.log(newVal);
+            //if (oldVal.length > 1)
+              //console.log(oldVal[0].user);
             if (newVal.length > 1)
               //console.log(newVal);
               scope.render(newVal);

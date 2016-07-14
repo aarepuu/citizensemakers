@@ -2,9 +2,10 @@
 
 class SettingsController {
 
-  constructor($http, Auth, User) {
+  constructor($http, $filter, Auth, User) {
     this.$http = $http;
     this.Auth = Auth;
+    this.$filter = $filter;
     this.isConnected = Auth.isConnected;
     this.now = new Date();
 
@@ -15,13 +16,25 @@ class SettingsController {
     }
 
     this.connect = true;
-    this.value = [9,17];
-    this.weeksvalue = [9,17];
+    this.value = [9, 17];
+    this.weeksvalue = [9, 17];
+
+
+    this.rights = this.Auth.getCurrentUser().rights.them;
+    //console.log(this.Auth.getCurrentUser().rights.them);
 
     this.users = null;
     this.$http.get('/api/users/all').then(response => {
+      //console.log(response.data);
       this.users = response.data;
     });
+
+    this.defaultrights = {
+      "weekendtime": [0, 24],
+      "weektime": [0, 24],
+      "weekend": false,
+      "week": false
+    }
 
   }
 
@@ -34,12 +47,22 @@ class SettingsController {
     console.log(errorMessage);
   }
 
-  check(box,user, el){
-    console.log(box);
-    console.log(user);
-    console.log(el);
+  check(box, user, el) {
+    /*http.post("/echo/json/", data).success(function(data, status) {
+     $scope.hello = data;
+     })*/
   }
 
+  getRights(user, name) {
+    var user = this.$filter('filter')(this.rights, {user: user})[0];
+    if(user) {
+      return user;
+    }
+    var defaultrights = this.defaultrights;
+    defaultrights.user = user;
+    defaultrights.name = name;
+    return defaultrights;
+  }
 
   changePassword(form) {
     this.submitted = true;

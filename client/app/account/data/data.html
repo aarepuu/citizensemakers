@@ -29,13 +29,6 @@
            on-stop="vm.onStop()"
     />
 
-   <!-- <rzslider rz-slider-model="vm.slider.minValue"
-              rz-slider-high="vm.slider.maxValue"
-              rz-slider-options="vm.slider.options"></rzslider>
-
-               <column-chart height="vm.options.height" data="vm.data" hovered="vm.hovered(args)"
-                ng-click="vm.clicked(args)"></column-chart>
-              -->
 
     <label for="inputEnd">End date</label>
     <input input-date
@@ -65,20 +58,17 @@
            on-stop="vm.onStop()"
     />
   </div>
+
   <div class="chip">
     <img src="../../assets/images/me.jpeg" alt="Contact Person">
     Me
   </div>
-  <div class="chip" ng-click="vm.addData()">
-    <img src="../../assets/images/me.jpeg" alt="Contact Person">
-    Jim
+  <div ng-repeat="right in vm.rights">
+    <div class="chip" ng-click="vm.addData(right)">
+      <img src="../../assets/images/me.jpeg" alt="Contact Person">
+      {{right.name}}
+    </div>
   </div>
-  <div class="chip">
-    <img src="../../assets/images/me.jpeg" alt="Contact Person">
-    Gill
-  </div>
-  <br/><br/>
-
 
 
   <div class="container">

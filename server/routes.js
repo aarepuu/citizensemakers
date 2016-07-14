@@ -10,7 +10,8 @@ import path from 'path';
 export default function(app) {
 
   // Insert routes below
-  app.use('/api/rights', require('./api/right'));
+  app.use('/api/data/hearts', require('./api/heart'));
+  app.use('/api/data/steps', require('./api/step'));
   app.use('/api/token', require('./api/token'));
   app.use('/api/data', require('./api/data'));
   app.use('/api/things', require('./api/thing'));
