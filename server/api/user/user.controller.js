@@ -136,11 +136,23 @@ export function authCallback(req, res, next) {
   res.redirect('/');
 }
 
-export function rights(req, res, next) {
+/**
+ * Set rights for current user to see data
+ *
+ */
+export function setRights(req, res, next) {
+  var userId = req.user._id;
   console.log(req.body);
-
+  return User.findById(userId).exec()
+    .then(user => {
+      user.rights.them = req.body;
+      return user.save()
+        .then(() => {
+          res.status(204).end();
+        })
+        .catch(validationError(res));
+    });
 }
-
 
 /*
 

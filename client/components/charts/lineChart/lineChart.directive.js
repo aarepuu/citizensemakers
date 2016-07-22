@@ -4,7 +4,7 @@ angular.module('charts')
   .directive('lineChart', ['d3Service', function (d3Service) {
     return {
       restrict: 'EA',
-      template: "<svg width='850' height='200'></svg>",
+      template: "<svg width='960' height='500'></svg>",
       scope: {
         data: '=?',
         clicked: '&clicked',
@@ -14,35 +14,55 @@ angular.module('charts')
         d3Service.d3().then(function (d3) {
 
           var padding = 25;
+          var margin = {top: 10, right: 10, bottom: 100, left: 40},
+            margin2 = {top: 430, right: 10, bottom: 20, left: 40},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom,
+            height2 = 500 - margin2.top - margin2.bottom;
           var pathClass = "line";
-          var xScale, yScale, xAxisGen, yAxisGen, line, path, color, zoom;
+          var xScale, xScale2, yScale, yScale2, xAxisGen, xAxisGen2, yAxisGen, line, path, color, zoom, brush, focus, context;
           var users = [];
           var values = [];
 
           var rawSvg = element.find('svg');
           var svg = d3.select(rawSvg[0])
-            .attr("xmlns", "http://www.w3.org/2000/svg");
+            .attr("xmlns", "http://www.w3.org/2000/svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom);
 
           xScale = d3.time.scale()
-            .range([padding + 5, rawSvg.attr("width") - padding]);
-
+            .range([0, width]);
+          xScale2 = d3.time.scale()
+            .range([0, width]);
 
           yScale = d3.scale.linear()
-            .range([rawSvg.attr("height") - padding, 0]);
-
+            .range([height, 0]);
+          yScale2 = d3.scale.linear()
+            .range([height2, 0]);
 
           xAxisGen = d3.svg.axis()
             .scale(xScale)
             .orient("bottom")
-            .tickSize(-(rawSvg.attr("height") - padding), 0)
+            .tickSize(-(width), 0)
             .tickPadding(6);
+
+
+          xAxisGen2 = d3.svg.axis()
+            .scale(xScale2)
+            .orient("bottom")
+            .tickSize(height2, 0);
+          //.tickPadding(6);
 
 
           yAxisGen = d3.svg.axis()
             .scale(yScale)
-            .orient("right")
-            .tickSize(-(rawSvg.attr("width")))
+            .orient("left")
+            .tickSize(-(width))
             .tickPadding(6);
+
+          brush = d3.svg.brush()
+            .x(xScale2)
+            .on("brush", brushed);
 
           color = d3.scale.category10();
           zoom = d3.behavior.zoom()
@@ -57,6 +77,27 @@ angular.module('charts')
               return yScale(d.value);
             })
             .interpolate(scope.interpolate);
+
+          var area = d3.svg.area()
+            .interpolate("monotone")
+            .x(function (d) {
+              return xScale2(d.time);
+            })
+            .y0(height2)
+            .y1(function (d) {
+              return yScale2(d.value);
+            });
+
+
+          focus = svg.append("g")
+            .attr("class", "focus")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          context = svg.append("g")
+            .attr("class", "context")
+            .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+
+
 
           //Render graph based on 'data'
           scope.render = function (data) {
@@ -74,7 +115,7 @@ angular.module('charts')
             users.push(data[data.length - 1].user)
             color.domain(users);
             //values.push(data);
-            console.log(users);
+            //console.log(users);
             values.push(data);
             //console.log(values);
             var datas = color.domain().map(function (user, i) {
@@ -83,7 +124,7 @@ angular.module('charts')
                 values: values[i]
               };
             });
-            console.log(datas);
+            //console.log(datas);
             //Set our scale's domains
             xScale.domain(d3.extent(data, function (d) {
               return d.time;
@@ -101,7 +142,8 @@ angular.module('charts')
                 });
               })
             ]);
-
+            xScale2.domain(xScale.domain());
+            yScale2.domain(yScale.domain());
 
             //Remove the axes so we can draw updated ones
             svg.selectAll('g.axis').remove();
@@ -112,16 +154,17 @@ angular.module('charts')
 
 
             //Render X axis
-            svg.append("g")
+            focus.append("g")
               .attr("class", "x axis")
-              .attr("transform", "translate(0,180)");
+              .attr("transform", "translate(0," + height + ")")
+            //.attr("transform", "translate(0,180)");
             //.call(xAxisGen);
 
 
             //Render Y axis
-            svg.append("g")
+            focus.append("g")
               .attr("class", "y axis")
-              .attr("transform", "translate(20,0)")
+              //.attr("transform", "translate(20,0)")
               //.call(yAxisGen)
               .append("text")
               .attr("transform", "rotate(-90)")
@@ -131,9 +174,7 @@ angular.module('charts')
               .text("Beats per minute");
 
 
-            //console.log(svg.selectAll(".user"))
-
-            var user = svg.selectAll(".user")
+            var user = focus.selectAll(".user")
               .data(datas)
               .enter().append("g")
               .attr("class", "user");
@@ -178,22 +219,45 @@ angular.module('charts')
                 return d.user;
               });
 
-            svg.append("rect")
-              .attr("class", "pane")
-              .attr("width", rawSvg.attr("width") - padding)
-              .attr("height", rawSvg.attr("height") - padding)
-              .call(zoom);
 
             zoom.x(xScale);
             //svg.select("path.line").data([data]);
+
+
+            context.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(0," + height2 + ")")
+            //.attr("transform", "translate(0,180)")
+            //.call(xAxisGen2);
+
+            //add brush
+            context.append("g")
+              .attr("class", "x brush")
+              .call(brush)
+              .selectAll("rect")
+              .attr("y", -6)
+              .attr("height", height2 + 7);
+
+            context.append("path")
+              .data(datas)
+              .attr("class", "area")
+              .attr("d", area);
+
+            focus.append("rect")
+              .attr("class", "pane")
+              .attr("width", width)
+              .attr("height", height)
+              .call(zoom);
+
             draw();
 
 
           };
 
           function draw() {
-            svg.select("g.x.axis").call(xAxisGen);
-            svg.select("g.y.axis").call(yAxisGen);
+            focus.select("g.x.axis").call(xAxisGen);
+            focus.select("g.y.axis").call(yAxisGen);
+            context.select("g.x.axis").call(xAxisGen2);
             //console.log(svg.select("path.line").attr("d"));
             //svg.select("path.line").attr("d", line);
             //console.log(svg.select("path.line"));
@@ -201,16 +265,20 @@ angular.module('charts')
               //console.log(d.values);
               return line(d.values);
             });
-            console.log(svg.selectAll(".user"));
+            var path = svg.selectAll("path.area").attr("d", function (d) {
+              //console.log(d.values);
+              return area(d.values);
+            });
+
             //animations
             /*var totalLength = path.node().getTotalLength();
-            path
-              .attr("stroke-dasharray", totalLength + " " + totalLength)
-              .attr("stroke-dashoffset", totalLength)
-              .transition()
-              .duration(2000)
-              .ease("linear")
-              .attr("stroke-dashoffset", 0);*/
+             path
+             .attr("stroke-dasharray", totalLength + " " + totalLength)
+             .attr("stroke-dashoffset", totalLength)
+             .transition()
+             .duration(2000)
+             .ease("linear")
+             .attr("stroke-dashoffset", 0);*/
           }
 
           d3.select(window)
@@ -220,6 +288,21 @@ angular.module('charts')
             console.log("scrolling");
           }
 
+          function brushed() {
+            //console.log(brush.extent());
+            //xScale.domain(brush.empty() ? xScale.domain() : brush.extent());
+            //svg.select(".path").attr("d", area);
+            //svg.select("g.x.axis").call(xAxisGen);
+            console.log(brush.extent());
+            xScale.domain(brush.empty() ? xScale2.domain() : brush.extent());
+            focus.selectAll("path.line").attr("d", function (d) {
+              //console.log(d.values);
+              return line(d.values);
+            });
+            focus.select("g.x.axis").call(xAxisGen);
+            //draw();
+          }
+
           //Watch 'data' and run scope.render(newVal) whenever it changes
           //Use true for 'objectEquality' property so comparisons are done on equality and not reference
           scope.$watch('data', function (newVal, oldVal) {
@@ -227,6 +310,8 @@ angular.module('charts')
             //if (oldVal.length > 0) {
             //values.concat(oldVal);
             //}
+            //TODO - send only user id when you want to delete it
+
             //reset
             if (newVal === null) {
               users = [];

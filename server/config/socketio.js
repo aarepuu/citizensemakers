@@ -17,6 +17,7 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+  //require('../api/fitbit/fitbit.socket').register(socket);
   require('../api/heart/heart.socket').register(socket);
   require('../api/step/step.socket').register(socket);
   require('../api/token/token.socket').register(socket);

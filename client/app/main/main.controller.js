@@ -42,7 +42,7 @@
 
     connectFitbit() {
       //console.log("COnnect");
-      this.$http.get('/api/token/fitbit').then(response => {
+      this.$http.get('/auth/fitbit').then(response => {
         //this.steps = response.data;
       });
     }

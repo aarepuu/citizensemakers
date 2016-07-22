@@ -41,7 +41,7 @@
 #vis {
   display: inline-block;
   position: fixed;
-  top: 350px;
+  top: 300px;
   z-index: 1;
   margin-left: 0;
   /* height: 600px; */
@@ -169,3 +169,14 @@ Accordion
   position: relative;
 }
 
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
