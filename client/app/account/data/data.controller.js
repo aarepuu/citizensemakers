@@ -118,6 +118,12 @@
         });
     }
 
+    blur(e){
+      console.log(this.getCurrentUser()._id)
+      console.log(e.target.id);
+      console.log(e.target.innerHTML);
+    }
+
   }
 
   angular.module('citizensemakersApp')

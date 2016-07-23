@@ -74,7 +74,7 @@
   <div class="container">
     <div id='graphic'>
       <div id='sections'>
-        <section class="step" class="editable" contenteditable="true">
+        <section  id="step1" class="step" class="editable" ng-blur="vm.blur($event)" contenteditable="true">
           <div class="title">Last night's sleep</div>
           Take a look at your last night's sleep<br/><br/> You can write here and add your own comments
         </section>
@@ -117,7 +117,7 @@
       </div>
       <div id='vis'>
         <div class="row">
-          <div line-chart data="vm.steps" clicked="vm.clicked(args)" interpolate="vm.interpolate"></div>
+          <div simple-line-chart data="vm.steps" clicked="vm.clicked(args)" interpolate="vm.interpolate"></div>
         </div>
       </div>
       <div id="extra-space">

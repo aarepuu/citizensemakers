@@ -1,9 +1,9 @@
 'use strict';
 
-describe('Directive: simpleLineChart', function () {
+describe('Directive: scroll', function () {
 
   // load the directive's module
-  beforeEach(module('charts'));
+  beforeEach(module('citizensemakersApp.scroll'));
 
   var element,
     scope;
@@ -13,8 +13,8 @@ describe('Directive: simpleLineChart', function () {
   }));
 
   it('should make hidden element visible', inject(function ($compile) {
-    element = angular.element('<simple-line-chart></simple-line-chart>');
+    element = angular.element('<scroll></scroll>');
     element = $compile(element)(scope);
-    expect(element.text()).toBe('this is the simpleLineChart directive');
+    expect(element.text()).toBe('this is the scroll directive');
   }));
 });
