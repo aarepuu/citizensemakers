@@ -7,9 +7,6 @@
 
     constructor($http, $scope, Auth, amMoment) {
       this.Auth = Auth;
-      this.getCurrentUser = Auth.getCurrentUser;
-      this.fitbitId = this.getCurrentUser().fitbitId;
-      this.rights = this.getCurrentUser().rights.them;
       this.$scope = $scope;
       this.$http = $http;
       this.startDate = null;
@@ -23,7 +20,7 @@
       this.clear = 'Clear';
       this.close = 'Close';
       this.days = 15;
-      this.steps = null;
+      this.graphData = null;
       this.interpolate = 'linear';
       this.slider = {
         minValue: 10,
@@ -41,7 +38,35 @@
 
       this.barValue = 'None';
       this.currentCalValues = [];
-      //console.log(moment(new Date).hour());
+      this.brushValue = null;
+
+
+
+    }
+
+    //oninit doesn't work on onepage apps
+    init() {
+      this.getCurrentUser = this.Auth.getCurrentUser;
+      this.fitbitId = this.getCurrentUser().fitbitId;
+      this.userId = this.getCurrentUser()._id;
+      //TODO - change the names of right arrays. make it more explicit
+      this.rights = this.getCurrentUser().rights.them;
+
+      //default comment
+      this.defaultcomment = {
+        _id: null,
+        user: this.userId,
+        startData: this.startDate,
+        endDate: this.startDate,
+        html: '<div class="title">Title</div>You can write here and add your own comments',
+        stepId: null,
+        personal: null,
+        users: []
+      };
+      //init comments with default values
+      var self = this;
+      this.sections = Array.apply(null, Array(10)).map(function() { return self.defaultcomment });
+
 
       //TODO - build proper component and only fetch data when query parameters change
       //you can only select data from others which you have
@@ -53,11 +78,12 @@
           this.maxDate = maxM.toISOString();
           this.startDate = moment(maxM).startOf('day');
           this.endDate = maxM;
+          //TODO - use promises
           this.getData();
+          this.getComments(true);
         });
 
 
-      //console.log(this.rights);
     }
 
     hovered(d) {
@@ -76,7 +102,7 @@
       right.end = (moment(this.endDate, "DD/MM/YYYY").unix());
       //console.log("clicked");
       this.$http.post("/api/data/hearts/", right).then(response => {
-        this.steps = response.data;
+        this.graphData = response.data;
       });
     }
 
@@ -97,7 +123,7 @@
       //avoid same queries
       if (this.currentCalValues[0] == this.startDate && this.currentCalValues[1] == this.endDate) return;
       //reset dataset
-      this.steps = null;
+      this.graphData = null;
       //get new data
       this.getData();
     }
@@ -111,17 +137,50 @@
     }
 
     getData() {
-
       this.$http.get('/api/data/hearts/' + this.fitbitId + '/' + (moment(this.startDate, "DD/MM/YYYY").unix()) + '/' + (moment(this.endDate, "DD/MM/YYYY").unix()))
         .then(response => {
-          this.steps = response.data;
+          this.graphData = response.data;
         });
     }
 
-    blur(e){
-      console.log(this.getCurrentUser()._id)
-      console.log(e.target.id);
-      console.log(e.target.innerHTML);
+    blur(e) {
+      //TODO - bound to ng model
+      var data = {};
+      data.user = this.getCurrentUser()._id;
+      data.stepId = e.target.id.substr(e.target.id.indexOf('-')+1);
+      if(this.brushValue){
+        data.startDate = this.brushValue[0];
+        data.endDate = this.brushValue[1];
+      } else {
+        data.startDate = this.startDate.toDate();
+        data.endDate = this.endDate.toDate();
+      }
+
+      data.html = e.target.innerText;
+      data.personal = true;
+      //console.log(e);
+      this.$http.post("/api/comments", data).then(response => {
+        //console.log(response);
+      });
+    }
+
+    getComments(personal) {
+      var data = {};
+      data.user = this.userId;
+      data.startDate = this.startDate.toDate();
+      data.endDate = this.endDate.toDate();
+      data.personal = personal;
+      var self = this;
+      this.$http.post("/api/comments/list", data).then(response => {
+        angular.forEach(response.data, function(value, key) {
+          this[value.stepId-1] = value;
+        }, this.sections);
+      });
+    }
+
+    brushed(args){
+      //console.log(args);
+      this.brushValue = args;
     }
 
   }

@@ -7,7 +7,7 @@ angular.module('charts')
       template: "<svg width='960' height='500'></svg>",
       scope: {
         data: '=?',
-        clicked: '&clicked',
+        brushed: '&brushed',
         interpolate: '=?'
       },
       link: function (scope, element, attrs) {
@@ -216,7 +216,8 @@ angular.module('charts')
           }
 
           function brushed() {
-            console.log(brush.extent());
+            //console.log(brush.extent());
+            scope.brushed({args: brush.extent()});
           }
 
           function filterOut(items, search) {

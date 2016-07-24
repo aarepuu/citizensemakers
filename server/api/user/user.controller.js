@@ -142,7 +142,7 @@ export function authCallback(req, res, next) {
  */
 export function setRights(req, res, next) {
   var userId = req.user._id;
-  console.log(req.body);
+  //console.log(req.body);
   return User.findById(userId).exec()
     .then(user => {
       user.rights.them = req.body;

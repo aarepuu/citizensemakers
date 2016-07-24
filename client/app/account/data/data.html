@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" ng-init="vm.init()">
   <div class="row">
     <label for="inputStart">Start date</label>
     <input input-date
@@ -74,50 +74,13 @@
   <div class="container">
     <div id='graphic'>
       <div id='sections'>
-        <section  id="step1" class="step" class="editable" ng-blur="vm.blur($event)" contenteditable="true">
-          <div class="title">Last night's sleep</div>
-          Take a look at your last night's sleep<br/><br/> You can write here and add your own comments
-        </section>
-        <section class="step" class="editable" contenteditable="true">
-          <div class="title">Morning Exercise</div>
-          I see you did some exercise from <b>6 am </b> to <b> 7 am </b>
-          <br/><br/>
-          Totals
-          8,760 steps 24 floors 6.87 km 3,285 calories
-        </section>
-        <section class="step" class="editable" contenteditable="true">
-          <div class="title">Morning route to work</div>
-          You have specified that this is your normal time to commuting to work.
-        </section>
-        <section class="step" class="editable" contenteditable="true">
-          <div class="title">In the office</div>
-          According to your steps you were sitting down from <b>9 am </b> to <b> 12 pm </b>
-        </section>
-        <section class="step" class="editable" contenteditable="true">
-          <div class="title">Walking to lunch</div>
-          Walked 20 minutes to lunch. Scroll left to see whether somebody was with you.
-        </section>
-        <section class="step" class="editable" contenteditable="true">
-          <div class="title">Fillers Over Time</div>
-          I hoped that all these blunders were toward the beginning of my talk. And the data suggests that fewer fillers
-          are used as I get into it. Perhaps the talk started out rough and improved as I found my groove.
-        </section>
-        <section class="step" class="editable" contenteditable="true">
-          <div class="title">After work commute</div>
-
-        </section>
-        <section class="step" class="editable" contenteditable="true">
-          <div class="title">An odd bit of data</div>
-          Your heart rate is really high. Why might this be?
-        </section>
-        <section class="step" class="editable" contenteditable="true">
-          <div class="title">Relaxed again</div>
-          There is an overview of your day.
+        <section ng-repeat="section in vm.sections track by $index" ng-model="section" id="step-{{$index+1}}" class="step" class="editable" ng-blur="vm.blur($event)" contenteditable="true">
+          <p ng-model="section.html" ng-bind-html="section.html"></p>
         </section>
       </div>
       <div id='vis'>
         <div class="row">
-          <div simple-line-chart data="vm.steps" clicked="vm.clicked(args)" interpolate="vm.interpolate"></div>
+          <div simple-line-chart data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate"></div>
         </div>
       </div>
       <div id="extra-space">
