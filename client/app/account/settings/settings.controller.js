@@ -64,14 +64,16 @@ class SettingsController {
     console.log(this.rights);
   }
   //Get rights for specific user
-  getRights(user, name) {
+  getRights(userId, fitbitId, name) {
     //console.log(user);
-    var userinfo = this.$filter('filter')(this.rights, {user: user})[0];
+    var userinfo = this.$filter('filter')(this.rights, {userId: userId})[0];
     if (userinfo) {
       return userinfo;
     }
-    var defaultrights = this.defaultrights;
-    defaultrights.user = user;
+    //TODO - look over this cloning
+    var defaultrights = JSON.parse(JSON.stringify(this.defaultrights));
+    defaultrights.userId = userId;
+    defaultrights.fitbitId = fitbitId;
     defaultrights.name = name;
     this.rights.push(defaultrights);
     return defaultrights;
@@ -80,7 +82,7 @@ class SettingsController {
     console.log(user);
     console.log(this.rights);
     this.$http.post("/api/users/rights", this.rights).then(response => {
-      console.log("BACK");
+      console.log("Rights set");
     });
 
   }

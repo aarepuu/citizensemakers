@@ -140,7 +140,7 @@ export function getDataByDate(req, res) {
 export function limitData(req, res) {
   var days = (req.body.week) ? (req.body.weekend) ? 7 : 5 : 0;
   return Heart.find({
-    "user": req.body.user,
+    "user": req.body.fitbitId,
     "time": {$gte: req.body.start, $lte: req.body.end},
     $or: [
       {$and: [{"day": {$lte: 5}}, {"hour": {$gte: req.body.weektime[0], $lte: req.body.weektime[1]}}]},

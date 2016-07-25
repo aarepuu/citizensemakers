@@ -85,7 +85,7 @@
     initSections(){
       //init comments with default values
       var self = this;
-      this.sections = Array.apply(null, Array(10)).map(function() { return self.defaultcomment });
+      this.sections = Array.apply(null, Array(10)).map(function() { return JSON.parse(JSON.stringify(self.defaultcomment)) });
     }
 
     hovered(d) {
@@ -99,12 +99,13 @@
     }
 
     addData(right) {
-      console.log(right.user);
+      console.log(right.userId);
+      this.populateUsers(right.userId);
       //add dates
       right.start = (moment(this.startDate, "DD/MM/YYYY").unix());
       right.end = (moment(this.endDate, "DD/MM/YYYY").unix());
       //console.log("clicked");
-      this.$http.post("/api/data/hearts/", right).then(response => {
+      this.$http.post("/api/data/hearts", right).then(response => {
         this.graphData = response.data;
       });
     }
@@ -176,6 +177,9 @@
       data.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
       data.endDate = (moment(this.endDate, "DD/MM/YYYY")).toDate();
       data.personal = personal;
+      if(!personal)
+        data.users = this.users;
+      console.log(this.users);
       var self = this;
       this.$http.post("/api/comments/list", data).then(response => {
         self.initSections();
@@ -195,6 +199,16 @@
       console.log(this.rights[0]);
       if(step !=0)
       this.addData(this.rights[0]);
+    }
+
+    populateUsers(userId){
+      var index = this.users.indexOf(userId);
+      if (index == -1) {
+        this.users.push(userId);
+      }
+      else {
+        this.users.splice(index, 1);
+      }
     }
 
   }

@@ -68,7 +68,7 @@
 <div class="container">
   <ul class="collapsible" data-collapsible="accordion">
     <li class="list-group-item avatar" ng-repeat="user in vm.users">
-      <div class="collapsible-header" ng-init="rights=vm.getRights(user.fitbitId, user.name)"><img
+      <div class="collapsible-header" ng-init="rights=vm.getRights(user._id, user.fitbitId, user.name)"><img
         src="../../assets/images/me.jpeg" alt=""
         class="circle"><strong>{{user.name}}</strong>
         <p> Sharing data with {{user.name}} during weekdays from {{rights.weektime[0]}} am to {{rights.weektime[1]}}
