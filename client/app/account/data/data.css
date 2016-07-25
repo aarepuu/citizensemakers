@@ -1,6 +1,7 @@
 
 .container {
-  width: 890px;
+  width: 80%;
+  max-width: inherit;
 }
 
 #graphic {
@@ -15,6 +16,16 @@
   top: 0px;
   z-index: 90;
   padding-bottom: 200px;
+}
+#sections2 {
+  position: relative;
+  display: inline-block;
+  float:right;
+  width: 250px;
+  top: 0px;
+  z-index: 90;
+  padding-bottom: 200px;
+  visibility: hidden;
 }
 
 .step {
@@ -38,16 +49,7 @@
   height: 300px;
 }
 
-#vis {
-  display: inline-block;
-  position: fixed;
-  top: 300px;
-  z-index: 1;
-  margin-left: 0;
-  /* height: 600px; */
-  /* width: 600px; */
-  /* background-color: #ddd; */
-}
+
 
 #vis .title {
   font-size:120px;
@@ -64,6 +66,7 @@
   fill: none;
   stroke: #666;
   shape-rendering: crispEdges;
+  stroke-linecap: round;
 }
 
 .highlight {
@@ -88,13 +91,6 @@
   color: #dd2c00;
   margin: 10px 0 0 25px; }
 
-
-.axis path,
-.axis line{
-  fill: none;
-  stroke:black;
-  shape-rendering:crispEdge;
-}
 
 .axis text{
   font-family: sans-serif;
@@ -175,8 +171,47 @@ Accordion
   shape-rendering: crispEdges;
 }
 
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
+
+#container, #container2{
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+#sections, #sections2{
+  width: 340px;
+  float: left;
+}
+
+#sections > section, #sections2 > section{
+  background: white;
+  opacity: .2;
+
+}
+
+
+#sections > section:focus, #sections2 > section:focus{
+  outline: none;
+}
+
+#sections > section.graph-scroll-active, #sections2 > section.graph-scroll-active{
+  opacity: 1;
+}
+
+
+#graph, #graph2{
+  float: left;
+  margin-left: 40px;
+}
+
+#graph.graph-scroll-fixed, #graph2.graph-scroll-fixed{
+  position: fixed;
+  top: 0px;
+  margin-left: 380px;
+}
+
+#graph.graph-scroll-below, #graph2.graph-scroll-below {
+  position: absolute;
+  bottom: 0px;
+  margin-left: 380px;
 }

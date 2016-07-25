@@ -13,6 +13,7 @@ export default function(app) {
   app.use('/api/comments', require('./api/comment'));
   app.use('/api/data/hearts', require('./api/heart'));
   app.use('/api/data/steps', require('./api/step'));
+  app.use('/api/data/sleeps', require('./api/sleep'));
   app.use('/api/token', require('./api/token'));
   app.use('/api/data', require('./api/data'));
   app.use('/api/things', require('./api/thing'));

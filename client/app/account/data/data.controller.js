@@ -21,7 +21,7 @@
       this.close = 'Close';
       this.days = 15;
       this.graphData = null;
-      this.interpolate = 'linear';
+      this.interpolate = 'monotone';
       this.slider = {
         minValue: 10,
         maxValue: 90,
@@ -39,8 +39,7 @@
       this.barValue = 'None';
       this.currentCalValues = [];
       this.brushValue = null;
-
-
+      this.users = [];
 
     }
 
@@ -63,10 +62,7 @@
         personal: null,
         users: []
       };
-      //init comments with default values
-      var self = this;
-      this.sections = Array.apply(null, Array(10)).map(function() { return self.defaultcomment });
-
+      this.initSections();
 
       //TODO - build proper component and only fetch data when query parameters change
       //you can only select data from others which you have
@@ -86,6 +82,12 @@
 
     }
 
+    initSections(){
+      //init comments with default values
+      var self = this;
+      this.sections = Array.apply(null, Array(10)).map(function() { return self.defaultcomment });
+    }
+
     hovered(d) {
       //this.barValue = d;
       //this.$scope.$apply();
@@ -97,6 +99,7 @@
     }
 
     addData(right) {
+      console.log(right.user);
       //add dates
       right.start = (moment(this.startDate, "DD/MM/YYYY").unix());
       right.end = (moment(this.endDate, "DD/MM/YYYY").unix());
@@ -126,6 +129,7 @@
       this.graphData = null;
       //get new data
       this.getData();
+      this.getComments(true);
     }
 
     onSet() {
@@ -143,8 +147,8 @@
         });
     }
 
-    blur(e) {
-      //TODO - bound to ng model
+    blur(e, personal) {
+      //TODO - bind to ng-model
       var data = {};
       data.user = this.getCurrentUser()._id;
       data.stepId = e.target.id.substr(e.target.id.indexOf('-')+1);
@@ -152,12 +156,14 @@
         data.startDate = this.brushValue[0];
         data.endDate = this.brushValue[1];
       } else {
-        data.startDate = this.startDate.toDate();
-        data.endDate = this.endDate.toDate();
+        data.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
+        data.endDate = (moment(this.endDate, "DD/MM/YYYY")).toDate();
       }
 
       data.html = e.target.innerText;
-      data.personal = true;
+      data.personal = personal;
+      if(!personal)
+        data.users = this.users;
       //console.log(e);
       this.$http.post("/api/comments", data).then(response => {
         //console.log(response);
@@ -167,20 +173,28 @@
     getComments(personal) {
       var data = {};
       data.user = this.userId;
-      data.startDate = this.startDate.toDate();
-      data.endDate = this.endDate.toDate();
+      data.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
+      data.endDate = (moment(this.endDate, "DD/MM/YYYY")).toDate();
       data.personal = personal;
       var self = this;
       this.$http.post("/api/comments/list", data).then(response => {
+        self.initSections();
         angular.forEach(response.data, function(value, key) {
           this[value.stepId-1] = value;
         }, this.sections);
+
       });
     }
 
     brushed(args){
       //console.log(args);
       this.brushValue = args;
+    }
+    active(step){
+      console.log(step);
+      console.log(this.rights[0]);
+      if(step !=0)
+      this.addData(this.rights[0]);
     }
 
   }

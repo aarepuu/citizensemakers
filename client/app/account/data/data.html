@@ -59,32 +59,35 @@
     />
   </div>
 
-  <div class="chip">
-    <img src="../../assets/images/me.jpeg" alt="Contact Person">
-    Me
-  </div>
-  <div ng-repeat="right in vm.rights">
-    <div class="chip" ng-click="vm.addData(right)">
+  <div class="row">
+    <div class="chip">
       <img src="../../assets/images/me.jpeg" alt="Contact Person">
-      {{right.name}}
+      Me
+    </div>
+    <div ng-repeat="right in vm.rights">
+      <div class="chip" ng-click="vm.addData(right)">
+        <img src="../../assets/images/me.jpeg" alt="Contact Person">
+        {{right.name}}
+      </div>
     </div>
   </div>
 
 
-  <div class="container">
-    <div id='graphic'>
-      <div id='sections'>
-        <section ng-repeat="section in vm.sections track by $index" ng-model="section" id="step-{{$index+1}}" class="step" class="editable" ng-blur="vm.blur($event)" contenteditable="true">
-          <p ng-model="section.html" ng-bind-html="section.html"></p>
-        </section>
-      </div>
-      <div id='vis'>
-        <div class="row">
-          <div simple-line-chart data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate"></div>
-        </div>
-      </div>
-      <div id="extra-space">
+  <div id='container'>
+    <div graph-scroll id='sections' active="vm.active(args)">
+      <section ng-repeat="section in vm.sections track by $index" ng-model="section" id="step-{{$index+1}}"
+               class="step" class="editable" ng-blur="vm.blur($event,true)" contenteditable="true">
+        <!--<p ng-model="section.html" ng-bind-html="section.html"></p>-->
+        <p ng-model="section.html" ng-bind-html="section.html"></p>
+      </section>
+    </div>
+    <div id='vis'>
+      <div class="row">
+        <div id="graph" simple-line-chart data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate"></div>
       </div>
     </div>
+    <div id="extra-space">
+    </div>
   </div>
+
 </div>

@@ -281,12 +281,12 @@ angular.module('charts')
              .attr("stroke-dashoffset", 0);*/
           }
 
-          d3.select(window)
+          /*d3.select(window)
             .on("scroll.scroller", log);
 
           function log() {
             console.log("scrolling");
-          }
+          }*/
 
           function brushed() {
             //console.log(brush.extent());
