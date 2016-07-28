@@ -1,6 +1,6 @@
 
 .container {
-  width: 80%;
+  width: 90%;
   max-width: inherit;
 }
 
@@ -9,24 +9,6 @@
 }
 
 
-#sections {
-  position: relative;
-  display: inline-block;
-  width: 250px;
-  top: 0px;
-  z-index: 90;
-  padding-bottom: 200px;
-}
-#sections2 {
-  position: relative;
-  display: inline-block;
-  float:right;
-  width: 250px;
-  top: 0px;
-  z-index: 90;
-  padding-bottom: 200px;
-  visibility: hidden;
-}
 
 .step {
   margin-bottom: 200px;
@@ -178,15 +160,30 @@ Accordion
   overflow: hidden;
 }
 
-#sections, #sections2{
+
+#sections {
+  position: relative;
+  display: inline-block;
   width: 340px;
   float: left;
+  top: 0px;
+  z-index: 90;
+  padding-bottom: 200px;
+}
+#sections2 {
+  position: relative;
+  display: inline-block;
+  width: 340px;
+  float: right;
+  top: 0px;
+  z-index: 90;
+  padding-bottom: 200px;
 }
 
 #sections > section, #sections2 > section{
   background: white;
   opacity: .2;
-
+  pointer-events: none;
 }
 
 
@@ -196,6 +193,7 @@ Accordion
 
 #sections > section.graph-scroll-active, #sections2 > section.graph-scroll-active{
   opacity: 1;
+  pointer-events: auto;
 }
 
 

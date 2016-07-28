@@ -32,14 +32,7 @@ angular.module('citizensemakersApp')
             }
           }
         });
-
-        /*element[0].noUiSlider.on('change', function (values, input) {
-         scope.ngModel = values;
-         scope.$apply();
-         });*/
-
         element[0].noUiSlider.on('change', function (values, input) {
-          //console.log(i)
           //Write values to model
           scope.ngModel = values;
           scope.$apply();

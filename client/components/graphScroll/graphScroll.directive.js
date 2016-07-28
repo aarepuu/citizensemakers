@@ -26,17 +26,17 @@ angular.module('citizensemakersApp')
               isFixed = null,
               isBelow = null,
               container = d3.select('body'),
-              /*
-              dispatch = d3.dispatch("scroll", "active"),
-              sections = element.find('section'),
-              i = NaN,
-              sectionPos = [],
-              n,
-              graph = d3.select('#simpleline'),
-              isFixed = null,
-              isBelow = null,
-              container = element,
-              */
+            /*
+             dispatch = d3.dispatch("scroll", "active"),
+             sections = element.find('section'),
+             i = NaN,
+             sectionPos = [],
+             n,
+             graph = d3.select('#simpleline'),
+             isFixed = null,
+             isBelow = null,
+             container = element,
+             */
               containerStart = 0,
               belowStart,
               eventId = Math.random();
@@ -45,73 +45,72 @@ angular.module('citizensemakersApp')
             //console.log(container);
 
             function reposition() {
-              var i1 = 0
+              var i1 = 0;
               sectionPos.forEach(function (d, i) {
                 if (d < pageYOffset - containerStart + 200) i1 = i
-              })
-              i1 = Math.min(n - 1, i1)
+              });
+              i1 = Math.min(n - 1, i1);
               if (i != i1) {
                 sections.classed('graph-scroll-active', function (d, i) {
                   return i === i1
-                })
+                });
 
-                dispatch.active(i1)
+                dispatch.active(i1);
 
                 i = i1
               }
 
-              var isBelow1 = pageYOffset > belowStart
+              var isBelow1 = pageYOffset > belowStart;
               if (isBelow != isBelow1) {
-                isBelow = isBelow1
+                isBelow = isBelow1;
                 graph.classed('graph-scroll-below', isBelow)
               }
-              var isFixed1 = !isBelow && pageYOffset > containerStart
+              var isFixed1 = !isBelow && pageYOffset > containerStart;
               if (isFixed != isFixed1) {
-                isFixed = isFixed1
+                isFixed = isFixed1;
                 graph.classed('graph-scroll-fixed', isFixed)
               }
             }
 
             function resize() {
-              sectionPos = []
-              var startPos
+              sectionPos = [];
+              var startPos;
               sections.each(function (d, i) {
-                if (!i) startPos = this.getBoundingClientRect().top
+                if (!i) startPos = this.getBoundingClientRect().top;
                 sectionPos.push(this.getBoundingClientRect().top - startPos)
               })
 
-              var containerBB = container.node().getBoundingClientRect()
-              var graphBB = graph.node().getBoundingClientRect()
+              var containerBB = container.node().getBoundingClientRect();
+              var graphBB = graph.node().getBoundingClientRect();
 
-              containerStart = containerBB.top + pageYOffset
-              belowStart = containerBB.bottom - graphBB.height + pageYOffset
+              containerStart = containerBB.top + pageYOffset;
+              belowStart = containerBB.bottom - graphBB.height + pageYOffset;
             }
 
             function keydown() {
-              if (!isFixed) return
-              var delta
+              if (!isFixed) return;
+              var delta;
               switch (d3.event.keyCode) {
                 case 39: // right arrow
-                  if (d3.event.metaKey) return
+                  if (d3.event.metaKey) return;
                 case 40: // down arrow
                 case 34: // page down
                   delta = d3.event.metaKey ? Infinity : 1;
-                  break
+                  break;
                 case 37: // left arrow
-                  if (d3.event.metaKey) return
+                  if (d3.event.metaKey) return;
                 case 38: // up arrow
                 case 33: // page up
                   delta = d3.event.metaKey ? -Infinity : -1;
-                  break
-                case 32: // space
-                  delta = d3.event.shiftKey ? -1 : 1
-                  ;
-                  break
+                  break;
+                /*case 32: // space
+                  delta = d3.event.shiftKey ? -1 : 1;
+                  break;*/
                 default:
                   return
               }
 
-              var i1 = Math.max(0, Math.min(i + delta, n - 1))
+              var i1 = Math.max(0, Math.min(i + delta, n - 1));
               d3.select(document.documentElement)
                 .interrupt()
                 .transition()
@@ -130,58 +129,61 @@ angular.module('citizensemakersApp')
             var rv = {}
 
             rv.container = function (_x) {
-              if (!_x) return container
+              if (!_x) return container;
 
-              container = _x
-              return rv
+              container = _x;
+              return rv;
             }
 
             rv.graph = function (_x) {
-              if (!_x) return graph
+              if (!_x) return graph;
 
-              graph = _x
-              return rv
+              graph = _x;
+              return rv;
             }
 
             rv.eventId = function (_x) {
-              if (!_x) return eventId
+              if (!_x) return eventId;
 
-              eventId = _x
-              return rv
+              eventId = _x;
+              return rv;
             }
 
             rv.sections = function (_x) {
-              if (!_x) return sections
+              if (!_x) return sections;
 
-              sections = _x
-              n = sections.size()
+              sections = _x;
+              n = sections.size();
 
               d3.select($window)
                 .on('scroll.gscroll' + eventId, reposition)
                 .on('resize.gscroll' + eventId, resize)
-                .on('keydown.gscroll' + eventId, keydown)
+                .on('keydown.gscroll' + eventId, keydown);
 
               resize();
               d3.timer(function () {
-                reposition()
-                return true
-              })
+                reposition();
+                return true;
+              });
 
-              return rv
-            }
+              return rv;
+            };
 
-            d3.rebind(rv, dispatch, "on")
+            d3.rebind(rv, dispatch, "on");
 
 
-            return rv
+            return rv;
 
           }
+
           //TODO - not a good way, make dynamic
+          //console.log([element.find('section')]);
+          console.log(d3.selectAll('#sections > section'));
           var gs = graphScroll()
             .container(d3.select('#container'))
             .graph(d3.selectAll('#graph'))
             .sections(d3.selectAll('#sections > section'))
-            .on('active', function(i){
+            .on('active', function (i) {
               //console.log(d);
               //console.log(i);
               scope.active({args: i});

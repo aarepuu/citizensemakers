@@ -39,7 +39,9 @@
       this.barValue = 'None';
       this.currentCalValues = [];
       this.brushValue = null;
-      this.users = [];
+      this.users = ["5785fa1b4269303f1b89596d"];
+      this.personalSections = [];
+      this.sections = [];
 
     }
 
@@ -53,11 +55,10 @@
 
       //default comment
       this.defaultcomment = {
-        _id: null,
         user: this.userId,
-        startData: this.startDate,
+        startDate: this.startDate,
         endDate: this.startDate,
-        html: '<div class="title">Title</div>You can write here and add your own comments',
+        text: '',
         stepId: null,
         personal: null,
         users: []
@@ -76,7 +77,8 @@
           this.endDate = maxM;
           //TODO - use promises
           this.getData();
-          this.getComments(true);
+          this.getPersonalComments();
+          this.getComments();
         });
 
 
@@ -85,7 +87,7 @@
     initSections(){
       //init comments with default values
       var self = this;
-      this.sections = Array.apply(null, Array(10)).map(function() { return JSON.parse(JSON.stringify(self.defaultcomment)) });
+      this.personalSections = Array.apply(null, Array(10)).map(function() { return JSON.parse(JSON.stringify(self.defaultcomment)) });
     }
 
     hovered(d) {
@@ -99,7 +101,6 @@
     }
 
     addData(right) {
-      console.log(right.userId);
       this.populateUsers(right.userId);
       //add dates
       right.start = (moment(this.startDate, "DD/MM/YYYY").unix());
@@ -131,6 +132,7 @@
       //get new data
       this.getData();
       this.getComments(true);
+      this.getComments(false);
     }
 
     onSet() {
@@ -148,45 +150,59 @@
         });
     }
 
-    blur(e, personal) {
+    blur(e,section,personal) {
       //TODO - bind to ng-model
-      var data = {};
-      data.user = this.getCurrentUser()._id;
-      data.stepId = e.target.id.substr(e.target.id.indexOf('-')+1);
-      if(this.brushValue){
-        data.startDate = this.brushValue[0];
-        data.endDate = this.brushValue[1];
-      } else {
-        data.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
-        data.endDate = (moment(this.endDate, "DD/MM/YYYY")).toDate();
+      console.log(section);
+      //return;
+      if(!section.stepId){
+        section.stepId = e.target.id.substr(e.target.id.indexOf('-')+1);
+        if(this.brushValue){
+          section.startDate = this.brushValue[0];
+          section.endDate = this.brushValue[1];
+        } else {
+          section.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
+          section.endDate = (moment(this.endDate, "DD/MM/YYYY")).toDate();
+        }
+        section.personal = personal;
+        if(!personal)
+          section.users = this.users;
       }
-
-      data.html = e.target.innerText;
-      data.personal = personal;
-      if(!personal)
-        data.users = this.users;
-      //console.log(e);
-      this.$http.post("/api/comments", data).then(response => {
-        //console.log(response);
+      this.$http.post("/api/comments", section).then(response => {
+        section = response.data;
       });
     }
 
-    getComments(personal) {
+    getPersonalComments() {
       var data = {};
       data.user = this.userId;
       data.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
       data.endDate = (moment(this.endDate, "DD/MM/YYYY")).toDate();
-      data.personal = personal;
-      if(!personal)
-        data.users = this.users;
-      console.log(this.users);
+      data.personal = true;
       var self = this;
       this.$http.post("/api/comments/list", data).then(response => {
         self.initSections();
         angular.forEach(response.data, function(value, key) {
           this[value.stepId-1] = value;
-        }, this.sections);
+        }, this.personalSections);
+      });
+    }
 
+    getComments() {
+      var data = {};
+      data.user = this.userId;
+      data.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
+      data.endDate = (moment(this.endDate, "DD/MM/YYYY")).toDate();
+      data.personal = false;
+      data.users = this.users;
+      var self = this;
+      this.$http.post("/api/comments/list", data).then(response => {
+        //self.initSections();
+        //var userinfo = this.$filter('filter')(this.rights, {userId: userId})[0];
+        this.sections = Array.apply(null, Array(10)).map(function() { return [] });
+        angular.forEach(response.data, function(value, key) {
+          this[value.stepId-1].push(value);
+        }, this.sections);
+        //this.sections = response.data;
       });
     }
 
@@ -195,8 +211,8 @@
       this.brushValue = args;
     }
     active(step){
-      console.log(step);
-      console.log(this.rights[0]);
+      //console.log(step);
+      //console.log(this.rights[0]);
       if(step !=0)
       this.addData(this.rights[0]);
     }

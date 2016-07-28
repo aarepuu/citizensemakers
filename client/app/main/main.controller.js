@@ -10,6 +10,7 @@
       this.isLoggedIn = Auth.isLoggedIn;
       this.isConnected = Auth.isConnected;
       this.awesomeThings = [];
+      this.currentuser = Auth.getCurrentUser()._id;
       $scope.$on('$destroy', function () {
         socket.unsyncUpdates('thing');
       });
@@ -42,7 +43,7 @@
 
     connectFitbit() {
       //console.log("COnnect");
-      this.$http.get('/auth/fitbit').then(response => {
+      this.$http.get('/token/fitbit').then(response => {
         //this.steps = response.data;
       });
     }

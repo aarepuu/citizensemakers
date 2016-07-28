@@ -108,7 +108,8 @@ export function getCommentsByDate(req, res) {
     return Comment.find({
       user: req.body.user,
       startDate: req.body.startDate,
-      endDate: req.body.endDate
+      endDate: req.body.endDate,
+      personal: req.body.personal
     }, '-users').sort({step: 1}).exec()
       .then(respondWithResult(res))
       .catch(handleError(res));
@@ -117,7 +118,8 @@ export function getCommentsByDate(req, res) {
       user: req.body.user,
       startDate: req.body.startDate,
       endDate: req.body.endDate,
-      users: req.body.users
+      users: req.body.users,
+      personal: req.body.personal
     }).sort({step: 1}).exec()
       .then(respondWithResult(res))
       .catch(handleError(res));
@@ -126,7 +128,7 @@ export function getCommentsByDate(req, res) {
 }
 
 export function createOrUpdate(req, res) {
-  console.log(req.body);
+  //console.log(req.body);
   var query = {
       user: req.body.user,
       stepId: req.body.stepId,

@@ -14,12 +14,12 @@ var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
-router.use(cookieParser());
-router.use(bodyParser());
+//router.use(cookieParser());
+//router.use(bodyParser());
 
-router.use(session({ secret: 'keyboard cat' }));
+//router.use(session({ secret: 'keyboard cat' }));
 
-router.use(passport.initialize());
+//router.use(passport.initialize());
 
 passport.use(new FitbitStrategy({
     clientID: config.fitbit.creds.clientID,
@@ -59,8 +59,9 @@ router.get('/',fitbitAuthenticate);
 router.get('/callback', fitbitAuthenticate);
 
 router.get('/success',function(req, res, next) {
-  console.log("success")
-  res.redirect('req.user');
+  console.log("success");
+  //console.log(req.session.passport.user);
+  res.redirect('/');
 });
 
 router.get('/failure', function(req, res, next) {
