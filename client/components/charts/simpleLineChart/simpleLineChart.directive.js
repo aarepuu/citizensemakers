@@ -197,6 +197,9 @@ angular.module('charts')
               //console.log(d.values);
               return line(d.values);
             });
+            brush.extent(xScale.domain());
+            brush(d3.select(".brush").transition());
+            brush.event(d3.select(".brush").transition().delay(1000))
             //animations
             /*var totalLength = path.node().getTotalLength();
              path
@@ -209,11 +212,11 @@ angular.module('charts')
           }
 
           /*d3.select(window)
-            .on("scroll.scroller", log);
+           .on("scroll.scroller", log);
 
-          function log() {
-            console.log("scrolling");
-          }*/
+           function log() {
+           console.log("scrolling");
+           }*/
 
           function brushed() {
             //console.log(brush.extent());

@@ -3,13 +3,15 @@
 angular.module('citizensemakersApp')
   .directive('graphScroll', ['$window', 'd3Service', function ($window, d3Service) {
     return {
+      restrict: 'E',
       template: '',
-      restrict: 'EA',
+      transclude: true,
       scope: {
+        data: '=?',
         active: '&active',
         scroll: '&scroll'
       },
-      link: function (scope, element, attrs) {
+      controller: function ($scope) {
         d3Service.d3().then(function (d3) {
 
           function graphScroll() {
@@ -104,8 +106,8 @@ angular.module('citizensemakersApp')
                   delta = d3.event.metaKey ? -Infinity : -1;
                   break;
                 /*case 32: // space
-                  delta = d3.event.shiftKey ? -1 : 1;
-                  break;*/
+                 delta = d3.event.shiftKey ? -1 : 1;
+                 break;*/
                 default:
                   return
               }
@@ -176,21 +178,65 @@ angular.module('citizensemakersApp')
 
           }
 
-          //TODO - not a good way, make dynamic
-          //console.log([element.find('section')]);
+          //TODO - not a good way, make dynamic;
           console.log(d3.selectAll('#sections > section'));
-          var gs = graphScroll()
+
+          graphScroll()
             .container(d3.select('#container'))
             .graph(d3.selectAll('#graph'))
             .sections(d3.selectAll('#sections > section'))
             .on('active', function (i) {
               //console.log(d);
               //console.log(i);
-              scope.active({args: i});
+              $scope.active({args: i});
             });
 
 
         });
+      }
+    };
+  }])
+  .directive('graph', ['$window', 'd3Service', function ($window, d3Service) {
+    return {
+      templateUrl: '<div id="chart" class="chart"></div>',
+      restrict: 'E',
+      require: '^graphScroll',
+      transclude: true,
+      scope: {
+        data: '=?'
+      },
+      link: function (scope, element, attrs, graphCtrl) {
+        d3Service.d3().then(function (d3) {
+          var margin = {top: 10, right: 40, bottom: 40, left: 0},
+            width = 890 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+          /*
+
+           var svg = d3.select(this).append("svg")
+           .attr("width", width + margin.left + margin.right)
+           .attr("height", height + margin.top + margin.bottom)
+           .append("g")
+           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+           var x = d3.time.scale()
+           .rangeRound([0, width]);
+
+           var y = d3.scale.linear()
+           .rangeRound([height, 0]);
+
+           var xAxis = d3.svg.axis()
+           //.tickValues(["1944","2015"])
+           .scale(x)
+           .orient("bottom");
+
+           var yAxis = d3.svg.axis()
+           .scale(y)
+           .orient("right")
+           .tickFormat(d3.format(".2s"));
+           */
+        });
+
       }
     };
   }]);

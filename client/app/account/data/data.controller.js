@@ -32,12 +32,8 @@
         }
       };
 
-      this.options = {width: 500, height: 300, 'bar': 'aaa'};
 
-      this.data = [1, 2, 3, 4];
-
-      this.barValue = 'None';
-      this.currentCalValues = [];
+      this.currentCalValues = null;
       this.brushValue = null;
       this.users = ["5785fa1b4269303f1b89596d"];
       this.personalSections = [];
@@ -57,7 +53,7 @@
       this.defaultcomment = {
         user: this.userId,
         startDate: this.startDate,
-        endDate: this.startDate,
+        endDate: this.endDate,
         text: '',
         stepId: null,
         personal: null,
@@ -104,8 +100,7 @@
       this.populateUsers(right.userId);
       //add dates
       right.start = (moment(this.startDate, "DD/MM/YYYY").unix());
-      right.end = (moment(this.endDate, "DD/MM/YYYY").unix());
-      //console.log("clicked");
+      right.end = (moment(this.startDate, "DD/MM/YYYY").endOf('day').unix());
       this.$http.post("/api/data/hearts", right).then(response => {
         this.graphData = response.data;
       });
@@ -119,14 +114,15 @@
 
     onOpen(d) {
       //console.log('onOpen');
-      this.currentCalValues[0] = this.startDate;
-      this.currentCalValues[1] = this.endDate;
+      this.currentCalValue = this.startDate;
     }
 
     onClose() {
       //TODO - there is better way, server side maybe
+      console.log(moment(this.startDate, "DD/MM/YYYY").unix());
+      console.log(moment(this.startDate, "DD/MM/YYYY").endOf('day').unix());
       //avoid same queries
-      if (this.currentCalValues[0] == this.startDate && this.currentCalValues[1] == this.endDate) return;
+      if (this.currentCalValue == this.startDate) return;
       //reset dataset
       this.graphData = null;
       //get new data
@@ -144,7 +140,7 @@
     }
 
     getData() {
-      this.$http.get('/api/data/hearts/' + this.fitbitId + '/' + (moment(this.startDate, "DD/MM/YYYY").unix()) + '/' + (moment(this.endDate, "DD/MM/YYYY").unix()))
+      this.$http.get('/api/data/hearts/' + this.fitbitId + '/' + (moment(this.startDate, "DD/MM/YYYY").unix()) + '/' + (moment(this.startDate, "DD/MM/YYYY").endOf('day').unix()))
         .then(response => {
           this.graphData = response.data;
         });
@@ -161,7 +157,7 @@
           section.endDate = this.brushValue[1];
         } else {
           section.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
-          section.endDate = (moment(this.endDate, "DD/MM/YYYY")).toDate();
+          section.endDate = (moment(this.startDate, "DD/MM/YYYY")).endOf('day').toDate();
         }
         section.personal = personal;
         if(!personal)
@@ -176,7 +172,7 @@
       var data = {};
       data.user = this.userId;
       data.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
-      data.endDate = (moment(this.endDate, "DD/MM/YYYY")).toDate();
+      data.endDate = (moment(this.startDate, "DD/MM/YYYY")).endOf('day').toDate();
       data.personal = true;
       var self = this;
       this.$http.post("/api/comments/list", data).then(response => {
@@ -191,7 +187,7 @@
       var data = {};
       data.user = this.userId;
       data.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
-      data.endDate = (moment(this.endDate, "DD/MM/YYYY")).toDate();
+      data.endDate = (moment(this.endDate, "DD/MM/YYYY")).endOf('day').toDate();
       data.personal = false;
       data.users = this.users;
       var self = this;

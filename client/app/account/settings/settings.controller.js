@@ -79,8 +79,8 @@ class SettingsController {
     return defaultrights;
   }
   setRights(user){
-    console.log(user);
-    console.log(this.rights);
+    //console.log(user);
+    //console.log(this.rights);
     this.$http.post("/api/users/rights", this.rights).then(response => {
       console.log("Rights set");
     });
