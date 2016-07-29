@@ -4,13 +4,15 @@
       <br><br>
       <h1 class="header center teal-text text-lighten-2">Citizense Makers</h1>
       <div class="row center">
-        <h5 class="header col s12 light">Reclaim your data! </h5>
+        <h5 ng-show="main.showFitbit()" class="header col s12 light">Reclaim your data! </h5>
+        <h5 ng-hide="main.showFitbit()" class="header col s12 light">Start exploring! </h5>
       </div>
 
-      <div class="row center">
+      <div ng-model="main.currentuser" class="row center">
         <a ng-hide="main.isLoggedIn()" ui-sref="login" id="login-button" class="btn-large waves-effect waves-light teal lighten-1">Get Started</a>
-        <a href="http://localhost:9000/auth/fitbit?user={{main.currentuser}}"  target="_self" id="fitbit-button" class="btn-large waves-effect waves-light teal lighten-1">Connect with Your Fitbit</a>
-        <a href="http://localhost:9000/api/token/fitbit?user={{main.currentuser}}"  target="_self" id="fitbit-button2" class="btn-large waves-effect waves-light teal lighten-1">Connect with Your Fitbit Own</a>
+        <a ng-hide="main.showFitbit()" ui-sref="data" id="data-button" class="btn-large waves-effect waves-light teal lighten-1">To the Data</a>
+        <!--<a href="http://localhost:9000/auth/fitbit?user={{main.currentuser}}"  target="_self" id="fitbit-button" class="btn-large waves-effect waves-light teal lighten-1">Connect with Your Fitbit</a>-->
+        <a ng-show="main.showFitbit()" href="http://localhost:9000/api/token/fitbit?user={{main.currentuser}}"  target="_self" id="fitbit-button2" class="btn-large waves-effect waves-light teal lighten-1">Connect with Your Fitbit Own</a>
       </div>
       <br><br>
 

@@ -3,15 +3,15 @@
 import config from '../config/environment';
 import Fitbit from 'fitbit-oauth2'
 import Token from '../api/token/token.model';
+import User from '../api/user/user.model';
 
+var fitbit = new Fitbit(config.fitbit, persistToken);
+var currentUser;
 
 function persistToken(token, cb) {
   Token.create(token);
   cb();
 }
-
-
-var fitbit = new Fitbit(config.fitbit, persistToken);
 
 
 /**
@@ -22,7 +22,7 @@ export function redirectFitbit(req, res) {
   //if (!req.user) {
   //return res.status(404).send('It looks like you aren\'t logged in, please try again.');
   //}
-  console.log(req.query.user);
+  currentUser = req.query.user;
   res.redirect(fitbit.authorizeURL());
 }
 
@@ -36,6 +36,18 @@ export function fitbitCallback(req, res, next) {
   var code = req.query.code;
   fitbit.fetchToken(code, function (err, token) {
     if (err) return next(err);
-    res.redirect('/');
+    //console.log(token.user_id);
+    var userId = currentUser;
+    //console.log(req.body);
+    return User.findById(userId).exec()
+      .then(user => {
+        user.fitbitId = token.user_id;
+        return user.save()
+          .then(() => {
+            //res.status(204).end();
+            res.redirect('/');
+          })
+          .catch(validationError(res));
+      });
   });
 }

@@ -28,10 +28,10 @@ angular.module('charts')
             .attr("height", height + margin.top + margin.bottom);
 
           xScale = d3.time.scale()
-            .range([0, width]);
+            .rangeRound([0, width]);
 
           yScale = d3.scale.linear()
-            .range([height, 0]);
+            .rangeRound([height, 0]);
 
 
           xAxisGen = d3.svg.axis()
@@ -242,7 +242,7 @@ angular.module('charts')
             //values.concat(oldVal);
             //}
             //TODO - send only user id when you want to delete it
-            //reset
+            //reset after date switch
             if (newVal === null) {
               users = [];
               datas = [];

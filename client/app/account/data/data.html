@@ -34,65 +34,65 @@
       <img src="../../assets/images/me.jpeg" alt="Contact Person">
       Me
     </div>
-    <div ng-repeat="right in vm.rights">
+    <div ng-model="vm.rights" ng-repeat="right in vm.rights">
       <div class="chip" ng-click="vm.addData(right)">
         <img src="../../assets/images/me.jpeg" alt="Contact Person">
         {{right.name}}
       </div>
     </div>
   </div>
-
-<graph-scroll></graph-scroll>
   <div id='container'>
-      <div id='sections' active="vm.active(args)">
-        <section ng-repeat="section in vm.personalSections track by $index" ng-model="section" id="step-{{$index+1}}"
-                 class="step" class="editable">
-          <!--<p ng-model="section.html" ng-bind-html="section.html"></p>-->
-          <input placeholder="Write your comments here!" ng-model="section.text" id="comment-{{$index+1}}" type="text"
-                 ng-blur="vm.blur($event, section, true)">
-          <!--<div class="row">
-            <form class="col s12">
-              <div class="row">
-                <div class="input-field col s12">
-                  <textarea id="textarea-{{$index+1}}" class="materialize-textarea" ng-model="section.text"
-                            ng-blur="vm.blur($event, section, true)" ng-bind-html="section.text"></textarea>
-                  <label for=textarea-{{$index+1}}>Write your comment here</label>
-                </div>
+    <div id='sections'>
+      <section ng-repeat="section in vm.personalSections track by $index" ng-model="section" id="step-{{$index+1}}"
+               class="step" class="editable">
+        <!--<p ng-model="section.html" ng-bind-html="section.html"></p>-->
+        <input placeholder="Write your comments here!" ng-model="section.text" id="comment-{{$index+1}}" type="text"
+               ng-blur="vm.blur($event, section, true)">
+        <!--<div class="row">
+          <form class="col s12">
+            <div class="row">
+              <div class="input-field col s12">
+                <textarea id="textarea-{{$index+1}}" class="materialize-textarea" ng-model="section.text"
+                          ng-blur="vm.blur($event, section, true)" ng-bind-html="section.text"></textarea>
+                <label for=textarea-{{$index+1}}>Write your comment here</label>
               </div>
-            </form>
-          </div>-->
-        </section>
-      </div>
-      <div id='sections2' active="vm.active(args)">
-        <section ng-repeat="(key, value) in vm.sections" class="step">
-          <input placeholder="Join the discussion!" type="text">
-          <!--<p ng-mod
-    "section.html" ng-bind-html="section.html"></p>-->
-          <div class="col s12 m8 offset-m2 l6 offset-l3" ng-repeat="section in value">
-            <div class="card-panel grey lighten-5 z-depth-1">
-              <div class="row valign-wrapper">
-                <div class="col s2">
-                  <img src="../../assets/images/me.jpeg" alt="" class="circle responsive-img">
-                </div>
-                <div class="col s10">
+            </div>
+          </form>
+        </div>-->
+      </section>
+    </div>
+    <div id='sections2' ng-model="vm.sections" active="vm.active(args)">
+      <section ng-repeat="(key, value) in vm.sections" class="step">
+        <input placeholder="Join the discussion!" ng-model="vm.comment" type="text">
+        <!--<p ng-mod
+  "section.html" ng-bind-html="section.html"></p>-->
+        <div class="col s12 m8 offset-m2 l6 offset-l3" ng-repeat="section in value">
+          <div class="card-panel grey lighten-5 z-depth-1">
+            <div class="row valign-wrapper">
+              <div class="col s2">
+                <img src="../../assets/images/me.jpeg" alt="" class="circle responsive-img">
+              </div>
+              <div class="col s10">
               <span class="black-text">
                 {{section.text}}
                 {{section.startDate}} - {{section.endDate}}
               </span>
-                </div>
               </div>
             </div>
           </div>
-        </section>
-      </div>
-
-    <div id='vis'>
-      <div class="row">
-        <div id="graph" simple-line-chart data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate">
         </div>
-      </div>
+      </section>
     </div>
-    <div id="extra-space">
-    </div>
+
+    <!--<div id="graph" simple-line-chart data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate">-->
+    <graph-scroll active="vm.active(args)">
+      <graph id="graph" data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate">
+      </graph>
+    </graph-scroll>
+
   </div>
+  <div id="extra-space">
+  </div>
+
+</div>
 </div>

@@ -20,6 +20,10 @@ var UserSchema = new Schema({
     type: String,
     default: ''
   },
+  lastSync: {
+    type: Date,
+    default: null
+  },
   password: {
     type: String,
     required: true
