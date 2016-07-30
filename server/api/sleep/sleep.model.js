@@ -3,9 +3,11 @@
 import mongoose from 'mongoose';
 
 var SleepSchema = new mongoose.Schema({
-  name: String,
-  info: String,
-  active: Boolean
+  user: String,
+  time: Number,
+  day: Number,
+  hour: Number,
+  value: Number
 });
 
 export default mongoose.model('Sleep', SleepSchema);

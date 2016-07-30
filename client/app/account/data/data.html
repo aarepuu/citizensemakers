@@ -63,7 +63,7 @@
     </div>
     <div id='sections2' ng-model="vm.sections" active="vm.active(args)">
       <section ng-repeat="(key, value) in vm.sections" class="step">
-        <input placeholder="Join the discussion!" ng-model="vm.comment" type="text">
+        <input placeholder="Join the discussion!" ng-model="vm.value" type="text">
         <!--<p ng-mod
   "section.html" ng-bind-html="section.html"></p>-->
         <div class="col s12 m8 offset-m2 l6 offset-l3" ng-repeat="section in value">
@@ -84,7 +84,7 @@
       </section>
     </div>
 
-    <!--<div id="graph" simple-line-chart data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate">-->
+    <!--<div id="graph1" simple-line-chart data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate"></div>-->
     <graph-scroll active="vm.active(args)">
       <graph id="graph" data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate">
       </graph>

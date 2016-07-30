@@ -40,17 +40,15 @@
       this.sections = [];
 
 
-
       this.getCurrentUser = this.Auth.getCurrentUser();
       var self = this;
       //to get rid of racing conditions
       this.$scope.$watch("vm.getCurrentUser.rights", function (val) {
-        console.log(val);
         if (typeof val != 'undefined') {
           self.fitbitId = self.getCurrentUser.fitbitId;
           self.userId = self.getCurrentUser._id;
           //TODO - change the names of right arrays. make it more explicit
-          self.rights = self.getCurrentUser.rights.them;
+          self.rights = self.getCurrentUser.rights.you;
           //default comment
           self.defaultcomment = {
             user: self.userId,
@@ -75,7 +73,7 @@
 
       //TODO - build proper component and only fetch data when query parameters change
       //you can only select data from others which you have
-      this.$http.get('/api/data/hearts/' + this.fitbitId + '/minmax')
+      this.$http.get('/api/data/sleeps/' + this.fitbitId + '/minmax')
         .then(response => {
           var minM = moment.unix(response.data[0].min);
           var maxM = moment.unix(response.data[0].max);
@@ -156,6 +154,15 @@
       this.$http.get('/api/data/hearts/' + this.fitbitId + '/' + (moment(this.startDate, "DD/MM/YYYY").unix()) + '/' + (moment(this.startDate, "DD/MM/YYYY").endOf('day').unix()))
         .then(response => {
           this.graphData = response.data;
+        });
+      console.log(moment(this.startDate, "DD/MM/YYYY").toDate()+' '+moment(this.startDate, "DD/MM/YYYY").endOf('day').toDate());
+      this.$http.get('/api/data/sleeps/' + this.fitbitId + '/' + (moment(this.startDate, "DD/MM/YYYY").unix()) + '/' + (moment(this.startDate, "DD/MM/YYYY").endOf('day').unix()))
+        .then(response => {
+          //this.graphData = response.data;
+        });
+      this.$http.get('/api/data/steps/' + this.fitbitId + '/' + (moment(this.startDate, "DD/MM/YYYY").unix()) + '/' + (moment(this.startDate, "DD/MM/YYYY").endOf('day').unix()))
+        .then(response => {
+          //this.graphData = response.data;
         });
     }
 

@@ -5,6 +5,16 @@ import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
 import {Schema} from 'mongoose';
 
+var RightSchema = new Schema({
+    weekendtime: {type: Array, "default": [0, 23]},
+    weektime: {type: Array, "default": [0, 23]},
+    weekend: {type: Boolean, "default": false},
+    week: {type: Boolean, "default": false},
+    userId: String,
+    fitbitId: String,
+    name: String
+  })
+  ;
 var UserSchema = new Schema({
   name: String,
   email: {
@@ -31,8 +41,8 @@ var UserSchema = new Schema({
   provider: String,
   salt: String,
   rights: {
-    you: {type: Array, "default": []},
-    them: {type: Array, "default": []}
+    you: [RightSchema],
+    them: [RightSchema]
   }
 });
 

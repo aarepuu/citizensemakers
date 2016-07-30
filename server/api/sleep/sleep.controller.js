@@ -100,3 +100,50 @@ export function destroy(req, res) {
     .then(removeEntity(res))
     .catch(handleError(res));
 }
+
+// get max and min value of data
+export function getMinMax(req, res) {
+  return Sleep.aggregate([{$match: {"user": req.params.user}}, {
+    $group: {
+      "_id": "$user",
+      "min": {$first: "$time"},
+      "max": {$last: "$time"}
+    }
+  }]).exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
+
+// get all data for one user
+export function getData(req, res) {
+  return Sleep.find({"user": req.params.user}).exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
+// get data limited with start end date
+export function getDataByDate(req, res) {
+  console.log(req.params);
+  return Sleep.find({
+    "user": req.params.user,
+    "time": {$gte: req.params.start, $lte: req.params.end}
+  }, '-day -hour').sort({time: 1}).exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
+
+// get allowed data from user
+export function limitData(req, res) {
+  var days = (req.body.week) ? (req.body.weekend) ? 7 : 5 : 0;
+  return Sleep.find({
+    "user": req.body.fitbitId,
+    "time": {$gte: req.body.start, $lte: req.body.end},
+    $or: [
+      {$and: [{"day": {$lte: 5}}, {"hour": {$gte: req.body.weektime[0], $lte: req.body.weektime[1]}}]},
+      {$and: [{"day": {$gt: 5}}, {"hour": {$gte: req.body.weekendtime[0], $lte: req.body.weekendtime[1]}}]}]
+  }, '-day -hour').sort({time: 1}).exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}

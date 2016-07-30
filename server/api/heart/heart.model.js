@@ -6,7 +6,7 @@ var HeartSchema = new mongoose.Schema({
   user: String,
   time: Number,
   day: Number,
-  Hour: Number,
+  hour: Number,
   value: Number
 });
 

@@ -142,10 +142,41 @@ export function authCallback(req, res, next) {
  */
 export function setRights(req, res, next) {
   var userId = req.user._id;
-  //console.log(req.body);
+  //console.log(userId);
   return User.findById(userId).exec()
     .then(user => {
-      user.rights.them = req.body;
+        user.rights.them = req.body;
+        //user.rights.you.find(x=> x.userId === '5785f9c2ccd489331b6b57b7');
+        return user.save()
+          .then(() => {
+            res.status(204).end();
+          })
+          .catch(validationError(res));
+      }
+    );
+}
+//{'rights.them.userId': '5785f9c2ccd489331b6b57b7'}, {'$set': {'rights.them.$.week': true}}
+export function setOneRight(req, res, next) {
+  var me = JSON.parse(JSON.stringify(req.user._id));
+  var userId = JSON.parse(JSON.stringify(req.body.userId));
+  req.body.userId = me;
+  req.body.name = req.user.name;
+  req.body.fitbitId = req.user.fitbitId;
+
+  return User.findById(userId).exec()
+    .then(user => {
+      //user.rights.you = req.body;
+      //user.rights.you.find(x=> x.userId === userId) = req.body;
+      //console.log(user.rights.you);
+      var elementPos = user.rights.you.map(function (x) {
+        return x.userId;
+      }).indexOf(me);
+      if (elementPos < 0) {
+        user.rights.you.push(req.body)
+      } else {
+        user.rights.you[elementPos] = req.body;
+      }
+      //console.log(user.rights);
       return user.save()
         .then(() => {
           res.status(204).end();
@@ -157,6 +188,11 @@ export function setRights(req, res, next) {
 
 /*
 
+
+ User.update({'items.id': 2}, {'$set': {
+ 'items.$.name': 'updated item2',
+ 'items.$.value': 'two updated'
+ }}, function(err) {
 
  var query = {},
  update = { expire: new Date() },
