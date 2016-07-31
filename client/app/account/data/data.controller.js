@@ -60,7 +60,7 @@
             users: []
           };
 
-          self.getMyData();
+          self.init();
         }
       });
 
@@ -68,7 +68,7 @@
     }
 
 
-    getMyData() {
+    init() {
       this.initSections();
 
       //TODO - build proper component and only fetch data when query parameters change
@@ -155,7 +155,7 @@
         .then(response => {
           this.graphData = response.data;
         });
-      console.log(moment(this.startDate, "DD/MM/YYYY").toDate()+' '+moment(this.startDate, "DD/MM/YYYY").endOf('day').toDate());
+      //console.log(moment(this.startDate, "DD/MM/YYYY").toDate()+' '+moment(this.startDate, "DD/MM/YYYY").endOf('day').toDate());
       this.$http.get('/api/data/sleeps/' + this.fitbitId + '/' + (moment(this.startDate, "DD/MM/YYYY").unix()) + '/' + (moment(this.startDate, "DD/MM/YYYY").endOf('day').unix()))
         .then(response => {
           //this.graphData = response.data;
@@ -220,7 +220,7 @@
         angular.forEach(response.data, function (value, key) {
           this[value.stepId - 1].push(value);
         }, this.sections);
-        //this.sections = response.data;
+        this.ready = true;
       });
     }
 

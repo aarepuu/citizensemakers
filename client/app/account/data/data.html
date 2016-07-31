@@ -1,4 +1,4 @@
-<div class="container" ng-init="vm.init()">
+<div class="container">
   <div class="row">
     <label for="dateSelect">Select date</label>
     <input input-date
@@ -41,10 +41,11 @@
       </div>
     </div>
   </div>
-  <div id='container'>
-    <div id='sections'>
-      <section ng-repeat="section in vm.personalSections track by $index" ng-model="section" id="step-{{$index+1}}"
-               class="step" class="editable">
+  <div id="container">
+    <div id="sections" class="sections">
+      <section class="section" ng-repeat="section in vm.personalSections track by $index" ng-model="section"
+               id="step-{{$index+1}}"
+               class="step">
         <!--<p ng-model="section.html" ng-bind-html="section.html"></p>-->
         <input placeholder="Write your comments here!" ng-model="section.text" id="comment-{{$index+1}}" type="text"
                ng-blur="vm.blur($event, section, true)">
@@ -61,12 +62,12 @@
         </div>-->
       </section>
     </div>
-    <div id='sections2' ng-model="vm.sections" active="vm.active(args)">
-      <section ng-repeat="(key, value) in vm.sections" class="step">
-        <input placeholder="Join the discussion!" ng-model="vm.value" type="text">
-        <!--<p ng-mod
-  "section.html" ng-bind-html="section.html"></p>-->
-        <div class="col s12 m8 offset-m2 l6 offset-l3" ng-repeat="section in value">
+    <div id="sections2" class="sections">
+      <section class="section" ng-repeat="(key, value) in vm.sections track by $index" ng-model="value"
+               id="steps-{{$index+1}}"
+               class="step">
+        <input placeholder="Join the discussion!" type="text" id="comments-{{$index+1}}">
+        <!--<div class="col s12 m8 offset-m2 l6 offset-l3" ng-repeat="section in value">
           <div class="card-panel grey lighten-5 z-depth-1">
             <div class="row valign-wrapper">
               <div class="col s2">
@@ -80,19 +81,19 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
       </section>
     </div>
 
     <!--<div id="graph1" simple-line-chart data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate"></div>-->
-    <graph-scroll active="vm.active(args)">
+    <graph-scroll ready="vm.ready" active="vm.active(args)">
       <graph id="graph" data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate">
       </graph>
     </graph-scroll>
+    <div id="extra-space">
+    </div>
+  </div>
 
-  </div>
-  <div id="extra-space">
-  </div>
 
 </div>
 </div>

@@ -6,6 +6,7 @@ angular.module('citizensemakersApp')
       restrict: 'E',
       transclude: true,
       scope: {
+        ready: '=?',
         active: '&active',
         scroll: '&scroll'
       },
@@ -20,7 +21,8 @@ angular.module('citizensemakersApp')
 
             var windowHeight,
               dispatch = d3.dispatch("scroll", "active"),
-              sections = d3.select('null'),
+              leftsections = d3.select('null'),
+              rightsections = d3.select('null'),
               i = NaN,
               sectionPos = [],
               n,
@@ -28,21 +30,9 @@ angular.module('citizensemakersApp')
               isFixed = null,
               isBelow = null,
               container = d3.select('body'),
-            /*
-             dispatch = d3.dispatch("scroll", "active"),
-             sections = element.find('section'),
-             i = NaN,
-             sectionPos = [],
-             n,
-             graph = d3.select('#simpleline'),
-             isFixed = null,
-             isBelow = null,
-             container = element,
-             */
               containerStart = 0,
               belowStart,
               eventId = Math.random();
-
             //console.log(sections);
             //console.log(container);
 
@@ -53,10 +43,12 @@ angular.module('citizensemakersApp')
               });
               i1 = Math.min(n - 1, i1);
               if (i != i1) {
-                sections.classed('graph-scroll-active', function (d, i) {
+                leftsections.classed('graph-scroll-active', function (d, i) {
                   return i === i1
                 });
-
+                rightsections.classed('graph-scroll-active', function (d, i) {
+                  return i === i1
+                });
                 dispatch.active(i1);
 
                 i = i1
@@ -77,10 +69,11 @@ angular.module('citizensemakersApp')
             function resize() {
               sectionPos = [];
               var startPos;
-              sections.each(function (d, i) {
+              leftsections.each(function (d, i) {
                 if (!i) startPos = this.getBoundingClientRect().top;
                 sectionPos.push(this.getBoundingClientRect().top - startPos)
-              })
+              });
+
 
               var containerBB = container.node().getBoundingClientRect();
               var graphBB = graph.node().getBoundingClientRect();
@@ -92,6 +85,7 @@ angular.module('citizensemakersApp')
             function keydown() {
               if (!isFixed) return;
               var delta;
+              console.log(d3.event.keyCode);
               switch (d3.event.keyCode) {
                 case 39: // right arrow
                   if (d3.event.metaKey) return;
@@ -151,11 +145,11 @@ angular.module('citizensemakersApp')
               return rv;
             }
 
-            rv.sections = function (_x) {
-              if (!_x) return sections;
+            rv.leftsections = function (_x) {
+              if (!_x) return leftsections;
 
-              sections = _x;
-              n = sections.size();
+              leftsections = _x;
+              n = leftsections.size();
 
               d3.select($window)
                 .on('scroll.gscroll' + eventId, reposition)
@@ -167,6 +161,14 @@ angular.module('citizensemakersApp')
                 reposition();
                 return true;
               });
+
+              return rv;
+            };
+
+            rv.rightsections = function (_x) {
+              if (!_x) return rightsections;
+
+              rightsections = _x;
 
               return rv;
             };
@@ -191,16 +193,23 @@ angular.module('citizensemakersApp')
             //console.log(updateFunctions);
 
           };
+
           //TODO - not a good way, make dynamic;
-          graphScroll()
-            .container(d3.select('#container'))
-            .graph(d3.selectAll('#graph'))
-            .sections(d3.selectAll('#sections > section'))
-            .on('active', function (i) {
-              //console.log(d);
-              //console.log(i);
-              //$scope.active({args: i});
-            });
+          //console.log(d3.selectAll('#sections2')[0]);
+          $scope.$watch('ready', function (val) {
+            if(!val) return;
+            //console.log(d3.selectAll('#sections2 > section'));
+            graphScroll()
+              .container(d3.select('#container'))
+              .graph(d3.selectAll('#graph'))
+              .rightsections(d3.selectAll('#sections2 > section'))
+              .leftsections(d3.selectAll('#sections > section'))
+              .on('active', function (i) {
+                //console.log(d);
+                //console.log(i);
+                //$scope.active({args: i});
+              });
+          });
 
 
         });

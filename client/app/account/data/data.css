@@ -28,7 +28,7 @@
 }
 
 #extra-space {
-  height: 300px;
+  height: 600px;
 }
 
 
@@ -205,11 +205,10 @@ Accordion
 #graph.graph-scroll-fixed, #graph2.graph-scroll-fixed{
   position: fixed;
   top: 0px;
-
 }
 
 #graph.graph-scroll-below, #graph2.graph-scroll-below {
   position: absolute;
   bottom: 0px;
-
 }
+
