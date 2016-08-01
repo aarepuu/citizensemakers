@@ -20,7 +20,7 @@
       this.clear = 'Clear';
       this.close = 'Close';
       this.days = 15;
-      this.graphData = null;
+      this.graphData = [];
       this.interpolate = 'monotone';
       this.slider = {
         minValue: 10,
@@ -38,6 +38,7 @@
       this.users = ["5785fa1b4269303f1b89596d"];
       this.personalSections = [];
       this.sections = [];
+      this.currentComment = '';
 
 
       this.getCurrentUser = this.Auth.getCurrentUser();
@@ -73,7 +74,7 @@
 
       //TODO - build proper component and only fetch data when query parameters change
       //you can only select data from others which you have
-      this.$http.get('/api/data/sleeps/' + this.fitbitId + '/minmax')
+      this.$http.get('/api/data/hearts/' + this.fitbitId + '/minmax')
         .then(response => {
           var minM = moment.unix(response.data[0].min);
           var maxM = moment.unix(response.data[0].max);
@@ -92,7 +93,7 @@
     initSections() {
       //init comments with default values
       var self = this;
-      this.personalSections = Array.apply(null, Array(10)).map(function () {
+      this.personalSections = Array.apply(null, Array(6)).map(function () {
         return JSON.parse(JSON.stringify(self.defaultcomment))
       });
     }
@@ -113,7 +114,7 @@
       right.start = (moment(this.startDate, "DD/MM/YYYY").unix());
       right.end = (moment(this.startDate, "DD/MM/YYYY").endOf('day').unix());
       this.$http.post("/api/data/hearts", right).then(response => {
-        this.graphData = response.data;
+        this.graphData[0] = response.data;
       });
     }
 
@@ -135,7 +136,7 @@
       //avoid same queries
       if (this.currentCalValue == this.startDate) return;
       //reset dataset
-      this.graphData = null;
+      this.graphData = [];
       //get new data
       this.getData();
       this.getComments();
@@ -153,22 +154,22 @@
     getData() {
       this.$http.get('/api/data/hearts/' + this.fitbitId + '/' + (moment(this.startDate, "DD/MM/YYYY").unix()) + '/' + (moment(this.startDate, "DD/MM/YYYY").endOf('day').unix()))
         .then(response => {
-          this.graphData = response.data;
+          this.graphData[0] = response.data;
         });
       //console.log(moment(this.startDate, "DD/MM/YYYY").toDate()+' '+moment(this.startDate, "DD/MM/YYYY").endOf('day').toDate());
       this.$http.get('/api/data/sleeps/' + this.fitbitId + '/' + (moment(this.startDate, "DD/MM/YYYY").unix()) + '/' + (moment(this.startDate, "DD/MM/YYYY").endOf('day').unix()))
         .then(response => {
-          //this.graphData = response.data;
+          this.graphData[1] = response.data;
         });
       this.$http.get('/api/data/steps/' + this.fitbitId + '/' + (moment(this.startDate, "DD/MM/YYYY").unix()) + '/' + (moment(this.startDate, "DD/MM/YYYY").endOf('day').unix()))
         .then(response => {
-          //this.graphData = response.data;
+          this.graphData[2] = response.data;
         });
     }
 
-    blur(e, section, personal) {
+    personalComment(e, section) {
       //TODO - bind to ng-model
-      console.log(section);
+      //console.log(section);
       //return;
       if (!section.stepId) {
         section.stepId = e.target.id.substr(e.target.id.indexOf('-') + 1);
@@ -183,6 +184,30 @@
         if (!personal)
           section.users = this.users;
       }
+      this.$http.post("/api/comments", section).then(response => {
+        section = response.data;
+      });
+    }
+
+    comment(e, values) {
+      if(!this.currentComment) return;
+      var section = {};
+      section.text = this.currentComment;
+      section.user = this.userId;
+      this.currentComment = '';
+      section.stepId = e.target.id.substr(e.target.id.indexOf('-') + 1);
+      if (this.brushValue) {
+        section.startDate = this.brushValue[0];
+        section.endDate = this.brushValue[1];
+      } else {
+        section.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
+        section.endDate = (moment(this.startDate, "DD/MM/YYYY")).endOf('day').toDate();
+      }
+      section.personal = false;
+      section.users = this.users;
+
+      values.unshift(section);
+
       this.$http.post("/api/comments", section).then(response => {
         section = response.data;
       });
@@ -214,7 +239,7 @@
       this.$http.post("/api/comments/list", data).then(response => {
         //self.initSections();
         //var userinfo = this.$filter('filter')(this.rights, {userId: userId})[0];
-        this.sections = Array.apply(null, Array(10)).map(function () {
+        this.sections = Array.apply(null, Array(6)).map(function () {
           return []
         });
         angular.forEach(response.data, function (value, key) {

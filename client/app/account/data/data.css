@@ -28,7 +28,7 @@
 }
 
 #extra-space {
-  height: 600px;
+  height: 200px;
 }
 
 
@@ -47,8 +47,6 @@
 .axis line {
   fill: none;
   stroke: #666;
-  shape-rendering: crispEdges;
-  stroke-linecap: round;
 }
 
 .highlight {
@@ -99,10 +97,10 @@ svg {
 
 .axis path, .axis line {
   fill: none;
-  stroke-width: .5px;
+  stroke-width: 1px;
 }
 
-.x.axis path {
+.x.axis path, .axis line {
   stroke: #000;
 }
 
@@ -118,7 +116,7 @@ svg {
 path.line {
   fill: none;
   stroke: #009688;
-  stroke-width: .5px;
+  stroke-width: 1.5px;
 }
 
 rect.pane {
@@ -181,6 +179,7 @@ Accordion
 }
 
 #sections > section, #sections2 > section{
+  padding-bottom: 450px;
   background: white;
   opacity: .2;
   pointer-events: none;
@@ -199,7 +198,6 @@ Accordion
 
 #graph, #graph2{
   float: left;
-  margin-left: 40px;
 }
 
 #graph.graph-scroll-fixed, #graph2.graph-scroll-fixed{

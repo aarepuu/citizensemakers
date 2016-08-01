@@ -17,7 +17,10 @@
     }
 
     showFitbit() {
-      return this.isLoggedIn() ? this.isConnected() ? false : true : false;
+      return this.isLoggedIn() ? (this.isConnected() ? false : true) : false;
+    }
+    showData() {
+      return this.isLoggedIn() ? (this.isConnected() ? true : false) : false;
     }
 
     /*$onInit() {

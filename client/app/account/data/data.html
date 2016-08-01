@@ -29,7 +29,7 @@
            on-stop="vm.onStop()"
     />
   </div>
-  <div class="row">
+  <div id="people" class="row">
     <div class="chip">
       <img src="../../assets/images/me.jpeg" alt="Contact Person">
       Me
@@ -48,7 +48,7 @@
                class="step">
         <!--<p ng-model="section.html" ng-bind-html="section.html"></p>-->
         <input placeholder="Write your comments here!" ng-model="section.text" id="comment-{{$index+1}}" type="text"
-               ng-blur="vm.blur($event, section, true)">
+               ng-blur="vm.personalComment($event, section)">
         <!--<div class="row">
           <form class="col s12">
             <div class="row">
@@ -66,8 +66,8 @@
       <section class="section" ng-repeat="(key, value) in vm.sections track by $index" ng-model="value"
                id="steps-{{$index+1}}"
                class="step">
-        <input placeholder="Join the discussion!" type="text" id="comments-{{$index+1}}">
-        <!--<div class="col s12 m8 offset-m2 l6 offset-l3" ng-repeat="section in value">
+        <input placeholder="Join the discussion!" ng-model="vm.currentComment" type="text" id="comments-{{$index+1}}" ng-keyup="$event.keyCode == 13 && vm.comment($event, value)" ng-blur="vm.comment($event, value)">
+        <div class="col s12 m8 offset-m2 l6 offset-l3" ng-repeat="section in value">
           <div class="card-panel grey lighten-5 z-depth-1">
             <div class="row valign-wrapper">
               <div class="col s2">
@@ -81,7 +81,7 @@
               </div>
             </div>
           </div>
-        </div>-->
+        </div>
       </section>
     </div>
 

@@ -146,6 +146,7 @@ angular.module('charts')
             yScale2.domain(yScale.domain());
 
             //Remove the axes so we can draw updated ones
+            //TODO - make this into a function
             svg.selectAll('g.axis').remove();
             svg.selectAll('path').remove();
             svg.selectAll('text').remove();
