@@ -596,6 +596,8 @@ angular.module('citizensemakersApp')
              .style("opacity", 1);
              */
 
+            // remove data befofre rendering
+            content.selectAll(".steps").remove();
 
             var steps = content.selectAll(".steps")
               .data(stepsData)

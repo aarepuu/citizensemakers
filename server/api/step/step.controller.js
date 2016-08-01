@@ -137,7 +137,7 @@ export function getDataByDate(req, res) {
 // get allowed data from specific user
 export function limitData(req, res) {
   var days = (req.body.week) ? (req.body.weekend) ? 7 : 5 : 0;
-  return Heart.find({
+  return Step.find({
     "user": req.body.fitbitId,
     "time": {$gte: req.body.start, $lte: req.body.end},
     $or: [

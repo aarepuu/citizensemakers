@@ -116,6 +116,12 @@
       this.$http.post("/api/data/hearts", right).then(response => {
         this.graphData[0] = response.data;
       });
+      this.$http.post("/api/data/sleeps", right).then(response => {
+        this.graphData[1] = response.data;
+      });
+      this.$http.post("/api/data/steps", right).then(response => {
+        this.graphData[2] = response.data;
+      });
     }
 
 
