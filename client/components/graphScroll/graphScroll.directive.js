@@ -252,7 +252,14 @@ angular.module('citizensemakersApp')
       },
       link: function (scope, element, attrs, graphCtrl) {
         d3Service.d3().then(function (d3) {
-          var xScale, yScale, xAxisGen, yAxisGen, color, brush, content, sleepScale, stepsXScale, stepsYScale, x1, heartsXScale, heartsYScale;
+          var xScale, yScale, xAxisGen, yAxisGen, color, brush, content, x1;
+
+          var sleepScale = null;
+          var stepsXScale = null;
+          var stepsYScale = null;
+          var heartsXScale = null;
+          var heartsYScale = null;
+
           //TODO - really bad solution
           var users1 = [];
           var users2 = [];
@@ -406,6 +413,8 @@ angular.module('citizensemakersApp')
              svg.selectAll(".sleep").remove();
              */
 
+            d3.select('#people > svg').remove();
+
             //Legend for all the charts
             //TODO - make it stuck and make it into a menu
             var legend = d3.select('#people').append('svg').append("g")
@@ -460,6 +469,7 @@ angular.module('citizensemakersApp')
               })
               .style("opacity", 1);
 
+            content.selectAll('.brush').remove();
 
             //add brush
             content.append("g")
@@ -696,7 +706,6 @@ angular.module('citizensemakersApp')
               .style("opacity", 0);
 
 
-
             console.log(hr);
             //add functions
             graphCtrl.addGraph(drawHearts, 2);
@@ -744,19 +753,21 @@ angular.module('citizensemakersApp')
               })
               .interpolate('step-after');
 
+
             var path = d3.selectAll("path.sleep").attr("d", function (d) {
               //console.log(d.values);
               return line(d.values);
             });
-            var totalLength = path.node().getTotalLength();
-            path
-              .attr("stroke-dasharray", totalLength + " " + totalLength)
-              .attr("stroke-dashoffset", totalLength)
-              .transition()
-              .duration(2000)
-              .ease("linear")
-              .attr("stroke-dashoffset", 0).style("opacity", 1);
-
+            if (path.node() != null) {
+              var totalLength = path.node().getTotalLength();
+              path
+                .attr("stroke-dasharray", totalLength + " " + totalLength)
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(2000)
+                .ease("linear")
+                .attr("stroke-dashoffset", 0).style("opacity", 1);
+            }
 
             var stepsPath = d3.selectAll("path.steps");
             if (stepsPath.node() != null) {
@@ -810,7 +821,7 @@ angular.module('citizensemakersApp')
 
 
             var sleepsPath = d3.selectAll("path.sleep");
-            if (stepsPath.node() != null) {
+            if (sleepsPath.node() != null) {
               var totalLength = sleepsPath.node().getTotalLength();
               sleepsPath
                 .transition()
@@ -946,7 +957,7 @@ angular.module('citizensemakersApp')
             //reset after date switch
             if (newVal === [] || typeof newVal === 'undefined') {
               users3 = [];
-              sleepData = [];
+              heartsData = [];
             } else {
               if (newVal.length > 0) {
                 //console.log(newVal);
@@ -993,9 +1004,12 @@ angular.module('citizensemakersApp')
             }
 
           });
+          //init all functions
+          //graphCtrl.addGraph(drawSleep, 0);
+          //graphCtrl.addGraph(drawSteps, 1);
+          //graphCtrl.addGraph(drawHearts, 2);
 
-
-          scope.$watchCollection('data', function (newVal, oldVal){
+          scope.$watchCollection('data', function (newVal, oldVal) {
             //console.log(newVal);
           });
 
