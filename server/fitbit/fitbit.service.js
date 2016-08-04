@@ -33,7 +33,9 @@ export function redirectFitbit(req, res) {
  */
 
 export function fitbitCallback(req, res, next) {
-  var img = req.session.passport.user.profile._json.user.avatar;
+  //var img = req.session.passport.user.profile._json.user.avatar;
+  console.log(req.session);
+  var img;
   var code = req.query.code;
   fitbit.fetchToken(code, function (err, token) {
     if (err) return next(err);

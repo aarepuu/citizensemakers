@@ -262,7 +262,11 @@ angular.module('citizensemakersApp')
             //0 - hr, 1 - sleep, 2 - steps
             var sleepData = [];
             var stepsData = [];
+            var stepsData2 = [];
+            var stepsData3 = [];
             var heartsData = [];
+            var heartsData2 = [];
+            var heartsData3 = [];
 
             var margin = {top: 10, right: 10, bottom: 100, left: 40},
               margin2 = {top: 430, right: 10, bottom: 20, left: 40},
@@ -319,7 +323,7 @@ angular.module('citizensemakersApp')
 
             yAxisGen = d3.svg.axis()
               .scale(yScale)
-              .ticks(5)
+              //.ticks(5)
               .orient("left")
             //.tickFormat(sleepFormat);
 
@@ -522,7 +526,7 @@ angular.module('citizensemakersApp')
 
 
             //Render graph based on incoming 'data'
-            scope.renderSteps = function (data) {
+            scope.renderSteps = function (data, pos, database) {
               console.log("rendersteps");
 
 
@@ -532,7 +536,7 @@ angular.module('citizensemakersApp')
               if (index != -1) {
                 users2.splice(index, 1);
                 //TODO - make more generic
-                stepsData = filterOut(stepsData, data[data.length - 1].user);
+                database = filterOut(database, data[data.length - 1].user);
 
               } else {
                 //proccess data
@@ -548,7 +552,7 @@ angular.module('citizensemakersApp')
                 });
 
                 users2.push(data[data.length - 1].user);
-                stepsData.push({user: data[data.length - 1].user, values: data});
+                database.push({user: data[data.length - 1].user, values: data});
               }
 
               //Set our scale's domains
@@ -557,12 +561,12 @@ angular.module('citizensemakersApp')
               //console.log(users2);
 
               stepsXScale = [
-                d3.min(stepsData, function (c) {
+                d3.min(database, function (c) {
                   return d3.min(c.values, function (v) {
                     return v.time;
                   });
                 }),
-                d3.max(stepsData, function (c) {
+                d3.max(database, function (c) {
                   return d3.max(c.values, function (v) {
                     return v.time;
                   });
@@ -570,12 +574,12 @@ angular.module('citizensemakersApp')
               ];
 
               stepsYScale = [
-                d3.min(stepsData, function (c) {
+                d3.min(database, function (c) {
                   return d3.min(c.values, function (v) {
                     return v.value;
                   });
                 }),
-                d3.max(stepsData, function (c) {
+                d3.max(database, function (c) {
                   return d3.max(c.values, function (v) {
                     return v.value;
                   });
@@ -592,7 +596,7 @@ angular.module('citizensemakersApp')
               yScale.domain(stepsYScale);
 
               var step = content.selectAll(".step")
-                .data(stepsData)
+                .data(database)
                 .enter().append("g")
                 .attr("class", "step")
                 .attr("transform", function (d) {
@@ -648,7 +652,7 @@ angular.module('citizensemakersApp')
                */
               //console.log(stepsData);
               //add functions
-              graphCtrl.addGraph(drawSteps, 1);
+              graphCtrl.addGraph(drawSteps, pos);
 
 
             };
@@ -848,7 +852,7 @@ angular.module('citizensemakersApp')
               if (stepsXScale) {
                 xScale.domain(stepsXScale);
                 yScale.domain(stepsYScale);
-                yAxisGen.tickFormat(yScale.tickFormat(5));
+                yAxisGen.tickFormat(yScale.tickFormat(10));
                 var t = d3.transition().transition().duration(3500);
                 t.select(".x.axis").style("opacity", 1).call(xAxisGen);
                 t.select(".y.axis").style("opacity", 1).call(yAxisGen);
@@ -1062,7 +1066,8 @@ angular.module('citizensemakersApp')
               } else {
                 if (newVal.length > 0) {
                   //console.log(newVal);
-                  scope.renderSteps(newVal);
+                  //scope.renderSteps(newVal);
+                  scope.renderSteps(newVal, 1, stepsData);
                 }
               }
 
