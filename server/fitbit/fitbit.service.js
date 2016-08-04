@@ -33,6 +33,7 @@ export function redirectFitbit(req, res) {
  */
 
 export function fitbitCallback(req, res, next) {
+  var img = req.session.passport.user.profile._json.user.avatar;
   var code = req.query.code;
   fitbit.fetchToken(code, function (err, token) {
     if (err) return next(err);
@@ -42,6 +43,7 @@ export function fitbitCallback(req, res, next) {
     return User.findById(userId).exec()
       .then(user => {
         user.fitbitId = token.user_id;
+        user.avatar = img;
         return user.save()
           .then(() => {
             //res.status(204).end();

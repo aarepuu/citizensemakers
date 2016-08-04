@@ -31,12 +31,12 @@
   </div>
   <div id="people" class="row">
     <div class="chip">
-      <img src="../../assets/images/me.jpeg" alt="Contact Person">
+      <img src="{{vm.getCurrentUser.avatar}}" alt="Contact Person">
       Me
     </div>
     <div ng-model="vm.rights" ng-repeat="right in vm.rights">
-      <div class="chip" ng-click="vm.addData(right)">
-        <img src="../../assets/images/me.jpeg" alt="Contact Person">
+      <div ng-show="right.week || right.weekend" class="chip" ng-click="vm.addData(right)">
+        <img src="{{vm.getAvatar(right.userId)}}" alt="Contact Person">
         {{right.name}}
       </div>
     </div>

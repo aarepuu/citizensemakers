@@ -5,10 +5,11 @@
   class DataController {
 
 
-    constructor($http, $scope, Auth, amMoment) {
+    constructor($http, $scope, $filter, Auth) {
       this.Auth = Auth;
       this.$scope = $scope;
       this.$http = $http;
+      this.$filter = $filter;
       this.startDate = null;
       this.endDate = null;
       this.month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -70,6 +71,10 @@
 
 
     init() {
+      this.$http.get('/api/users/all').then(response => {
+        this.users = response.data;
+      });
+
       this.initSections();
 
       //TODO - build proper component and only fetch data when query parameters change
@@ -106,6 +111,12 @@
 
     clicked(d) {
       console.log(d);
+    }
+    getAvatar(userId){
+
+      var avatar = this.$filter('filter')(this.users, {_id: userId})[0];
+
+      return (typeof(avatar) != 'undefined') ? (avatar.avatar.length > 0) ? avatar.avatar : '../../assets/images/user.png':'../../assets/images/user.png';
     }
 
     addData(right) {
@@ -186,9 +197,8 @@
           section.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
           section.endDate = (moment(this.startDate, "DD/MM/YYYY")).endOf('day').toDate();
         }
-        section.personal = personal;
-        if (!personal)
-          section.users = this.users;
+        section.personal = true;
+
       }
       this.$http.post("/api/comments", section).then(response => {
         section = response.data;

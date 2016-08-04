@@ -14,7 +14,7 @@ import Sleep from './sleep.model';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
-  return function(entity) {
+  return function (entity) {
     if (entity) {
       res.status(statusCode).json(entity);
     }
@@ -22,7 +22,7 @@ function respondWithResult(res, statusCode) {
 }
 
 function saveUpdates(updates) {
-  return function(entity) {
+  return function (entity) {
     var updated = _.merge(entity, updates);
     return updated.save()
       .then(updated => {
@@ -32,7 +32,7 @@ function saveUpdates(updates) {
 }
 
 function removeEntity(res) {
-  return function(entity) {
+  return function (entity) {
     if (entity) {
       return entity.remove()
         .then(() => {
@@ -43,7 +43,7 @@ function removeEntity(res) {
 }
 
 function handleEntityNotFound(res) {
-  return function(entity) {
+  return function (entity) {
     if (!entity) {
       res.status(404).end();
       return null;
@@ -54,7 +54,7 @@ function handleEntityNotFound(res) {
 
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
-  return function(err) {
+  return function (err) {
     res.status(statusCode).send(err);
   };
 }
@@ -124,26 +124,92 @@ export function getData(req, res) {
 
 // get data limited with start end date
 export function getDataByDate(req, res) {
-  console.log(req.params);
+  //console.log(req.params);
   return Sleep.find({
     "user": req.params.user,
     "time": {$gte: req.params.start, $lte: req.params.end}
   }, '-day -hour').sort({time: 1}).exec()
-    .then(respondWithResult(res))
-    .catch(handleError(res));
+    .then(sleeps => {
+      return Sleep.find({"logId": sleeps[0].logId}
+      ).sort({time: 1}).exec()
+        .then(respondWithResult(res))
+        .catch(handleError(res));
+    });
 }
 
 
 // get allowed data from user
+/*
+ export function limitData(req, res) {
+ var days = (req.body.week) ? (req.body.weekend) ? 7 : 5 : 0;
+ return Sleep.find({
+ "user": req.body.fitbitId,
+ "time": {$gte: req.body.start, $lte: req.body.end},
+ $or: [
+ {$and: [{"day": {$lte: 5}}, {"hour": {$gte: req.body.weektime[0], $lte: req.body.weektime[1]}}]},
+ {$and: [{"day": {$gt: 5}}, {"hour": {$gte: req.body.weekendtime[0], $lte: req.body.weekendtime[1]}}]}]
+ }, '-day -hour').sort({time: 1}).exec()
+ .then(respondWithResult(res))
+ .catch(handleError(res));
+ }
+ */
+
 export function limitData(req, res) {
-  var days = (req.body.week) ? (req.body.weekend) ? 7 : 5 : 0;
-  return Sleep.find({
-    "user": req.body.fitbitId,
-    "time": {$gte: req.body.start, $lte: req.body.end},
-    $or: [
-      {$and: [{"day": {$lte: 5}}, {"hour": {$gte: req.body.weektime[0], $lte: req.body.weektime[1]}}]},
-      {$and: [{"day": {$gt: 5}}, {"hour": {$gte: req.body.weekendtime[0], $lte: req.body.weekendtime[1]}}]}]
-  }, '-day -hour').sort({time: 1}).exec()
-    .then(respondWithResult(res))
-    .catch(handleError(res));
+  //console.log(req.body);
+  var query;
+  if (req.body.week) {
+    query = {
+      "user": req.body.fitbitId,
+      "time": {$gte: req.body.start, $lte: req.body.end},
+      $and: [{"day": {$lte: 5}}, {
+        "hour": {
+          $gte: req.body.weektime[0],
+          $lte: req.body.weektime[1]
+        }
+      }]
+
+    }
+    ;
+  } else if (req.body.weekend) {
+    query = {
+      "user": req.body.fitbitId,
+      "time": {$gte: req.body.start, $lte: req.body.end}, $and: [{"day": {$gt: 5}}, {
+        "hour": {
+          $gte: req.body.weekendtime[0],
+          $lte: req.body.weekendtime[1]
+        }
+      }]
+
+    };
+  } else {
+    query = {
+      "user": req.body.fitbitId,
+      "time": {$gte: req.body.start, $lte: req.body.end}, $or: [
+        {
+          $and: [{"day": {$lte: 5}}, {
+            "hour": {
+              $gte: req.body.weektime[0],
+              $lte: req.body.weektime[1]
+            }
+          }]
+        },
+        {
+          $and: [{"day": {$gt: 5}}, {
+            "hour": {
+              $gte: req.body.weekendtime[0],
+              $lte: req.body.weekendtime[1]
+            }
+          }]
+        }]
+    };
+  }
+  //console.log(query);
+  return Sleep.find(query, '-day -hour').sort({time: 1}).exec()
+    .then(sleeps => {
+      var logId = (sleeps.length == 0) ? 0 : sleeps[0].logId;
+      return Sleep.find({"logId": logId}
+      ).sort({time: 1}).exec()
+        .then(respondWithResult(res))
+        .catch(handleError(res));
+    });
 }

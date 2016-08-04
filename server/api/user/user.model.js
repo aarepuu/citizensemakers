@@ -26,6 +26,10 @@ var UserSchema = new Schema({
     type: String,
     default: 'user'
   },
+  avatar: {
+    type: String,
+    default: ''
+  },
   fitbitId: {
     type: String,
     default: ''

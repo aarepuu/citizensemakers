@@ -7,7 +7,8 @@ var SleepSchema = new mongoose.Schema({
   time: Number,
   day: Number,
   hour: Number,
-  value: Number
+  value: Number,
+  logId: Number,
 });
 
 export default mongoose.model('Sleep', SleepSchema);
