@@ -42,6 +42,7 @@
       this.personalSections = [];
       this.sections = [];
       this.currentComment = '';
+      this.currentPersonalComment = '';
 
 
       this.getCurrentUser = this.Auth.getCurrentUser();
@@ -204,10 +205,33 @@
         });
     }
 
-    personalComment(e, section) {
+    personalComment(e, values) {
       //TODO - bind to ng-model
       //console.log(section);
       //return;
+      if (!this.currentPersonalComment) return;
+      var section = {};
+      section.text = this.currentPersonalComment;
+      section.user = this.userId;
+      this.currentPersonalComment = '';
+      section.stepId = e.target.id.substr(e.target.id.indexOf('-') + 1);
+      if (this.brushValue) {
+        section.startDate = this.brushValue[0];
+        section.endDate = this.brushValue[1];
+      } else {
+        section.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
+        section.endDate = (moment(this.startDate, "DD/MM/YYYY")).endOf('day').toDate();
+      }
+      section.personal = true;
+
+      console.log(values);
+
+      values.unshift(section);
+
+      this.$http.post("/api/comments", section).then(response => {
+        section = response.data;
+      });
+      /*
       if (!section.stepId) {
         section.stepId = e.target.id.substr(e.target.id.indexOf('-') + 1);
         if (this.brushValue) {
@@ -222,7 +246,7 @@
       }
       this.$http.post("/api/comments", section).then(response => {
         section = response.data;
-      });
+      });*/
     }
 
     comment(e, values) {
@@ -242,7 +266,6 @@
       section.personal = false;
       section.users = this.users;
 
-      console.log(section);
 
       values.unshift(section);
 
@@ -259,14 +282,19 @@
       data.personal = true;
       var self = this;
       this.$http.post("/api/comments/list", data).then(response => {
-        self.initSections();
+        //self.initSections();
+        this.personalSections = Array.apply(null, Array(6)).map(function () {
+          return []
+        });
         angular.forEach(response.data, function (value, key) {
-          this[value.stepId - 1] = value;
+          this[value.stepId - 1].push(value);
         }, this.personalSections);
       });
     }
 
     getComments() {
+      //TODO - update brushValue to get previous day
+      console.log(this.brushValue);
       var data = {};
       data.user = this.userId;
       //TODO - with sleep it doesn't work because of the day overlap

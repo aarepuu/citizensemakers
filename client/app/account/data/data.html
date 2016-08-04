@@ -43,12 +43,28 @@
   </div>
   <div id="container">
     <div id="sections" class="sections">
-      <section class="section" ng-repeat="section in vm.personalSections track by $index" ng-model="section"
+      <section class="section" ng-repeat="(key, element) in vm.personalSections track by $index" ng-model="element"
                id="step-{{$index+1}}"
                class="step">
-        <!--<p ng-model="section.html" ng-bind-html="section.html"></p>-->
+        <!--<p ng-model="section.html" ng-bind-html="section.html"></p>
         <input placeholder="Write your comments here!" ng-model="section.text" id="comment-{{$index+1}}" type="text"
-               ng-blur="vm.personalComment($event, section)">
+               ng-blur="vm.personalComment($event, section)">-->
+        <input placeholder="Join the discussion!" ng-model="vm.currentPersonalComment" type="text" id="comment-{{$index+1}}" ng-keyup="$event.keyCode == 13 && vm.personalComment($event, element)" ng-blur="vm.personalComment($event, element)">
+        <div class="commentsbox col s12 m8 offset-m2 l6 offset-l3" ng-repeat="section in element">
+          <div class="card-panel grey lighten-5 z-depth-1">
+            <div class="row valign-wrapper">
+              <div class="col s2">
+                <img src="../../assets/images/me.jpeg" alt="" class="circle responsive-img">
+              </div>
+              <div class="col s10">
+              <span class="black-text">
+                {{section.text}}
+                {{section.startDate}} - {{section.endDate}}
+              </span>
+              </div>
+            </div>
+          </div>
+        </div>
         <!--<div class="row">
           <form class="col s12">
             <div class="row">
