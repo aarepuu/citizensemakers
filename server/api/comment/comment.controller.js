@@ -102,7 +102,7 @@ export function destroy(req, res) {
 }
 
 export function getCommentsByDate(req, res) {
-  //console.log(req.body);
+  console.log(req.body);
   var personal = req.body.personal;
   if (personal) {
     return Comment.find({

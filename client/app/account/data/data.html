@@ -67,7 +67,7 @@
                id="steps-{{$index+1}}"
                class="step">
         <input placeholder="Join the discussion!" ng-model="vm.currentComment" type="text" id="comments-{{$index+1}}" ng-keyup="$event.keyCode == 13 && vm.comment($event, value)" ng-blur="vm.comment($event, value)">
-        <div class="col s12 m8 offset-m2 l6 offset-l3" ng-repeat="section in value">
+        <div class="commentsbox col s12 m8 offset-m2 l6 offset-l3" ng-repeat="section in value">
           <div class="card-panel grey lighten-5 z-depth-1">
             <div class="row valign-wrapper">
               <div class="col s2">

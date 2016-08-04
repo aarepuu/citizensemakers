@@ -132,6 +132,7 @@
 
     addData(right) {
       var user = this.populateUsers(right.userId);
+      this.getComments();
       if (user) {
         //add dates
         right.start = (moment(this.startDate, "DD/MM/YYYY").unix());
@@ -225,7 +226,7 @@
     }
 
     comment(e, values) {
-      if (!this.currentComment) return;
+      if (!this.currentComment || this.users.length == 0) return;
       var section = {};
       section.text = this.currentComment;
       section.user = this.userId;
@@ -268,10 +269,12 @@
     getComments() {
       var data = {};
       data.user = this.userId;
+      //TODO - with sleep it doesn't work because of the day overlap
       data.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
       data.endDate = (moment(this.startDate, "DD/MM/YYYY")).endOf('day').toDate();
       data.personal = false;
       data.users = this.users;
+      console.log(data);
       var self = this;
       this.$http.post("/api/comments/list", data).then(response => {
         //self.initSections();
