@@ -267,7 +267,36 @@ Accordion
 	font-size: 22px;
 }
 
-/* People */
+/* Date Selector */
+.date-selector {
+	background-color: #31AFA3;
+	border-radius: 10px;
+	color: white;
+	margin-bottom: 20px;
+	padding: 10px;
+	text-align: center;
+}
+.date-selector--month {
+	font-size: 24px;
+	margin: 0px;
+	padding: 5px;
+}
+
+.date-selector--day {
+	font-size: 36px;
+	margin: 0px;
+	padding: 5px;
+}
+
+.date-selector--year {
+	font-size: 20px;
+	margin: 0px;
+	opacity: 0.6;
+	padding: 5px;
+}
+
+
+/* Friends List */
 #people {
 	background-color: #f2f2f2;
 	width: 100%;

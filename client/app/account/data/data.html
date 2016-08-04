@@ -1,9 +1,39 @@
 <div class="container-fluid">
 
 	<div id="left-column">
-		<h3 class="column-header">Private Comments</h3>
+
+		<div input-date class="date-selector"
+		name="start"
+		id="dateSelect"
+		ng-model="vm.startDate"
+		container=""
+		format="dd/mm/yyyy"
+		formatSubmit="dd-mm-yyyy"
+		months-full="{{ vm.month }}"
+		months-short="{{ vm.monthShort }}"
+		weekdays-full="{{ vm.weekdaysFull }}"
+		weekdays-short="{{ vm.weekdaysShort }}"
+		weekdays-letter="{{ vm.weekdaysLetter }}"
+		disable="disable"
+		min="{{ vm.minDate }}"
+		max="{{ vm.maxDate }}"
+		today="vm.today"
+		clear="vm.clear"
+		close="vm.close"
+		select-years="15"
+		on-start="vm.onStart()"
+		on-render="vm.onRender()"
+		on-open="vm.onOpen()"
+		on-close="vm.onClose()"
+		on-set="vm.onSet()"
+		on-stop="vm.onStop()">
+			<h3 class="date-selector--month">{{ vm.startDate | amDateFormat:'MMM' }}</h3>
+			<h1 class="date-selector--day">{{ vm.startDate | amDateFormat:'D' }}</h1>
+			<h4 class="date-selector--year">{{ vm.startDate | amDateFormat:'YYYY' }}</h4>
+		</div>
+
 		<div id="sections" class="sections">
-			<input input-date
+			<!-- <input input-date
 			type="text"
 			name="start"
 			id="dateSelect"
@@ -29,12 +59,14 @@
 			on-close="vm.onClose()"
 			on-set="vm.onSet()"
 			on-stop="vm.onStop()"
-			/>
+			/> -->
+
+			<h3 class="column-header">Private Comments</h3>
+
 			<section class="section" ng-repeat="section in vm.personalSections track by $index" ng-model="section" id="step-{{$index+1}}" class="step">
 				<input placeholder="Write your comments here!" ng-model="section.text" id="comment-{{$index+1}}" type="text" ng-blur="vm.personalComment($event, section)">
 			</section>
 		</div>
-
 	</div>
 
 	<div id="center-column">
@@ -61,7 +93,9 @@
 	</div>
 
 	<div id="right-column">
+
 		<h3 class="column-header">Discussion Board</h3>
+
 		<div id="sections2" class="sections">
 			<section class="section" ng-repeat="(key, value) in vm.sections track by $index" ng-model="value"
 			id="steps-{{$index+1}}"
