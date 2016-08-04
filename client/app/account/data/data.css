@@ -147,7 +147,8 @@ Accordion
 
 .brush .extent {
 	stroke: #fff;
-	fill-opacity: .125;
+	/*fill-opacity: .125;*/
+	fill-opacity: 0;
 	shape-rendering: crispEdges;
 }
 
@@ -198,7 +199,6 @@ Accordion
 
 #graph, #graph2{
 	/*float: left;*/
-	background: yellow;
 	display: block;
 	overflow: hidden;
 	width: 100%;
@@ -278,11 +278,14 @@ ul.friends-list {
 	height: 120px;
 	margin: 0;
 	padding: 0;
-	overflow-y: scroll;
+	overflow-x: scroll;
+	overflow-y: hidden;
 }
 li.friends-list--friend-wrapper {
 	float: left;
+	height: 100px;
 	margin: 0;
+	overflow: hidden;
 	padding: 10px;
 	text-align: center;
 }
