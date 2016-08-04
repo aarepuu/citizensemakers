@@ -1,128 +1,128 @@
 
 .container {
-  width: 90%;
-  max-width: inherit;
+	width: 90%;
+	max-width: inherit;
 }
 
 #graphic {
-  padding-top: 60px;
+	padding-top: 60px;
 }
 
 
 
 .step {
-  margin-bottom: 200px;
-  font-family: "TiemposTextWeb-Regular","Georgia";
-  font-size: 16px;
-  line-height: 23px;
-  color: #767678;
+	margin-bottom: 200px;
+	font-family: "TiemposTextWeb-Regular","Georgia";
+	font-size: 16px;
+	line-height: 23px;
+	color: #767678;
 }
 
 #sections .title {
-  font-family: Arial,Helvetica,"san-serif";
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 2px;
-  color: #262626;
-  line-height: 1.2em;
+	font-family: Arial,Helvetica,"san-serif";
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 2px;
+	color: #262626;
+	line-height: 1.2em;
 }
 
 #extra-space {
-  height: 200px;
+	height: 200px;
 }
 
 
 
 #vis .title {
-  font-size:120px;
-  text-anchor: middle;
+	font-size:120px;
+	text-anchor: middle;
 }
 
 #vis .sub-title {
-  font-size:80px;
-  text-anchor: middle;
+	font-size:80px;
+	text-anchor: middle;
 }
 
 .axis path,
 .axis line {
-  fill: none;
-  stroke: #666;
+	fill: none;
+	stroke: #666;
 }
 
 .highlight {
-  fill: #008080;
-  font-weight: bold;
+	fill: #008080;
+	font-weight: bold;
 }
 
 .cough-arrow {
-  stroke: #000;
-  stroke-width: 4px;
+	stroke: #000;
+	stroke-width: 4px;
 
 }
 
 
-
-.datepickerdemoBasicUsage {
-  /** Demo styles for mdCalendar. */ }
 .datepickerdemoBasicUsage md-content {
-  padding-bottom: 200px; }
+	padding-bottom: 200px;
+}
+
 .datepickerdemoBasicUsage .validation-messages {
-  font-size: 12px;
-  color: #dd2c00;
-  margin: 10px 0 0 25px; }
+	font-size: 12px;
+	color: #dd2c00;
+	margin: 10px 0 0 25px;
+}
 
 
 .axis text{
-  font-family: sans-serif;
-  font-size: 10px;
+	font-family: sans-serif;
+	font-size: 10px;
 }
 
 h1{
-  font-family: sans-serif;
-  font-weight: bold;
-  font-size: 16px;
+	font-family: sans-serif;
+	font-weight: bold;
+	font-size: 16px;
 }
 .tick
 {
-  stroke-dasharray: 1, 2;
+	stroke-dasharray: 1, 2;
 }
 
 svg {
-  font: 10px sans-serif;
+	font: 10px sans-serif;
 }
 
 .axis {
-  shape-rendering: crispEdges;
+	shape-rendering: crispEdges;
 }
 
 .axis path, .axis line {
-  fill: none;
-  stroke-width: 1px;
+	fill: none;
+	stroke-width: 1px;
 }
 
 .x.axis path, .axis line {
-  stroke: #000;
+	stroke: #000;
 }
 
 .x.axis line {
-  stroke: #fff;
-  stroke-opacity: .5;
+	stroke: #fff;
+	stroke-opacity: .5;
 }
 
 .y.axis line {
-  stroke: #ddd;
+	stroke: #ddd;
 }
 
 path.line {
-  fill: none;
-  stroke: #009688;
-  stroke-width: 1.5px;
+	fill: none;
+	stroke: #009688;
+	stroke-width: 1.5px;
 }
 
 rect.pane {
-  cursor: move;
-  fill: none;
-  pointer-events: all;
+	cursor: move;
+	fill: none;
+	pointer-events: all;
 }
 
 /*
@@ -130,83 +130,171 @@ Accordion
 */
 
 .collapsible-header .circle {
-  position: absolute;
-  width: 42px;
-  height: 42px;
-  overflow: hidden;
-  left: 15px;
-  display: inline-block;
-  vertical-align: middle;
+	position: absolute;
+	width: 42px;
+	height: 42px;
+	overflow: hidden;
+	left: 15px;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 .list-group-item.avatar {
-  min-height: 84px;
-  padding-left: 72px;
-  position: relative;
+	min-height: 84px;
+	padding-left: 72px;
+	position: relative;
 }
 
 .brush .extent {
-  stroke: #fff;
-  fill-opacity: .125;
-  shape-rendering: crispEdges;
+	stroke: #fff;
+	fill-opacity: .125;
+	shape-rendering: crispEdges;
 }
 
 
 #container, #container2{
-  position: relative;
-  width: 100%;
-  overflow: hidden;
+	position: relative;
+	width: 100%;
+	overflow: hidden;
 }
 
 
 #sections {
-  position: relative;
-  display: inline-block;
-  width: 340px;
-  float: left;
-  top: 0px;
-  z-index: 90;
-  padding-bottom: 200px;
+	position: relative;
+	display: inline-block;
+	width: 100%;
+	float: left;
+	top: 0px;
+	z-index: 90;
+	padding-bottom: 200px;
 }
 #sections2 {
-  position: relative;
-  display: inline-block;
-  width: 340px;
-  float: right;
-  top: 0px;
-  z-index: 90;
-  padding-bottom: 200px;
+	position: relative;
+	display: inline-block;
+	width: 100%;
+	float: right;
+	top: 0px;
+	z-index: 90;
+	padding-bottom: 200px;
 }
 
 #sections > section, #sections2 > section{
-  padding-bottom: 450px;
-  background: white;
-  opacity: .2;
-  pointer-events: none;
+	padding-bottom: 450px;
+	background: white;
+	opacity: .2;
+	pointer-events: none;
 }
 
 
 #sections > section:focus, #sections2 > section:focus{
-  outline: none;
+	outline: none;
 }
 
 #sections > section.graph-scroll-active, #sections2 > section.graph-scroll-active{
-  opacity: 1;
-  pointer-events: auto;
+	opacity: 1;
+	pointer-events: auto;
 }
 
 
 #graph, #graph2{
-  float: left;
+	/*float: left;*/
+	background: yellow;
+	display: block;
+	overflow: hidden;
+	width: 100%;
 }
 
 #graph.graph-scroll-fixed, #graph2.graph-scroll-fixed{
-  position: fixed;
-  top: 0px;
+	position: fixed;
+	top: 50px;
+	left: 50%;
+	margin-left: -480px;
+	width: 960px;
 }
 
-#graph.graph-scroll-below, #graph2.graph-scroll-below {
-  position: absolute;
-  bottom: 0px;
+
+/* Layout */
+.container-fluid {
+	margin: 0 auto;
+	max-width: 1800px;
+	padding: 0;
 }
 
+/* Welcome Banner */
+.welcome-banner {
+	padding: 40px 20px;
+	text-align: center;
+}
+.welcome-banner--headline {
+	color: #31AFA3;
+	font-size: 34px;
+	font-weight: 500;
+	margin: 0 0 30px 0;
+	padding: 0;
+}
+.welcome-banner--subtitle {
+	color: #666;
+	font-size: 15px;
+	margin: 0 auto;
+	max-width: 640px;
+	padding: 0;
+}
+
+/* Columns */
+#left-column {
+	box-sizing: border-box;
+	position: relative;
+	float: left;
+	padding: 30px;
+	width: calc((100% - 960px) / 2);
+}
+#center-column {
+	box-sizing: border-box;
+	position: relative;
+	float: left;
+	width: 960px;
+}
+#right-column {
+	box-sizing: border-box;
+	position: relative;
+	float: left;
+	padding: 30px;
+	width: calc((100% - 960px) / 2);
+}
+.column-header {
+	color: #31AFA3;
+	font-weight: 500;
+	font-size: 22px;
+}
+
+/* People */
+#people {
+	background-color: #f2f2f2;
+	width: 100%;
+}
+
+
+ul.friends-list {
+	height: 120px;
+	margin: 0;
+	padding: 0;
+	overflow-y: scroll;
+}
+li.friends-list--friend-wrapper {
+	float: left;
+	margin: 0;
+	padding: 10px;
+	text-align: center;
+}
+li.friends-list--friend-wrapper img {
+	border-radius: 50%;
+	display: block;
+	margin: 10px 10px 0px 10px;
+	height: 60px;
+	width: 60px;
+}
+li.friends-list--friend-wrapper .friend-name {
+	color: #444;
+	display: block;
+	line-height: 30px;
+}
