@@ -36,7 +36,9 @@
 
       this.currentCalValue = null;
       this.brushValue = null;
-      this.users = ["5785fa1b4269303f1b89596d"];
+      this.users = [];
+      this.userList = null;
+      //this.users = ["5785fa1b4269303f1b89596d"];
       this.personalSections = [];
       this.sections = [];
       this.currentComment = '';
@@ -72,26 +74,36 @@
 
     init() {
       this.$http.get('/api/users/all').then(response => {
-        this.users = response.data;
+        this.userList = response.data;
       });
 
       this.initSections();
 
       //TODO - build proper component and only fetch data when query parameters change
       //you can only select data from others which you have
-      this.$http.get('/api/data/hearts/' + this.fitbitId + '/minmax')
-        .then(response => {
-          var minM = moment.unix(response.data[0].min);
-          var maxM = moment.unix(response.data[0].max);
-          this.minDate = minM.toISOString();
-          this.maxDate = maxM.toISOString();
-          this.startDate = moment(maxM).startOf('day');
-          this.endDate = maxM;
-          //TODO - use promises
-          this.getData();
-          this.getPersonalComments();
-          this.getComments();
-        });
+      /*this.$http.get('/api/data/hearts/' + this.fitbitId + '/minmax')
+       .then(response => {
+       var minM = moment.unix(response.data[0].min);
+       var maxM = moment.unix(response.data[0].max);
+       this.minDate = minM.toISOString();
+       this.maxDate = maxM.toISOString();
+       this.startDate = moment(maxM).startOf('day');
+       this.endDate = maxM;
+       //TODO - use promises
+       this.getData();
+       this.getPersonalComments();
+       this.getComments();
+       });*/
+      var minM = moment(this.getCurrentUser.lastSync).subtract(1, "week").startOf('day');
+      var maxM = moment(this.getCurrentUser.lastSync);
+      this.minDate = minM.toISOString();
+      this.maxDate = maxM.toISOString();
+      this.startDate = maxM;
+      this.endDate = maxM;
+      //TODO - use promises
+      this.getData();
+      this.getPersonalComments();
+      this.getComments();
 
     }
 
@@ -112,27 +124,34 @@
     clicked(d) {
       console.log(d);
     }
-    getAvatar(userId){
 
-      var avatar = this.$filter('filter')(this.users, {_id: userId})[0];
-
-      return (typeof(avatar) != 'undefined') ? (avatar.avatar.length > 0) ? avatar.avatar : '../../assets/images/user.png':'../../assets/images/user.png';
+    getAvatar(userId) {
+      var avatar = this.$filter('filter')(this.userList, {_id: userId});
+     return (typeof(avatar) != 'undefined' && avatar != null) ? (avatar[0].avatar.length > 0) ? avatar[0].avatar : '../../assets/images/user.png' : '../../assets/images/user.png';
     }
 
     addData(right) {
-      this.populateUsers(right.userId);
-      //add dates
-      right.start = (moment(this.startDate, "DD/MM/YYYY").unix());
-      right.end = (moment(this.startDate, "DD/MM/YYYY").endOf('day').unix());
-      this.$http.post("/api/data/hearts", right).then(response => {
-        this.graphData[0] = response.data;
-      });
-      this.$http.post("/api/data/sleeps", right).then(response => {
-        this.graphData[1] = response.data;
-      });
-      this.$http.post("/api/data/steps", right).then(response => {
-        this.graphData[2] = response.data;
-      });
+      var user = this.populateUsers(right.userId);
+      if (user) {
+        //add dates
+        right.start = (moment(this.startDate, "DD/MM/YYYY").unix());
+        right.end = (moment(this.startDate, "DD/MM/YYYY").endOf('day').unix());
+        //TODO - make this into a function
+        this.$http.post("/api/data/hearts", right).then(response => {
+          if (response.data.length > 0)
+          this.graphData[0] = response.data;
+        });
+        this.$http.post("/api/data/sleeps", right).then(response => {
+          if (response.data.length > 0)
+          this.graphData[1] = response.data;
+        });
+        this.$http.post("/api/data/steps", right).then(response => {
+          if (response.data.length > 0)
+          this.graphData[2] = response.data;
+        });
+      } else {
+        this.graphData[0] = this.graphData[1] = this.graphData[2] = [{user: right.fitbitId, remove: true}];
+      }
     }
 
 
@@ -206,7 +225,7 @@
     }
 
     comment(e, values) {
-      if(!this.currentComment) return;
+      if (!this.currentComment) return;
       var section = {};
       section.text = this.currentComment;
       section.user = this.userId;
@@ -221,6 +240,8 @@
       }
       section.personal = false;
       section.users = this.users;
+
+      console.log(section);
 
       values.unshift(section);
 
@@ -271,8 +292,6 @@
     }
 
     active(step) {
-      //console.log(step);
-      //console.log(this.rights[0]);
       if (step != 0)
         this.addData(this.rights[0]);
     }
@@ -281,9 +300,11 @@
       var index = this.users.indexOf(userId);
       if (index == -1) {
         this.users.push(userId);
+        return userId;
       }
       else {
         this.users.splice(index, 1);
+        return false;
       }
     }
 

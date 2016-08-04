@@ -9,15 +9,13 @@
       this.socket = socket;
       this.isLoggedIn = Auth.isLoggedIn;
       this.isConnected = Auth.isConnected;
-      this.awesomeThings = [];
       this.currentuser = Auth.getCurrentUser();
-      this.me = null;
+      this.me = Auth.getCurrentUser()._id;
       var self = this;
-      $scope.$on('$destroy', function () {
-        socket.unsyncUpdates('thing');
-      });
-      $scope.$watch('main.currentuser',function (val) {
-        self.me = self.currentuser._id
+
+      $scope.$watch('main',function (val) {
+        console.log("watch main");
+        self.me = Auth.getCurrentUser()._id
       });
     }
 

@@ -252,7 +252,7 @@ angular.module('citizensemakersApp')
       },
       link: function (scope, element, attrs, graphCtrl) {
         d3Service.d3().then(function (d3) {
-            var xScale, yScale, xScale2, yScale2, xAxisGen, xAxisGen2, yAxisGen, color, brush, content, overview, x1, sleepScale, stepsXScale, stepsYScale, heartsXScale, heartsYScale;
+            var xScale, yScale, xScale2, yScale2, xAxisGen, xAxisGen2, yAxisGen, color, brush, content, overview, sleepScale, stepsXScale, stepsYScale, heartsXScale, heartsYScale;
 
 
             //TODO - really bad solution
@@ -293,8 +293,6 @@ angular.module('citizensemakersApp')
               .range([height, 0]);
             yScale2 = d3.scale.linear()
               .range([height2, 0]);
-
-            x1 = d3.scale.ordinal();
 
             xAxisGen = d3.svg.axis()
               //.tickValues(["1944","2015"])
@@ -342,9 +340,9 @@ angular.module('citizensemakersApp')
 
             //overview chart
             /*overview = svg.append("g")
-              .attr("id", "overview")
-              .attr("class", "overview")
-              .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");*/
+             .attr("id", "overview")
+             .attr("class", "overview")
+             .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");*/
 
             //Render X axis
             content.append("g")
@@ -371,18 +369,21 @@ angular.module('citizensemakersApp')
             scope.renderSleep = function (data) {
               // process data
               //Check if we have to remove data
-              var index = users1.indexOf(data[data.length - 1].user);
-              if (index != -1) {
-                users1.splice(index, 1);
-                //TODO - make more generic
-                sleepData = filterOut(sleepData, data[data.length - 1].user);
+              if (data[data.length - 1].remove) {
+                var index = users1.indexOf(data[data.length - 1].user);
+                if (index != -1) {
+                  users1.splice(index, 1);
+                  //TODO - make more generic
+                  sleepData = filterOut(sleepData, data[data.length - 1].user);
 
+                } else {
+                  return;
+                }
               } else {
                 //proccess data
                 data.forEach(function (d) {
                   d.time = new Date(d.time * 1000);
                 });
-
                 users1.push(data[data.length - 1].user);
                 sleepData.push({user: data[data.length - 1].user, values: data});
               }
@@ -404,9 +405,11 @@ angular.module('citizensemakersApp')
                   });
                 })
               ];
+              //sleep is first graph, so set domains
               xScale.domain(sleepScale);
-              xScale2.domain(xScale.domain());
-              yScale2.domain([50, 200]);
+              yScale.domain([0, 4]);
+              //xScale2.domain(xScale.domain());
+              //yScale2.domain([50, 200]);
 
 
               /*yScale.domain([
@@ -421,10 +424,6 @@ angular.module('citizensemakersApp')
                });
                })
                ]);*/
-
-              //for sleep
-              yScale.domain([0, 4]);
-
 
               //SVG stuff
               //Remove the axes so we can draw updated ones
@@ -441,6 +440,7 @@ angular.module('citizensemakersApp')
               //Legend for all the charts
               //TODO - make it stuck and make it into a menu
               var legend = d3.select('#people').append('svg').append("g")
+                .attr("class", "legend")
                 //.attr("transform", "translate(" + 780 + "," + 320 + ")");
                 .attr("transform", "translate(50,30)");
               legend.selectAll(".legend-dots")
@@ -471,22 +471,22 @@ angular.module('citizensemakersApp')
                 .style("opacity", 1);
 
 
-              // remove data befofre rendering
+              // remove data before rendering
               content.selectAll(".sleep").remove();
 
               var sleep = content.selectAll(".sleep")
                 .data(sleepData)
                 .enter().append("g")
-                .attr("class", "sleep")
+                .attr("class", "graph sleep")
 
 
               sleep.append("path")
                 .attr("class", function (d) {
-                  return "sleep line y" + d.user;
+                  return "sleep line u" + d.user;
                 })
-                .attr("id", function (d) {
-                  return d.user;
-                })
+                //.attr("id", function (d) {
+                  //return d.user;
+                //})
                 .style("stroke", function (d) {
                   return color(d.user);
                 })
@@ -503,18 +503,18 @@ angular.module('citizensemakersApp')
                 .attr("height", height + 7);
 
               /*
-              overview.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height2 + ")")
-              //.attr("transform", "translate(0,180)")
-              //.call(xAxisGen2);
+               overview.append("g")
+               .attr("class", "x axis")
+               .attr("transform", "translate(0," + height2 + ")")
+               //.attr("transform", "translate(0,180)")
+               //.call(xAxisGen2);
 
-              overview.append("path")
-                .data(heartsData)
-                .attr("class", "area")
-                .attr("id", "hrarea")
-              //.attr("d", area);
-              */
+               overview.append("path")
+               .data(heartsData)
+               .attr("class", "area")
+               .attr("id", "hrarea")
+               //.attr("d", area);
+               */
               //add functions
               graphCtrl.addGraph(drawSleep, 0);
 
@@ -527,30 +527,33 @@ angular.module('citizensemakersApp')
 
             //Render graph based on incoming 'data'
             scope.renderSteps = function (data, pos, database) {
-              console.log("rendersteps");
-
-
+              //console.log("rendersteps");
               // process data
               //Check if we have to remove data
-              var index = users2.indexOf(data[data.length - 1].user);
-              if (index != -1) {
-                users2.splice(index, 1);
-                //TODO - make more generic
-                database = filterOut(database, data[data.length - 1].user);
-
+              //Check if we have to remove data
+              if (data[data.length - 1].remove) {
+                var index = users1.indexOf(data[data.length - 1].user);
+                if (index != -1) {
+                  users2.splice(index, 1);
+                  //TODO - make more generic
+                  database = filterOut(database, data[data.length - 1].user);
+                } else {
+                  return;
+                }
               } else {
                 //proccess data
                 data.forEach(function (d) {
                   d.time = moment(d.time * 1000);
                 });
 
-
-                var cutoffDate = moment(data[data.length - 1].time).hour(9).minute(0);
-                //cutoffDate.setDate(cutoffDate.getDate() - 90);
-                data = data.filter(function(d) {
-                  return d.time < cutoffDate;
-                });
-
+                if (pos == 1) {
+                  var cutoffDate = moment(data[data.length - 1].time).hour(9).minute(0);
+                  //cutoffDate.setDate(cutoffDate.getDate() - 90);
+                  data = data.filter(function (d) {
+                    return d.time < cutoffDate;
+                  });
+                }
+                if (data.length == 0) return;
                 users2.push(data[data.length - 1].user);
                 database.push({user: data[data.length - 1].user, values: data});
               }
@@ -658,15 +661,19 @@ angular.module('citizensemakersApp')
             };
 
             //Render graph based on incoming 'data'
-            scope.renderHearts = function (data) {
+            scope.renderHearts = function (data, pos, database) {
               // process data
               //Check if we have to remove data
-              var index = users3.indexOf(data[data.length - 1].user);
-              if (index != -1) {
-                users3.splice(index, 1);
-                //TODO - make more generic
-                heartsData = filterOut(heartsData, data[data.length - 1].user);
+              if (data[data.length - 1].remove) {
+                var index = users3.indexOf(data[data.length - 1].user);
+                if (index != -1) {
+                  users3.splice(index, 1);
+                  //TODO - make more generic
+                  database = filterOut(database, data[data.length - 1].user);
 
+                } else {
+                  return;
+                }
               } else {
                 //proccess data
                 data.forEach(function (d) {
@@ -677,15 +684,15 @@ angular.module('citizensemakersApp')
                 var endDate = moment(data[data.length - 1].time).hour(12).minute(0);
                 //cutoffDate.setDate(cutoffDate.getDate() - 90);
 
-
-
-                data = data.filter(function(d) {
-                  return (d.time >= startDate) && (d.time <= endDate);
-                });
-                console.log(data);
+                if (pos == 2) {
+                  data = data.filter(function (d) {
+                    return (d.time >= startDate) && (d.time <= endDate);
+                  });
+                }
+                //console.log(data);
                 if (data.length == 0) return;
                 users3.push(data[data.length - 1].user);
-                heartsData.push({user: data[data.length - 1].user, values: data});
+                database.push({user: data[data.length - 1].user, values: data});
               }
 
               //Set our scale's domains
@@ -693,12 +700,12 @@ angular.module('citizensemakersApp')
               color.domain(users3);
 
               heartsXScale = [
-                d3.min(heartsData, function (c) {
+                d3.min(database, function (c) {
                   return d3.min(c.values, function (v) {
                     return v.time;
                   });
                 }),
-                d3.max(heartsData, function (c) {
+                d3.max(database, function (c) {
                   return d3.max(c.values, function (v) {
                     return v.time;
                   });
@@ -706,12 +713,12 @@ angular.module('citizensemakersApp')
               ];
 
               heartsYScale = [
-                d3.min(heartsData, function (c) {
+                d3.min(database, function (c) {
                   return d3.min(c.values, function (v) {
                     return v.value;
                   });
                 }),
-                d3.max(heartsData, function (c) {
+                d3.max(database, function (c) {
                   return d3.max(c.values, function (v) {
                     return v.value;
                   });
@@ -722,7 +729,7 @@ angular.module('citizensemakersApp')
               content.selectAll(".hr").remove();
 
               var hr = content.selectAll(".hr")
-                .data(heartsData)
+                .data(database)
                 .enter().append("g")
                 .attr("class", "hr")
 
@@ -741,7 +748,7 @@ angular.module('citizensemakersApp')
 
 
               //add functions
-              graphCtrl.addGraph(drawHearts, 2);
+              graphCtrl.addGraph(drawHearts, pos);
 
 
             };
@@ -810,9 +817,9 @@ angular.module('citizensemakersApp')
                 });
 
               /*var overview = svg.selectAll("path.area").attr("d", function (d) {
-                //console.log(d.values);
-                return area(d.values);
-              });*/
+               //console.log(d.values);
+               return area(d.values);
+               });*/
 
               var path = d3.selectAll("path.sleep").attr("d", function (d) {
                 //console.log(d.values);
@@ -1028,7 +1035,7 @@ angular.module('citizensemakersApp')
               } else {
                 if (newVal.length > 0) {
                   //console.log(newVal);
-                  scope.renderHearts(newVal);
+                  scope.renderHearts(newVal, 2, heartsData);
                 }
               }
 
@@ -1065,7 +1072,6 @@ angular.module('citizensemakersApp')
                 stepsData = [];
               } else {
                 if (newVal.length > 0) {
-                  //console.log(newVal);
                   //scope.renderSteps(newVal);
                   scope.renderSteps(newVal, 1, stepsData);
                 }
