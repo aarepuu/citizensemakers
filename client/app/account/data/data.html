@@ -32,6 +32,8 @@
 			<h4 class="date-selector--year">{{ vm.startDate | amDateFormat:'YYYY' }}</h4>
 		</div>
 
+		Date - {{ vm.startDate }}
+
 		<div id="sections" class="sections">
 			<!-- <input input-date
 			type="text"
@@ -62,6 +64,10 @@
 			/> -->
 
 			<h3 class="column-header">Private Comments</h3>
+
+			<p class="column-subtext">
+				These comments wont be visible to your friends or other participants. If you want to share your feedback please use the discussion board.
+			</p>
 
 			<section class="section" ng-repeat="section in vm.personalSections track by $index" ng-model="section" id="step-{{$index+1}}" class="step">
 				<input placeholder="Write your comments here!" ng-model="section.text" id="comment-{{$index+1}}" type="text" ng-blur="vm.personalComment($event, section)">
@@ -95,6 +101,10 @@
 	<div id="right-column">
 
 		<h3 class="column-header">Discussion Board</h3>
+
+		<p class="column-subtext">
+			Share comments and notes about you or your firends data for everyone to see.
+		</p>
 
 		<div id="sections2" class="sections">
 			<section class="section" ng-repeat="(key, value) in vm.sections track by $index" ng-model="value"

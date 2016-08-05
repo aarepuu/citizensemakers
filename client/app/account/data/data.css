@@ -198,18 +198,21 @@ Accordion
 
 
 #graph, #graph2{
-	/*float: left;*/
+	background: white;
+	border-top: #e1e1e1 3px solid;
+	position: fixed;
+	top: 280px;
+	left: 50%;
+	margin-left: -480px;
+	padding: 20px 0 0 0;
+	width: 960px;
 	display: block;
 	overflow: hidden;
-	width: 100%;
+	transition: all 0.3s ease-in-out;
 }
 
 #graph.graph-scroll-fixed, #graph2.graph-scroll-fixed{
-	position: fixed;
-	top: 50px;
-	left: 50%;
-	margin-left: -480px;
-	width: 960px;
+	top: -3px;
 }
 
 
@@ -266,6 +269,10 @@ Accordion
 	font-weight: 500;
 	font-size: 22px;
 }
+.column-subtext {
+	color: #999;
+	font-size: 14px;
+}
 
 /* Date Selector */
 .date-selector {
@@ -297,36 +304,40 @@ Accordion
 
 
 /* Friends List */
-#people {
-	background-color: #f2f2f2;
-	width: 100%;
-}
-
 
 ul.friends-list {
-	height: 120px;
+	background-color: #f2f2f2;
+	border-radius: 10px;
+	height: 100px;
 	margin: 0;
 	padding: 0;
 	overflow-x: scroll;
 	overflow-y: hidden;
+	position: fixed;
+	bottom: 20px;
+	width: 960px;
+	left: 50%;
+	margin-left: -480px;
 }
 li.friends-list--friend-wrapper {
 	float: left;
-	height: 100px;
+	height: 80px;
 	margin: 0;
 	overflow: hidden;
 	padding: 10px;
 	text-align: center;
 }
 li.friends-list--friend-wrapper img {
+	background-color: #e9e9e9;
 	border-radius: 50%;
 	display: block;
 	margin: 10px 10px 0px 10px;
-	height: 60px;
-	width: 60px;
+	height: 40px;
+	width: 40px;
 }
 li.friends-list--friend-wrapper .friend-name {
 	color: #444;
 	display: block;
+	font-size: 12px;
 	line-height: 30px;
 }
