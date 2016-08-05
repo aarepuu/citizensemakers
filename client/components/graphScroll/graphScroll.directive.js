@@ -199,12 +199,13 @@ angular.module('citizensemakersApp')
           //TODO - not a good way, make dynamic;
           //console.log(d3.selectAll('#sections2')[0]);
           $scope.$watch('ready', function (val) {
-            if (!val) return;
+            //console.log(val);
+            if (val != 2) return;
             //console.log(d3.selectAll('#sections2 > section'));
             var lastI = -1
             var activeI = 0
             graphScroll()
-              .container(d3.select('#container'))
+              .container(d3.select('.container-fluid'))
               .graph(d3.selectAll('#graph'))
               .rightsections(d3.selectAll('#sections2 > section'))
               .leftsections(d3.selectAll('#sections > section'))
@@ -252,7 +253,10 @@ angular.module('citizensemakersApp')
       },
       link: function (scope, element, attrs, graphCtrl) {
         d3Service.d3().then(function (d3) {
-            var xScale, yScale, xScale2, yScale2, xAxisGen, xAxisGen2, yAxisGen, color, brush, content, overview, sleepScale, stepsXScale, stepsYScale, heartsXScale, heartsYScale;
+            var xScale, yScale, xScale2, yScale2, xAxisGen, xAxisGen2,
+              yAxisGen, color, brush, content, overview, sleepScale,
+              stepsXScale, stepsYScale, stepsXScale2, stepsYScale2,
+              heartsXScale, heartsYScale, heartsXScale2, heartsYScale2;
 
 
             //TODO - really bad solution
@@ -367,6 +371,7 @@ angular.module('citizensemakersApp')
 
             //Render graph based on incoming 'data'
             scope.renderSleep = function (data) {
+              data = JSON.parse(JSON.stringify(data));
               // process data
               //Check if we have to remove data
               if (data[data.length - 1].remove) {
@@ -485,7 +490,7 @@ angular.module('citizensemakersApp')
                   return "sleep line u" + d.user;
                 })
                 //.attr("id", function (d) {
-                  //return d.user;
+                //return d.user;
                 //})
                 .style("stroke", function (d) {
                   return color(d.user);
@@ -528,11 +533,11 @@ angular.module('citizensemakersApp')
             //Render graph based on incoming 'data'
             scope.renderSteps = function (data, pos, database) {
               //console.log("rendersteps");
+              data = JSON.parse(JSON.stringify(data));
               // process data
-              //Check if we have to remove data
+              var index = users2.indexOf(data[data.length - 1].user);
               //Check if we have to remove data
               if (data[data.length - 1].remove) {
-                var index = users1.indexOf(data[data.length - 1].user);
                 if (index != -1) {
                   users2.splice(index, 1);
                   //TODO - make more generic
@@ -540,74 +545,115 @@ angular.module('citizensemakersApp')
                 } else {
                   return;
                 }
-              } else {
-                //proccess data
-                data.forEach(function (d) {
-                  d.time = moment(d.time * 1000);
-                });
-
-                if (pos == 1) {
-                  var cutoffDate = moment(data[data.length - 1].time).hour(9).minute(0);
-                  //cutoffDate.setDate(cutoffDate.getDate() - 90);
-                  data = data.filter(function (d) {
-                    return d.time < cutoffDate;
-                  });
-                }
-                if (data.length == 0) return;
-                users2.push(data[data.length - 1].user);
-                database.push({user: data[data.length - 1].user, values: data});
               }
-
+              //proccess data
+              data.forEach(function (d) {
+                d.time = new Date(d.time * 1000);
+              });
               //Set our scale's domains
               //different colors for users
+
+              if (pos == 1) {
+                var cutoffDate = moment(data[data.length - 1].time).hour(9).minute(0);
+                //cutoffDate.setDate(cutoffDate.getDate() - 90);
+                //console.log(cutoffDate.toDate())
+                data = data.filter(function (d) {
+                  return d.time < cutoffDate;
+                });
+
+                if (data.length == 0) return;
+
+                database.push({user: data[data.length - 1].user, values: data});
+
+                stepsXScale = [
+                  d3.min(database, function (c) {
+                    return d3.min(c.values, function (v) {
+                      return v.time;
+                    });
+                  }),
+                  d3.max(database, function (c) {
+                    return d3.max(c.values, function (v) {
+                      return v.time;
+                    });
+                  })
+                ];
+
+                stepsYScale = [
+                  d3.min(database, function (c) {
+                    return d3.min(c.values, function (v) {
+                      return v.value;
+                    });
+                  }),
+                  d3.max(database, function (c) {
+                    return d3.max(c.values, function (v) {
+                      return v.value;
+                    });
+                  })
+                ];
+
+                //set scales for calculating
+                //TODO - can be done in animation phase
+                xScale.domain(stepsXScale);
+                yScale.domain(stepsYScale);
+
+              } else if (pos == 3) {
+                var startDate = moment(data[data.length - 1].time).hour(12).minute(0);
+                var endDate = moment(data[data.length - 1].time).hour(14).minute(0);
+                data = data.filter(function (d) {
+                  return (d.time >= startDate) && (d.time <= endDate);
+                });
+
+                if (data.length == 0) return;
+                database.push({user: data[data.length - 1].user, values: data});
+
+                stepsXScale2 = [
+                  d3.min(database, function (c) {
+                    return d3.min(c.values, function (v) {
+                      return v.time;
+                    });
+                  }),
+                  d3.max(database, function (c) {
+                    return d3.max(c.values, function (v) {
+                      return v.time;
+                    });
+                  })
+                ];
+
+                stepsYScale2 = [
+                  d3.min(database, function (c) {
+                    return d3.min(c.values, function (v) {
+                      return v.value;
+                    });
+                  }),
+                  d3.max(database, function (c) {
+                    return d3.max(c.values, function (v) {
+                      return v.value;
+                    });
+                  })
+                ];
+                //set scales for calculating
+                //TODO - can be done in animation phase
+                xScale.domain(stepsXScale2);
+                yScale.domain(stepsYScale2);
+
+              }
+              if (index == -1) {
+                users2.push(data[data.length - 1].user);
+              }
               color.domain(users2);
-              //console.log(users2);
-
-              stepsXScale = [
-                d3.min(database, function (c) {
-                  return d3.min(c.values, function (v) {
-                    return v.time;
-                  });
-                }),
-                d3.max(database, function (c) {
-                  return d3.max(c.values, function (v) {
-                    return v.time;
-                  });
-                })
-              ];
-
-              stepsYScale = [
-                d3.min(database, function (c) {
-                  return d3.min(c.values, function (v) {
-                    return v.value;
-                  });
-                }),
-                d3.max(database, function (c) {
-                  return d3.max(c.values, function (v) {
-                    return v.value;
-                  });
-                })
-              ];
-
-              //remove old steps elements
-              content.selectAll(".step").remove();
 
 
-              //set scales for calculating
-              //TODO - can be done in animation phase
-              xScale.domain(stepsXScale);
-              yScale.domain(stepsYScale);
+              content.selectAll(".step-" + pos).remove();
 
-              var step = content.selectAll(".step")
+              var step = content.selectAll(".step-" + pos)
                 .data(database)
                 .enter().append("g")
-                .attr("class", "step")
+                .attr("class", "steps step-" + pos)
                 .attr("transform", function (d) {
                   d.values.map(function (c) {
                     return "translate(" + xScale(c.time) + ",0)";
                   });
                 });
-
 
               step.selectAll("rect")
                 .data(function (d) {
@@ -616,7 +662,7 @@ angular.module('citizensemakersApp')
                 .enter().append("rect")
                 .attr("width", 0.5)
                 .attr("class", function (d) {
-                  return "step rect" + d.user;
+                  return "steps step-" + pos + " rect" + d.user;
                 })
                 .attr("x", function (d) {
                   return xScale(d.time);
@@ -655,14 +701,18 @@ angular.module('citizensemakersApp')
                */
               //console.log(stepsData);
               //add functions
-              graphCtrl.addGraph(drawSteps, pos);
-
+              if (pos == 1) {
+                graphCtrl.addGraph(drawMorning, pos);
+              } else if (pos == 3) {
+                graphCtrl.addGraph(drawLunch, pos);
+              }
 
             };
 
             //Render graph based on incoming 'data'
             scope.renderHearts = function (data, pos, database) {
               // process data
+              data = JSON.parse(JSON.stringify(data));
               //Check if we have to remove data
               if (data[data.length - 1].remove) {
                 var index = users3.indexOf(data[data.length - 1].user);
@@ -674,69 +724,70 @@ angular.module('citizensemakersApp')
                 } else {
                   return;
                 }
-              } else {
-                //proccess data
-                data.forEach(function (d) {
-                  d.time = new Date(d.time * 1000);
-                });
+              }
+              //proccess data
+              data.forEach(function (d) {
+                d.time = new Date(d.time * 1000);
+              });
 
+              if (pos == 2) {
                 var startDate = moment(data[data.length - 1].time).hour(9).minute(0);
                 var endDate = moment(data[data.length - 1].time).hour(12).minute(0);
-                //cutoffDate.setDate(cutoffDate.getDate() - 90);
+                data = data.filter(function (d) {
+                  return (d.time >= startDate) && (d.time <= endDate);
+                });
 
-                if (pos == 2) {
-                  data = data.filter(function (d) {
-                    return (d.time >= startDate) && (d.time <= endDate);
-                  });
-                }
-                //console.log(data);
                 if (data.length == 0) return;
-                users3.push(data[data.length - 1].user);
                 database.push({user: data[data.length - 1].user, values: data});
+
+                heartsXScale = [
+                  d3.min(database, function (c) {
+                    return d3.min(c.values, function (v) {
+                      return v.time;
+                    });
+                  }),
+                  d3.max(database, function (c) {
+                    return d3.max(c.values, function (v) {
+                      return v.time;
+                    });
+                  })
+                ];
+
+                heartsYScale = [
+                  d3.min(database, function (c) {
+                    return d3.min(c.values, function (v) {
+                      return v.value;
+                    });
+                  }),
+                  d3.max(database, function (c) {
+                    return d3.max(c.values, function (v) {
+                      return v.value;
+                    });
+                  })
+                ];
+
+              }
+              if (index == -1) {
+                users3.push(data[data.length - 1].user);
               }
 
               //Set our scale's domains
               //different colors for users
               color.domain(users3);
 
-              heartsXScale = [
-                d3.min(database, function (c) {
-                  return d3.min(c.values, function (v) {
-                    return v.time;
-                  });
-                }),
-                d3.max(database, function (c) {
-                  return d3.max(c.values, function (v) {
-                    return v.time;
-                  });
-                })
-              ];
-
-              heartsYScale = [
-                d3.min(database, function (c) {
-                  return d3.min(c.values, function (v) {
-                    return v.value;
-                  });
-                }),
-                d3.max(database, function (c) {
-                  return d3.max(c.values, function (v) {
-                    return v.value;
-                  });
-                })
-              ];
 
               // remove data befofre rendering
-              content.selectAll(".hr").remove();
+              content.selectAll(".step-" + pos).remove();
 
-              var hr = content.selectAll(".hr")
+              var hr = content.selectAll(".step-" + pos)
                 .data(database)
                 .enter().append("g")
-                .attr("class", "hr")
+                .attr("class", "hr step-" + pos);
 
 
               hr.append("path")
                 .attr("class", function (d) {
-                  return "hr line y" + d.user;
+                  return "hr step-" + pos + " line line" + d.user;
                 })
                 .attr("id", function (d) {
                   return d.user;
@@ -764,7 +815,7 @@ angular.module('citizensemakersApp')
                 t.select(".y.axis").style("opacity", 1).call(yAxisGen);
                 t.select(".text").style("opacity", 1);
                 d3.select(".nodata").style("opacity", 0);
-                t.selectAll("rect.step").attr("y", function (d, i) {
+                t.selectAll("rect.steps").attr("y", function (d, i) {
                     return height - yScale(d.value);
                   })
                   .attr("height", function (d, i) {
@@ -836,7 +887,7 @@ angular.module('citizensemakersApp')
                   .attr("stroke-dashoffset", 0).style("opacity", 1);
               }
 
-              var stepsPath = d3.selectAll("path.steps");
+              var stepsPath = d3.selectAll("path.steps-1");
               if (stepsPath.node() != null) {
                 var totalLength = stepsPath.node().getTotalLength();
                 stepsPath
@@ -855,10 +906,12 @@ angular.module('citizensemakersApp')
 
             }
 
-            function drawSteps() {
+            function drawMorning() {
+              console.log("drawMorning");
               if (stepsXScale) {
                 xScale.domain(stepsXScale);
                 yScale.domain(stepsYScale);
+                console.log(xScale.domain())
                 yAxisGen.tickFormat(yScale.tickFormat(10));
                 var t = d3.transition().transition().duration(3500);
                 t.select(".x.axis").style("opacity", 1).call(xAxisGen);
@@ -866,6 +919,12 @@ angular.module('citizensemakersApp')
                 //t.selectAll(".step").style("opacity",1);
                 //t.select(".text").style("opacity", 0);
                 d3.select(".nodata").style("opacity", 0);
+                t.selectAll("rect.step-1").attr("y", function (d, i) {
+                    return height - yScale(d.value);
+                  })
+                  .attr("height", function (d, i) {
+                    return yScale(d.value);
+                  });
               } else {
                 d3.select(".nodata").style("opacity", 1);
 
@@ -893,12 +952,6 @@ angular.module('citizensemakersApp')
                .ease("linear")
                .attr("stroke-dashoffset", 0);
                }*/
-              t.selectAll("rect.step").attr("y", function (d, i) {
-                  return height - yScale(d.value);
-                })
-                .attr("height", function (d, i) {
-                  return yScale(d.value);
-                });
 
               var sleepsPath = d3.selectAll("path.sleep");
               if (sleepsPath.node() != null) {
@@ -936,7 +989,12 @@ angular.module('citizensemakersApp')
                 t.select(".y.axis").style("opacity", 1).call(yAxisGen);
                 t.select(".text").style("opacity", 0);
                 d3.select(".nodata").style("opacity", 0);
-
+                t.selectAll("rect.steps").attr("y", function (d, i) {
+                    return height - yScale(d.value);
+                  })
+                  .attr("height", function (d, i) {
+                    return 0;
+                  });
                 t.selectAll("rect.step").attr("y", function (d, i) {
                     return height - yScale(d.value);
                   })
@@ -983,6 +1041,79 @@ angular.module('citizensemakersApp')
                   .attr("stroke-dashoffset", totalLength).style("opacity", 0);
 
               }
+
+            }
+
+            function drawLunch() {
+              console.log("drawLunch");
+              if (stepsXScale2) {
+                xScale.domain(stepsXScale2);
+                yScale.domain(stepsYScale2);
+                console.log(stepsXScale2);
+                yAxisGen.tickFormat(yScale.tickFormat(10));
+                var t = d3.transition().transition().duration(3500);
+                t.select(".x.axis").style("opacity", 1).call(xAxisGen);
+                t.select(".y.axis").style("opacity", 1).call(yAxisGen);
+                //t.selectAll(".step").style("opacity",1);
+                //t.select(".text").style("opacity", 0);
+                d3.select(".nodata").style("opacity", 0);
+                t.selectAll("rect.step-3").attr("y", function (d, i) {
+                    return height - yScale(d.value);
+                  })
+                  .attr("height", function (d, i) {
+                    return yScale(d.value);
+                  });
+              } else {
+                d3.select(".nodata").style("opacity", 1);
+
+              }
+              /*
+               var line = d3.svg.line()
+               .x(function (d) {
+               return xScale(d.time);
+               })
+               .y(function (d) {
+               return yScale(d.value);
+               }).interpolate('step-before');
+               var stepsPath = d3.selectAll("path.steps").attr("d", function (d) {
+               //console.log(d.values);
+               return line(d.values);
+               }).style("opacity", 1);
+               if (stepsPath.node() != null) {
+
+               var totalLength = stepsPath.node().getTotalLength();
+               stepsPath
+               .attr("stroke-dasharray", totalLength + " " + totalLength)
+               .attr("stroke-dashoffset", totalLength)
+               .transition()
+               .duration(2000)
+               .ease("linear")
+               .attr("stroke-dashoffset", 0);
+               }*/
+
+
+              var sleepsPath = d3.selectAll("path.sleep");
+              if (sleepsPath.node() != null) {
+                var totalLength = sleepsPath.node().getTotalLength();
+                sleepsPath
+                  .transition()
+                  .duration(2000)
+                  .ease("linear")
+                  .attr("stroke-dashoffset", totalLength).style("opacity", 0);
+
+              }
+              var hrPath = d3.selectAll("path.hr");
+              if (hrPath.node() != null) {
+                var totalLength = hrPath.node().getTotalLength();
+
+                hrPath
+                  .transition()
+                  .duration(2000)
+                  .ease("linear")
+                  .attr("stroke-dashoffset", totalLength).style("opacity", 0);
+
+              }
+
 
             }
 
@@ -1073,15 +1204,20 @@ angular.module('citizensemakersApp')
               } else {
                 if (newVal.length > 0) {
                   //scope.renderSteps(newVal);
+                  //clean up steps
+                  content.selectAll(".steps").remove();
                   scope.renderSteps(newVal, 1, stepsData);
+                  scope.renderSteps(newVal, 3, stepsData2);
+
                 }
               }
 
             });
             //init all functions
             graphCtrl.addGraph(drawSleep, 0);
-            graphCtrl.addGraph(drawSteps, 1);
+            graphCtrl.addGraph(drawMorning, 1);
             graphCtrl.addGraph(drawHearts, 2);
+            graphCtrl.addGraph(drawLunch, 3)
             drawNoData('graphsvg');
 
             scope.$watchCollection('data', function (newVal, oldVal) {

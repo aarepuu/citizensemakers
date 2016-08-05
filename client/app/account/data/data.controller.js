@@ -42,7 +42,8 @@
       this.personalSections = [];
       this.sections = [];
       this.currentComment = '';
-
+      this.currentPersonalComment = '';
+      this.ready = 0;
 
       this.getCurrentUser = this.Auth.getCurrentUser();
       var self = this;
@@ -66,6 +67,9 @@
 
           self.init();
         }
+      });
+      this.$scope.$watch("vm.startDate", function (val) {
+        console.log(val);
       });
 
 
@@ -127,7 +131,7 @@
 
     getAvatar(userId) {
       var avatar = this.$filter('filter')(this.userList, {_id: userId});
-     return (typeof(avatar) != 'undefined' && avatar != null) ? (avatar[0].avatar.length > 0) ? avatar[0].avatar : '../../assets/images/user.png' : '../../assets/images/user.png';
+      return (typeof(avatar) != 'undefined' && avatar != null) ? (avatar[0].avatar.length > 0) ? avatar[0].avatar : '../../assets/images/user.png' : '../../assets/images/user.png';
     }
 
     addData(right) {
@@ -140,15 +144,15 @@
         //TODO - make this into a function
         this.$http.post("/api/data/hearts", right).then(response => {
           if (response.data.length > 0)
-          this.graphData[0] = response.data;
+            this.graphData[0] = response.data;
         });
         this.$http.post("/api/data/sleeps", right).then(response => {
           if (response.data.length > 0)
-          this.graphData[1] = response.data;
+            this.graphData[1] = response.data;
         });
         this.$http.post("/api/data/steps", right).then(response => {
           if (response.data.length > 0)
-          this.graphData[2] = response.data;
+            this.graphData[2] = response.data;
         });
       } else {
         this.graphData[0] = this.graphData[1] = this.graphData[2] = [{user: right.fitbitId, remove: true}];
@@ -166,10 +170,9 @@
       this.currentCalValue = this.startDate;
     }
 
-    onClose() {
+    onClose(e) {
+      console.log(e);
       //TODO - there is better way, server side maybe
-      console.log(moment(this.startDate, "DD/MM/YYYY").unix());
-      console.log(moment(this.startDate, "DD/MM/YYYY").endOf('day').unix());
       //avoid same queries
       if (this.currentCalValue == this.startDate) return;
       //reset dataset
@@ -204,25 +207,47 @@
         });
     }
 
-    personalComment(e, section) {
+    personalComment(e, values) {
       //TODO - bind to ng-model
       //console.log(section);
       //return;
-      if (!section.stepId) {
-        section.stepId = e.target.id.substr(e.target.id.indexOf('-') + 1);
-        if (this.brushValue) {
-          section.startDate = this.brushValue[0];
-          section.endDate = this.brushValue[1];
-        } else {
-          section.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
-          section.endDate = (moment(this.startDate, "DD/MM/YYYY")).endOf('day').toDate();
-        }
-        section.personal = true;
-
+      if (!this.currentPersonalComment) return;
+      var section = {};
+      section.text = this.currentPersonalComment;
+      section.user = this.userId;
+      this.currentPersonalComment = '';
+      section.stepId = e.target.id.substr(e.target.id.indexOf('-') + 1);
+      if (this.brushValue) {
+        section.startDate = this.brushValue[0];
+        section.endDate = this.brushValue[1];
+      } else {
+        section.startDate = (moment(this.startDate, "DD/MM/YYYY"));
+        section.endDate = (moment(this.startDate, "DD/MM/YYYY")).endOf('day');
       }
+      section.personal = true;
+
+
+      values.unshift(section);
+
       this.$http.post("/api/comments", section).then(response => {
         section = response.data;
       });
+      /*
+       if (!section.stepId) {
+       section.stepId = e.target.id.substr(e.target.id.indexOf('-') + 1);
+       if (this.brushValue) {
+       section.startDate = this.brushValue[0];
+       section.endDate = this.brushValue[1];
+       } else {
+       section.startDate = (moment(this.startDate, "DD/MM/YYYY")).toDate();
+       section.endDate = (moment(this.startDate, "DD/MM/YYYY")).endOf('day').toDate();
+       }
+       section.personal = true;
+
+       }
+       this.$http.post("/api/comments", section).then(response => {
+       section = response.data;
+       });*/
     }
 
     comment(e, values) {
@@ -242,7 +267,6 @@
       section.personal = false;
       section.users = this.users;
 
-      console.log(section);
 
       values.unshift(section);
 
@@ -259,14 +283,19 @@
       data.personal = true;
       var self = this;
       this.$http.post("/api/comments/list", data).then(response => {
-        self.initSections();
+        //self.initSections();
+        this.personalSections = Array.apply(null, Array(6)).map(function () {
+          return []
+        });
         angular.forEach(response.data, function (value, key) {
-          this[value.stepId - 1] = value;
+          this[value.stepId - 1].push(value);
         }, this.personalSections);
+        this.ready++;
       });
     }
 
     getComments() {
+      //TODO - update brushValue to get previous day
       var data = {};
       data.user = this.userId;
       //TODO - with sleep it doesn't work because of the day overlap
@@ -274,7 +303,6 @@
       data.endDate = (moment(this.startDate, "DD/MM/YYYY")).endOf('day').toDate();
       data.personal = false;
       data.users = this.users;
-      console.log(data);
       var self = this;
       this.$http.post("/api/comments/list", data).then(response => {
         //self.initSections();
@@ -285,7 +313,7 @@
         angular.forEach(response.data, function (value, key) {
           this[value.stepId - 1].push(value);
         }, this.sections);
-        this.ready = true;
+        this.ready++;
       });
     }
 
