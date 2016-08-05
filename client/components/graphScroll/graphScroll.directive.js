@@ -253,7 +253,10 @@ angular.module('citizensemakersApp')
       },
       link: function (scope, element, attrs, graphCtrl) {
         d3Service.d3().then(function (d3) {
-            var xScale, yScale, xScale2, yScale2, xAxisGen, xAxisGen2, yAxisGen, color, brush, content, overview, sleepScale, stepsXScale, stepsYScale, stepsXScale2, stepsYScale2, heartsXScale, heartsYScale;
+            var xScale, yScale, xScale2, yScale2, xAxisGen, xAxisGen2,
+              yAxisGen, color, brush, content, overview, sleepScale,
+              stepsXScale, stepsYScale, stepsXScale2, stepsYScale2,
+              heartsXScale, heartsYScale, heartsXScale2, heartsYScale2;
 
 
             //TODO - really bad solution
@@ -721,67 +724,70 @@ angular.module('citizensemakersApp')
                 } else {
                   return;
                 }
-              } else {
-                //proccess data
-                data.forEach(function (d) {
-                  d.time = new Date(d.time * 1000);
+              }
+              //proccess data
+              data.forEach(function (d) {
+                d.time = new Date(d.time * 1000);
+              });
+
+              if (pos == 2) {
+                var startDate = moment(data[data.length - 1].time).hour(9).minute(0);
+                var endDate = moment(data[data.length - 1].time).hour(12).minute(0);
+                data = data.filter(function (d) {
+                  return (d.time >= startDate) && (d.time <= endDate);
                 });
 
-                if (pos == 2) {
-                  var startDate = moment(data[data.length - 1].time).hour(9).minute(0);
-                  var endDate = moment(data[data.length - 1].time).hour(12).minute(0);
-                  data = data.filter(function (d) {
-                    return (d.time >= startDate) && (d.time <= endDate);
-                  });
-                }
-                //console.log(data);
                 if (data.length == 0) return;
-                users3.push(data[data.length - 1].user);
                 database.push({user: data[data.length - 1].user, values: data});
+
+                heartsXScale = [
+                  d3.min(database, function (c) {
+                    return d3.min(c.values, function (v) {
+                      return v.time;
+                    });
+                  }),
+                  d3.max(database, function (c) {
+                    return d3.max(c.values, function (v) {
+                      return v.time;
+                    });
+                  })
+                ];
+
+                heartsYScale = [
+                  d3.min(database, function (c) {
+                    return d3.min(c.values, function (v) {
+                      return v.value;
+                    });
+                  }),
+                  d3.max(database, function (c) {
+                    return d3.max(c.values, function (v) {
+                      return v.value;
+                    });
+                  })
+                ];
+
+              }
+              if (index == -1) {
+                users3.push(data[data.length - 1].user);
               }
 
               //Set our scale's domains
               //different colors for users
               color.domain(users3);
 
-              heartsXScale = [
-                d3.min(database, function (c) {
-                  return d3.min(c.values, function (v) {
-                    return v.time;
-                  });
-                }),
-                d3.max(database, function (c) {
-                  return d3.max(c.values, function (v) {
-                    return v.time;
-                  });
-                })
-              ];
-
-              heartsYScale = [
-                d3.min(database, function (c) {
-                  return d3.min(c.values, function (v) {
-                    return v.value;
-                  });
-                }),
-                d3.max(database, function (c) {
-                  return d3.max(c.values, function (v) {
-                    return v.value;
-                  });
-                })
-              ];
 
               // remove data befofre rendering
-              content.selectAll(".hr").remove();
+              content.selectAll(".step-" + pos).remove();
 
-              var hr = content.selectAll(".hr")
+              var hr = content.selectAll(".step-" + pos)
                 .data(database)
                 .enter().append("g")
-                .attr("class", "hr")
+                .attr("class", "hr step-" + pos);
 
 
               hr.append("path")
                 .attr("class", function (d) {
-                  return "hr line y" + d.user;
+                  return "hr step-" + pos + " line line" + d.user;
                 })
                 .attr("id", function (d) {
                   return d.user;
