@@ -1,40 +1,76 @@
 <style media="screen">
-	.navbar.navbar-default {
-		background-color: #31AFA3;
-	    min-height: 40px;
-	}
-	.navbar.navbar-default .navbar-header {
-	}
-	.navbar.navbar-default .navbar-header .navbar-brand {
-		color: white;
-		font-size: 24px;
-		font-weight: 200;
-		line-height: 70px;
-		padding: 0 20px;
-	}
-	.navbar.navbar-default .navbar-text {
-		color: white;
-		font-size: 16px;
-		line-height: 40px;
-		padding: 0 20px;
-	}
-	.navbar.navbar-default .navbar-nav > li > a {
+nav {
+	background-color: #31AFA3;
+	box-shadow: none;
+}
+nav .brand-logo {
+	font-size: 22px;
+	font-weight: 200;
+}
+nav .brand-logo:hover {
+	text-decoration: none;
+}
+.nav-wrapper {
+	padding: 0 15px;
+	margin: 0 auto;
+	max-width: 1740px;
+}
+
+	nav > li > a {
 		color: white;
 		display: block;
 		font-size: 16px;
 		line-height: 70px;
-		padding: 0 30px;
+		padding: 0 20px;
 	}
-	.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-		background-color: #29948A;
-	}
-	.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+	nav ul a:hover {
 		color: white;
+		text-decoration: none;
 	}
-	/*, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus*/
 </style>
 
-<div class="navbar navbar-default navbar-static-top" ng-controller="NavbarController">
+
+
+<div class="navbar-fixed">
+	<nav>
+
+	   <div class="nav-wrapper">
+		 <a href="/" class="brand-logo"><strong>citizense</strong>makers</a>
+		 <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="fa fa-bars"></i></a>
+		 <ul class="right hide-on-med-and-down">
+
+			<li ng-hide="nav.isLoggedIn()" ui-sref-active="active"><a ui-sref="signup">Sign up</a></li>
+			<li ng-hide="nav.isLoggedIn()" ui-sref-active="active"><a ui-sref="login">Login</a></li>
+			<li ng-show="nav.isLoggedIn()"><a href="/">Hello {{ nav.getCurrentUser().name }}</a></li>
+			<li ng-show="nav.isLoggedIn() && nav.isConnected()" ui-sref-active="active"><a ui-sref="data"><span class="glyphicon glyphicon-globe"></span></a></li>
+			<li ng-show="nav.isLoggedIn()" ui-sref-active="active"><a ui-sref="settings"><span class="glyphicon glyphicon-cog"></span></a></li>
+			<li ng-show="nav.isLoggedIn()"><a ui-sref="logout">Logout</a></li>
+
+		 </ul>
+		 <ul class="side-nav" id="mobile-demo">
+
+			<li ng-hide="nav.isLoggedIn()" ui-sref-active="active"><a ui-sref="signup">Sign up</a></li>
+			<li ng-hide="nav.isLoggedIn()" ui-sref-active="active"><a ui-sref="login">Login</a></li>
+			<li ng-hide="nav.isLoggedIn()" ui-sref-active="active"><a ui-sref="settings">Hello {{ nav.getCurrentUser().name }}</a></li>
+			<li ng-show="nav.isLoggedIn() && nav.isConnected()" ui-sref-active="active"><a ui-sref="data"><span class="glyphicon glyphicon-globe"></span></a></li>
+			<li ng-show="nav.isLoggedIn()" ui-sref-active="active"><a ui-sref="settings"><span class="glyphicon glyphicon-cog"></span></a></li>
+			<li ng-show="nav.isLoggedIn()"><a ui-sref="logout">Logout</a></li>
+
+		 </ul>
+	   </div>
+	 </nav>
+ </div>
+
+<script type="text/javascript">
+
+$(".button-collapse").sideNav();
+
+</script>
+
+
+
+<!--
+<div class="navbar navbar-default navbar-fixed navbar-static-top" ng-controller="NavbarController">
   <div class="container">
     <div class="navbar-header">
       <button class="navbar-toggle" type="button" ng-click="nav.isCollapsed = !nav.isCollapsed">
@@ -43,7 +79,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a href="/" class="navbar-brand">citizensemakers</a>
+      <a href="/" class="navbar-brand"><strong>citizense</strong>makers</a>
     </div>
     <div uib-collapse="nav.isCollapsed" class="navbar-collapse collapse" id="navbar-main">
       <ul class="nav navbar-nav">
@@ -64,3 +100,5 @@
     </div>
   </div>
 </div>
+
+</div> -->

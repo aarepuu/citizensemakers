@@ -1,61 +1,135 @@
+<style media="screen">
+	.column-label-header {
+		background: #e1e1e1;
+		border-radius: 6px;
+		border-top-left-radius: 0px;
+		border-top-right-radius: 0px;
+		margin-top: 30px;
+		padding: 10px;
+		color: #666;
+		opacity: 0;
+		text-align: center;
+		transition: all 0.3s ease-in-out;
+	}
+	.column-label-header.visible {
+		opacity: 1;
+	}
+</style>
+
 <div class="container-fluid">
 
 	<div id="left-column">
 
-		<div class="date-picker-section">
+		<div class="date-picker-section pinned-section">
 
 			<div class="date-picker">
 
-				<input input-date class="date-picker--input date-selector"
-				name="start"
-				id="dateSelect"
-				ng-model="vm.startDate"
-				container=""
-				format="dd/mm/yyyy"
-				formatSubmit="dd-mm-yyyy"
-				months-full="{{ vm.month }}"
-				months-short="{{ vm.monthShort }}"
-				weekdays-full="{{ vm.weekdaysFull }}"
-				weekdays-short="{{ vm.weekdaysShort }}"
-				weekdays-letter="{{ vm.weekdaysLetter }}"
-				disable="disable"
-				min="{{ vm.minDate }}"
-				max="{{ vm.maxDate }}"
-				today="vm.today"
-				clear="vm.clear"
-				close="vm.close"
-				select-years="15"
-				on-start="vm.onStart()"
-				on-render="vm.onRender()"
-				on-open="vm.onOpen()"
-				on-close="vm.onClose()"
-				on-set="vm.onSet()"
-				on-stop="vm.onStop()">
+				<input input-date class="date-picker--input date-selector" name="start" id="dateSelect" ng-model="vm.startDate" container="body" format="dd/mm/yyyy" formatSubmit="dd-mm-yyyy" months-full="{{ vm.month }}" months-short="{{ vm.monthShort }}" weekdays-full="{{ vm.weekdaysFull }}" weekdays-short="{{ vm.weekdaysShort }}" weekdays-letter="{{ vm.weekdaysLetter }}" disable="disable" min="{{ vm.minDate }}" max="{{ vm.maxDate }}" today="vm.today" clear="vm.clear" close="vm.close" select-years="15" on-start="vm.onStart()" on-render="vm.onRender()" on-open="vm.onOpen()" on-close="vm.onClose()" on-set="vm.onSet()" on-stop="vm.onStop()">
 
 				<div class="date-picker--ui">
 					<h3 class="date-selector--month">{{ (vm.startDate | amDateFormat:'MMM').toUpperCase() }}</h3>
 					<h1 class="date-selector--day">{{ vm.startDate | amDateFormat:'D' }}</h1>
-					<h4 class="date-selector--year">{{ vm.startDate | amDateFormat:'YYYY' }}</h4></div>
+					<h4 class="date-selector--year">{{ vm.startDate | amDateFormat:'YYYY' }}</h4>
 				</div>
+			</div>
 
+			<div class="column-label-header">
+				Private Comments
+			</div>
+
+		</div>
+
+		<div class="private-discussion-section">
+
+			<h3 class="column-header">Private Comments</h3>
+
+			<p class="column-subtext">
+				These comments wont be visible to your friends or other participants. If you want to share your feedback please use the discussion board.
+			</p>
+
+			<div id="sections" class="sections">
+
+				<section class="section" ng-repeat="(key, element) in vm.personalSections track by $index" id="step-{{$index+1}}" class="step">
+
+					<input placeholder="Add a comment!" ng-model="vm.currentPersonalComment" type="text" id="comment-{{$index+1}}" ng-keyup="$event.keyCode == 13 && vm.personalComment($event, element)" ng-blur="vm.personalComment($event, element)">
+
+					<div class="note public-comment" ng-repeat="section in element" ng-click="vm.goToComment([section.startDate,section.endDate])">
+
+						<img src="{{vm.getCurrentUser.avatar}}" alt="" class="public-comment--avatar circle responsive-img">
+
+						<p class="public-comment--user">
+							{{ section.user }}
+						</p>
+
+						<p class="public-comment--text">
+							{{section.text}}
+						</p>
+
+						<p class="public-comment--date">Posted <span am-time-ago="section.createdAt"></span></p>
+
+					</div>
+
+				</section>
 
 			</div>
 
-			<div class="private-discussion-section">
+		</div>
 
-				<h3 class="column-header">Private Comments</h3>
+	</div>
+
+		<div id="center-column">
+			<div class="welcome-banner">
+				<h3 class="welcome-banner--headline">Welcome, {{vm.getCurrentUser.name}}</h3>
+				<h5 class="welcome-banner--subtitle">This is an online platform to allow you as the participants to visualise your
+					quantified activity data and compare it to friends colleagues.</h5>
+			</div>
+
+			<graph-scroll ready="vm.ready" active="vm.active(args)">
+				<graph id="graph" extent="vm.extent" data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate">
+				</graph>
+			</graph-scroll>
+		</div>
+
+		<div id="right-column">
+
+			<div class="profile-section pinned-section">
+
+				<h3 class="column-header">Your Profile</h3>
+
+				<div class="profile-section--content">
+
+					<img class="profile-section--avatar" src="{{vm.getCurrentUser.avatar}}">
+
+					<div class="profile-section--name">
+						{{ vm.getCurrentUser.name }}
+					</div>
+
+					<div class="profile-section--last-sync">
+						Last Sync <span am-time-ago="vm.getCurrentUser.lastSync"></span>
+					</div>
+
+				</div>
+
+				<div class="column-label-header">
+					Discussion Board
+				</div>
+
+			</div>
+
+			<div class="public-discussion-section">
+
+				<h3 class="column-header">Discussion Board</h3>
 
 				<p class="column-subtext">
-					These comments wont be visible to your friends or other participants. If you want to share your feedback please use the discussion board.
+					Share comments and notes about you or your friends data for everyone to see.
 				</p>
 
-				<div id="sections" class="sections">
+				<div id="sections2" class="sections">
 
-					<section class="section" ng-repeat="(key, element) in vm.personalSections track by $index" id="step-{{$index+1}}" class="step">
+					<section class="section" ng-repeat="(key, value) in vm.sections track by $index" ng-model="value" id="steps-{{$index+1}}" class="step">
+						<input placeholder="Join the discussion!" ng-model="vm.currentComment" type="text" id="comments-{{$index+1}}" ng-keyup="$event.keyCode == 13 && vm.comment($event, value)" ng-blur="vm.comment($event, value)">
 
-						<input placeholder="Add a comment!" ng-model="vm.currentPersonalComment" type="text" id="comment-{{$index+1}}" ng-keyup="$event.keyCode == 13 && vm.personalComment($event, element)" ng-blur="vm.personalComment($event, element)">
-
-						<div class="note public-comment" ng-repeat="section in element" ng-click="vm.goToComment([section.startDate,section.endDate])">
+						<div class="public-comment" ng-repeat="section in value" ng-click="vm.goToComment([section.startDate,section.endDate])">
 
 							<img src="{{vm.getCurrentUser.avatar}}" alt="" class="public-comment--avatar circle responsive-img">
 
@@ -72,91 +146,50 @@
 						</div>
 
 					</section>
-
 				</div>
-
 			</div>
+		</div>
+
+		<div class="friends-list">
+
+			<!-- <h3 class="friends-list--info-header">Add Friends</h3> -->
+
+			<ul class="row">
+				<li class="add-friend">
+					<i class="glyphicon glyphicon-plus add-friend--icon"></i>
+					<span class="add-friend--text">Add Friend</span>
+				</li>
+				<li class="friends-list--friend-wrapper">
+					<img src="{{vm.getCurrentUser.avatar}}">
+					<span class="friend-name">You</span>
+				</li>
+				<li ng-model="vm.rights" ng-repeat="right in vm.rights" ng-show="right.week || right.weekend" ng-click="vm.addData(right)" class="friends-list--friend-wrapper">
+					<img src="{{vm.getAvatar(right.userId)}}">
+					<span class="friend-name">{{right.name}}</span>
+				</li>
+				<div class="" id="people"></div>
+			</ul>
 
 		</div>
 
-		<div id="center-column">
-			<div class="welcome-banner">
-				<h3 class="welcome-banner--headline">Welcome, {{vm.getCurrentUser.name}}</h3>
-				<h5 class="welcome-banner--subtitle">This is an online platform to allow you as the participants to visualise your
-					quantified activity data and compare it to friends colleagues.</h5>
-				</div>
+	</div>
 
-				<graph-scroll ready="vm.ready" active="vm.active(args)">
-					<graph id="graph" extent="vm.extent" data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate">
-					</graph>
-				</graph-scroll>
-			</div>
+</div>
 
-			<div id="right-column">
 
-				<div class="profile-section">
+<script type="text/javascript">
 
-					<h3 class="column-header">Your Profile</h3>
+	$(window).scroll(function (event) {
+		var scroll = $(window).scrollTop();
+		console.log(scroll);
+		if (scroll > 100)
+		{
+			$('.column-label-header').addClass('visible');
+		}
+		else if (scroll < 80)
+		{
+			$('.column-label-header').removeClass('visible');
+		}
+	});
 
-					<img class="profile-section--avatar" src="{{vm.getCurrentUser.avatar}}">
-
-				</div>
-
-				<div class="public-discussion-section">
-
-					<h3 class="column-header">Discussion Board</h3>
-
-					<p class="column-subtext">
-						Share comments and notes about you or your friends data for everyone to see.
-					</p>
-
-					<div id="sections2" class="sections">
-
-						<section class="section" ng-repeat="(key, value) in vm.sections track by $index" ng-model="value" id="steps-{{$index+1}}" class="step">
-							<input placeholder="Join the discussion!" ng-model="vm.currentComment" type="text" id="comments-{{$index+1}}" ng-keyup="$event.keyCode == 13 && vm.comment($event, value)" ng-blur="vm.comment($event, value)">
-
-							<div class="public-comment" ng-repeat="section in value" ng-click="vm.goToComment([section.startDate,section.endDate])">
-
-								<img src="{{vm.getCurrentUser.avatar}}" alt="" class="public-comment--avatar circle responsive-img">
-
-								<p class="public-comment--user">
-									{{ section.user }}
-								</p>
-
-								<p class="public-comment--text">
-									{{section.text}}
-								</p>
-
-								<p class="public-comment--date">Posted <span am-time-ago="section.createdAt"></span></p>
-
-							</div>
-
-						</section>
-					</div>
-				</div>
-			</div>
-
-			<div class="" id="people"></div>
-
-			<div class="friends-list">
-
-				<h3 class="friends-list--info-header">Add Friends</h3>
-
-				<ul class="row">
-					<li class="add-friend">
-						<i class="glyphicon glyphicon-plus add-friend--icon"></i>
-						<span class="add-friend--text">Add Friend</span>
-					</li>
-					<li class="friends-list--friend-wrapper">
-						<img src="{{vm.getCurrentUser.avatar}}">
-						<span class="friend-name">You</span>
-					</li>
-					<li ng-model="vm.rights" ng-repeat="right in vm.rights" ng-show="right.week || right.weekend" ng-click="vm.addData(right)" class="friends-list--friend-wrapper">
-						<img src="{{vm.getAvatar(right.userId)}}">
-						<span class="friend-name">{{right.name}}</span>
-					</li>
-				</ul>
-
-			</div>
-
-		</div>
+</script>
