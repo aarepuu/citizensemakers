@@ -170,7 +170,8 @@ Accordion
 
 .brush .extent {
 	stroke: #fff;
-	fill-opacity: .125;
+	/*fill-opacity: .125;*/
+	fill-opacity: 0;
 
 	shape-rendering: crispEdges;
 }
