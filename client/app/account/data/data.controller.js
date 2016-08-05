@@ -68,6 +68,9 @@
           self.init();
         }
       });
+      this.$scope.$watch("vm.startDate", function (val) {
+        console.log(val);
+      });
 
 
     }
@@ -167,7 +170,8 @@
       this.currentCalValue = this.startDate;
     }
 
-    onClose() {
+    onClose(e) {
+      console.log(e);
       //TODO - there is better way, server side maybe
       //avoid same queries
       if (this.currentCalValue == this.startDate) return;

@@ -594,11 +594,12 @@ angular.module('citizensemakersApp')
                 yScale.domain(stepsYScale);
 
               } else if (pos == 3) {
-                var startDate = moment(data[data.length - 1].time * 1000).hour(9).minute(0);
-                var endDate = moment(data[data.length - 1].time * 1000).hour(12).minute(0);
+                var startDate = moment(data[data.length - 1].time).hour(12).minute(0);
+                var endDate = moment(data[data.length - 1].time).hour(14).minute(0);
                 data = data.filter(function (d) {
                   return (d.time >= startDate) && (d.time <= endDate);
                 });
+
                 if (data.length == 0) return;
                 database.push({user: data[data.length - 1].user, values: data});
 
@@ -629,8 +630,8 @@ angular.module('citizensemakersApp')
                 ];
                 //set scales for calculating
                 //TODO - can be done in animation phase
-                //xScale.domain(stepsXScale2);
-                //yScale.domain(stepsYScale2);
+                xScale.domain(stepsXScale2);
+                yScale.domain(stepsYScale2);
 
               }
               if (index == -1) {
@@ -658,7 +659,7 @@ angular.module('citizensemakersApp')
                 .enter().append("rect")
                 .attr("width", 0.5)
                 .attr("class", function (d) {
-                  return " step-" + pos + " rect" + d.user;
+                  return "steps step-" + pos + " rect" + d.user;
                 })
                 .attr("x", function (d) {
                   return xScale(d.time);
@@ -808,7 +809,7 @@ angular.module('citizensemakersApp')
                 t.select(".y.axis").style("opacity", 1).call(yAxisGen);
                 t.select(".text").style("opacity", 1);
                 d3.select(".nodata").style("opacity", 0);
-                t.selectAll("rect.step-1").attr("y", function (d, i) {
+                t.selectAll("rect.steps").attr("y", function (d, i) {
                     return height - yScale(d.value);
                   })
                   .attr("height", function (d, i) {
@@ -982,7 +983,7 @@ angular.module('citizensemakersApp')
                 t.select(".y.axis").style("opacity", 1).call(yAxisGen);
                 t.select(".text").style("opacity", 0);
                 d3.select(".nodata").style("opacity", 0);
-                t.selectAll("rect.step-1").attr("y", function (d, i) {
+                t.selectAll("rect.steps").attr("y", function (d, i) {
                     return height - yScale(d.value);
                   })
                   .attr("height", function (d, i) {
@@ -1042,6 +1043,7 @@ angular.module('citizensemakersApp')
               if (stepsXScale2) {
                 xScale.domain(stepsXScale2);
                 yScale.domain(stepsYScale2);
+                console.log(stepsXScale2);
                 yAxisGen.tickFormat(yScale.tickFormat(10));
                 var t = d3.transition().transition().duration(3500);
                 t.select(".x.axis").style("opacity", 1).call(xAxisGen);
@@ -1049,6 +1051,12 @@ angular.module('citizensemakersApp')
                 //t.selectAll(".step").style("opacity",1);
                 //t.select(".text").style("opacity", 0);
                 d3.select(".nodata").style("opacity", 0);
+                t.selectAll("rect.step-3").attr("y", function (d, i) {
+                    return height - yScale(d.value);
+                  })
+                  .attr("height", function (d, i) {
+                    return yScale(d.value);
+                  });
               } else {
                 d3.select(".nodata").style("opacity", 1);
 
@@ -1076,12 +1084,7 @@ angular.module('citizensemakersApp')
                .ease("linear")
                .attr("stroke-dashoffset", 0);
                }*/
-              t.selectAll("rect.step-3").attr("y", function (d, i) {
-                  return height - yScale(d.value);
-                })
-                .attr("height", function (d, i) {
-                  return yScale(d.value);
-                });
+
 
               var sleepsPath = d3.selectAll("path.sleep");
               if (sleepsPath.node() != null) {
