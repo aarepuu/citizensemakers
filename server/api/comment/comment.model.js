@@ -10,6 +10,8 @@ var CommentSchema = new mongoose.Schema({
   stepId: Number,
   personal: Boolean,
   users: {type: Array, "default": []}
+}, {
+  timestamps: true
 });
 
 export default mongoose.model('Comment', CommentSchema);

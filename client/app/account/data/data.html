@@ -54,14 +54,15 @@
 				<section class="section" ng-repeat="(key, element) in vm.personalSections track by $index" id="step-{{$index+1}}" class="step">
 					<!-- <input placeholder="Write your comments here!" ng-model="section.text" id="comment-{{$index+1}}" type="text" ng-blur="vm.personalComment($event, section)"> -->
 					<input placeholder="Add a comment!" ng-model="vm.currentPersonalComment" type="text" id="comment-{{$index+1}}" ng-keyup="$event.keyCode == 13 && vm.personalComment($event, element)" ng-blur="vm.personalComment($event, element)">
-				</section>
+          <div class="note" ng-repeat="section in element">
+            <div ng-click="vm.goToComment([section.startDate,section.endDate])">
+              {{section.text}}
+              {{section.startDate}} - {{section.endDate}}
+            </div>
+          </div>
+        </section>
 
-				<div class="note" ng-repeat="section in element">
-					<div ng-click="vm.goToComment([section.startDate,section.endDate])">
-						{{section.text}}
-						{{section.startDate}} - {{section.endDate}}
-					</div>
-				</div>
+
 
 			</div>
 
@@ -114,10 +115,11 @@
 						</p>
 
 						<p class="public-comment--text">
-							{{ section.text }}
+              {{section.text}}
 						</p>
+            
 
-						<p class="public-comment--date">Posted <span am-time-ago="section.startDate"></span></p>
+						<p class="public-comment--date">Posted <span am-time-ago="section.createdAt"></span></p>
 
 					</div>
 

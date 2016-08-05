@@ -207,10 +207,9 @@
 
     personalComment(e, values) {
       //TODO - bind to ng-model
-      //console.log(section);
-      //return;
       if (!this.currentPersonalComment) return;
       var section = {};
+      section.createdAt = moment();
       section.text = this.currentPersonalComment;
       section.user = this.userId;
       this.currentPersonalComment = '';
@@ -225,6 +224,7 @@
       section.personal = true;
 
 
+      console.log(section);
       values.unshift(section);
 
       this.$http.post("/api/comments", section).then(response => {
@@ -251,6 +251,7 @@
     comment(e, values) {
       if (!this.currentComment || this.users.length == 0) return;
       var section = {};
+      section.createdAt = moment();
       section.text = this.currentComment;
       section.user = this.userId;
       this.currentComment = '';
