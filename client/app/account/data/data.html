@@ -1,58 +1,81 @@
-<div class="container">
-  <div class="row">
-    <label for="dateSelect">Select date</label>
-    <input input-date
-           type="text"
-           name="start"
-           id="dateSelect"
-           ng-model="vm.startDate"
-           container=""
-           format="dd/mm/yyyy"
-           formatSubmit="dd-mm-yyyy"
-           months-full="{{ vm.month }}"
-           months-short="{{ vm.monthShort }}"
-           weekdays-full="{{ vm.weekdaysFull }}"
-           weekdays-short="{{ vm.weekdaysShort }}"
-           weekdays-letter="{{ vm.weekdaysLetter }}"
-           disable="disable"
-           min="{{ vm.minDate }}"
-           max="{{ vm.maxDate }}"
-           today="vm.today"
-           clear="vm.clear"
-           close="vm.close"
-           select-years="15"
-           on-start="vm.onStart()"
-           on-render="vm.onRender()"
-           on-open="vm.onOpen()"
-           on-close="vm.onClose()"
-           on-set="vm.onSet()"
-           on-stop="vm.onStop()"
-    />
-  </div>
-  <div id="people" class="row">
-    <div class="chip">
-      <img src="{{vm.getCurrentUser.avatar}}" alt="Contact Person">
-      Me
+<div class="container-fluid">
+
+  <div id="left-column">
+
+    <div input-date class="date-selector"
+         name="start"
+         id="dateSelect"
+         ng-model="vm.startDate"
+         container=""
+         format="dd/mm/yyyy"
+         formatSubmit="dd-mm-yyyy"
+         months-full="{{ vm.month }}"
+         months-short="{{ vm.monthShort }}"
+         weekdays-full="{{ vm.weekdaysFull }}"
+         weekdays-short="{{ vm.weekdaysShort }}"
+         weekdays-letter="{{ vm.weekdaysLetter }}"
+         disable="disable"
+         min="{{ vm.minDate }}"
+         max="{{ vm.maxDate }}"
+         today="vm.today"
+         clear="vm.clear"
+         close="vm.close"
+         select-years="15"
+         on-start="vm.onStart()"
+         on-render="vm.onRender()"
+         on-open="vm.onOpen()"
+         on-close="vm.onClose()"
+         on-set="vm.onSet()"
+         on-stop="vm.onStop()">
+      <h3 class="date-selector--month">{{ vm.startDate | amDateFormat:'MMM' }}</h3>
+      <h1 class="date-selector--day">{{ vm.startDate | amDateFormat:'D' }}</h1>
+      <h4 class="date-selector--year">{{ vm.startDate | amDateFormat:'YYYY' }}</h4>
     </div>
-    <div ng-model="vm.rights" ng-repeat="right in vm.rights">
-      <div ng-show="right.week || right.weekend" class="chip" ng-click="vm.addData(right)">
-        <img src="{{vm.getAvatar(right.userId)}}" alt="Contact Person">
-        {{right.name}}
-      </div>
-    </div>
-  </div>
-  <div id="container">
+
+
     <div id="sections" class="sections">
+      <!-- <input input-date
+            type="text"
+            name="start"
+            id="dateSelect"
+            ng-model="vm.startDate"
+            container=""
+            format="dd/mm/yyyy"
+            formatSubmit="dd-mm-yyyy"
+            months-full="{{ vm.month }}"
+            months-short="{{ vm.monthShort }}"
+            weekdays-full="{{ vm.weekdaysFull }}"
+            weekdays-short="{{ vm.weekdaysShort }}"
+            weekdays-letter="{{ vm.weekdaysLetter }}"
+            disable="disable"
+            min="{{ vm.minDate }}"
+            max="{{ vm.maxDate }}"
+            today="vm.today"
+            clear="vm.clear"
+            close="vm.close"
+            select-years="15"
+            on-start="vm.onStart()"
+            on-render="vm.onRender()"
+            on-open="vm.onOpen()"
+            on-close="vm.onClose()"
+            on-set="vm.onSet()"
+            on-stop="vm.onStop()"
+            /> -->
+
+      <h3 class="column-header">Private Comments</h3>
+
       <section class="section" ng-repeat="(key, element) in vm.personalSections track by $index"
                id="step-{{$index+1}}"
                class="step">
         <!--<p ng-model="section.html" ng-bind-html="section.html"></p>
         <input placeholder="Write your comments here!" ng-model="section.text" id="comment-{{$index+1}}" type="text"
                ng-blur="vm.personalComment($event, section)">-->
-        <input placeholder="Join the discussion!" ng-model="vm.currentPersonalComment" type="text" id="comment-{{$index+1}}" ng-keyup="$event.keyCode == 13 && vm.personalComment($event, element)" ng-blur="vm.personalComment($event, element)">
+        <input placeholder="Join the discussion!" ng-model="vm.currentPersonalComment" type="text"
+               id="comment-{{$index+1}}" ng-keyup="$event.keyCode == 13 && vm.personalComment($event, element)"
+               ng-blur="vm.personalComment($event, element)">
         <div class="note" ng-repeat="section in element">
-                {{section.text}}
-                {{section.startDate}} - {{section.endDate}}
+          {{section.text}}
+          {{section.startDate}} - {{section.endDate}}
         </div>
         <!--<div class="row">
           <form class="col s12">
@@ -67,38 +90,60 @@
         </div>-->
       </section>
     </div>
+  </div>
+
+  <div id="center-column">
+    <div class="welcome-banner">
+      <h3 class="welcome-banner--headline">Welcome, {{vm.getCurrentUser.name}}</h3>
+      <h5 class="welcome-banner--subtitle">This is an online platform to allow you as the participants to visualise your
+        quantified activity data and compare it to friends colleagues.</h5>
+    </div>
+
+    <graph-scroll ready="vm.ready" active="vm.active(args)">
+      <graph id="graph" data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate">
+      </graph>
+
+      <ul class="friends-list" id="people" class="row">
+        <li class="friends-list--friend-wrapper">
+          <img src="{{vm.getCurrentUser.avatar}}">
+          <span class="friend-name">You</span>
+        </li>
+        <li ng-model="vm.rights" ng-repeat="right in vm.rights" ng-show="right.week || right.weekend"
+            ng-click="vm.addData(right)" class="friends-list--friend-wrapper">
+          <img src="{{vm.getAvatar(right.userId)}}">
+          <span class="friend-name">{{right.name}}</span>
+        </li>
+      </ul>
+    </graph-scroll>
+  </div>
+
+
+  <div id="right-column">
+
+    <h3 class="column-header">Discussion Board</h3>
+
     <div id="sections2" class="sections">
       <section class="section" ng-repeat="(key, value) in vm.sections track by $index" ng-model="value"
                id="steps-{{$index+1}}"
                class="step">
-        <input placeholder="Join the discussion!" ng-model="vm.currentComment" type="text" id="comments-{{$index+1}}" ng-keyup="$event.keyCode == 13 && vm.comment($event, value)" ng-blur="vm.comment($event, value)">
-        <div class="commentsbox col s12 m8 offset-m2 l6 offset-l3" ng-repeat="section in value">
+        <input placeholder="Join the discussion!" ng-model="vm.currentComment" type="text" id="comments-{{$index+1}}"
+               ng-keyup="$event.keyCode == 13 && vm.comment($event, value)" ng-blur="vm.comment($event, value)">
+        <div class="col s12 m8 offset-m2 l6 offset-l3" ng-repeat="section in value">
           <div class="card-panel grey lighten-5 z-depth-1">
             <div class="row valign-wrapper">
               <div class="col s2">
                 <img src="../../assets/images/me.jpeg" alt="" class="circle responsive-img">
               </div>
               <div class="col s10">
-              <span class="black-text">
-                {{section.text}}
-                {{section.startDate}} - {{section.endDate}}
-              </span>
+								<span class="black-text">
+									{{section.text}}
+									{{section.startDate}} - {{section.endDate}}
+								</span>
               </div>
             </div>
           </div>
         </div>
       </section>
     </div>
-
-    <!--<div id="graph1" simple-line-chart data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate"></div>-->
-    <graph-scroll ready="vm.ready" active="vm.active(args)">
-      <graph id="graph" data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate">
-      </graph>
-    </graph-scroll>
-    <div id="extra-space">
-    </div>
   </div>
-
-
-</div>
 </div>

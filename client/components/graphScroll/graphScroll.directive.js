@@ -205,7 +205,7 @@ angular.module('citizensemakersApp')
             var lastI = -1
             var activeI = 0
             graphScroll()
-              .container(d3.select('#container'))
+              .container(d3.select('.container-fluid'))
               .graph(d3.selectAll('#graph'))
               .rightsections(d3.selectAll('#sections2 > section'))
               .leftsections(d3.selectAll('#sections > section'))
@@ -529,7 +529,7 @@ angular.module('citizensemakersApp')
 
             //Render graph based on incoming 'data'
             scope.renderSteps = function (data, pos, database) {
-              console.log("rendersteps");
+              //console.log("rendersteps");
               data = JSON.parse(JSON.stringify(data));
               // process data
               var index = users2.indexOf(data[data.length - 1].user);
@@ -545,7 +545,6 @@ angular.module('citizensemakersApp')
               }
               //proccess data
               data.forEach(function (d) {
-                console.log(d.time);
                 d.time = new Date(d.time * 1000);
               });
               //Set our scale's domains
