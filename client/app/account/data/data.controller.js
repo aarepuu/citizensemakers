@@ -63,6 +63,7 @@
             text: '',
             stepId: null,
             personal: null,
+            createdAt: null,
             users: []
           };
 
@@ -211,6 +212,7 @@
       //return;
       if (!this.currentPersonalComment) return;
       var section = {};
+      section.createdAt = moment();
       section.text = this.currentPersonalComment;
       section.user = this.userId;
       this.currentPersonalComment = '';
@@ -251,6 +253,7 @@
     comment(e, values) {
       if (!this.currentComment || this.users.length == 0) return;
       var section = {};
+      section.createdAt = moment();
       section.text = this.currentComment;
       section.user = this.userId;
       this.currentComment = '';
