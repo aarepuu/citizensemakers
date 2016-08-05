@@ -249,7 +249,8 @@ angular.module('citizensemakersApp')
       scope: {
         data: '=?',
         brushed: '&brushed',
-        interpolate: '=?'
+        interpolate: '=?',
+        extent: '=?'
       },
       link: function (scope, element, attrs, graphCtrl) {
         d3Service.d3().then(function (d3) {
@@ -1220,8 +1221,13 @@ angular.module('citizensemakersApp')
             graphCtrl.addGraph(drawLunch, 3)
             drawNoData('graphsvg');
 
-            scope.$watchCollection('data', function (newVal, oldVal) {
-              //console.log(newVal);
+            scope.$watch('extent', function (newVal, oldVal) {
+              console.log(newVal);
+              if(newVal != 0 ){
+                brush.extent([moment(newVal[0]),moment(newVal[1])]);
+                brush(d3.select(".brush").transition());
+                brush.event(d3.select(".brush").transition().delay(1000))
+              }
             });
 
             function drawNoData(canvas_div_name) {

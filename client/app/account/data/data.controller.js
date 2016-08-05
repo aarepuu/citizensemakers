@@ -44,6 +44,7 @@
       this.currentComment = '';
       this.currentPersonalComment = '';
       this.ready = 0;
+      this.extent = 0;
 
       this.getCurrentUser = this.Auth.getCurrentUser();
       var self = this;
@@ -67,9 +68,6 @@
 
           self.init();
         }
-      });
-      this.$scope.$watch("vm.startDate", function (val) {
-        console.log(val);
       });
 
 
@@ -125,8 +123,8 @@
       //console.log(d);
     }
 
-    clicked(d) {
-      console.log(d);
+    goToComment(extent) {
+      this.extent = extent;
     }
 
     getAvatar(userId) {
