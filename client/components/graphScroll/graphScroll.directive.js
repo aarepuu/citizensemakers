@@ -506,28 +506,48 @@ angular.module('citizensemakersApp')
             //Render graph based on incoming 'data'
             scope.renderSteps = function (data, pos, database) {
               var data = JSON.parse(JSON.stringify(data));
-              console.log(data.length);
               // process data
               var index = users2.indexOf(data[data.length - 1].user);
               //Check if we have to remove data
               if (data[data.length - 1].remove) {
                 if (index != -1) {
                   users2.splice(index, 1);
-                  //TODO - make more generic
-                  filterOut(database, data[data.length - 1].user);
-                } else {
-                  return;
                 }
-              } else if (pos == 1) {
-                var cutoffDate = moment(data[data.length - 1].time).hour(9).minute(0);
-                //cutoffDate.setDate(cutoffDate.getDate() - 90);
-                //console.log(cutoffDate.toDate())
-                data = data.filter(function (d) {
-                  return d.time < cutoffDate;
-                });
+                //TODO - make more generic
+                filterOut(database, data[data.length - 1].user);
 
-                if (data.length == 0) return;
-                database.push({user: data[data.length - 1].user, values: data});
+
+              } else {
+                //proccess data
+                data.forEach(function (d) {
+                  d.time = moment(d.time * 1000);
+                });
+                if (pos == 1) {
+                  var cutoffDate = moment(data[data.length - 1].time).hour(9).minute(0);
+                  data = data.filter(function (d) {
+                    return d.time < cutoffDate;
+                  });
+                  if (data.length == 0) return;
+
+                  database.push({user: data[data.length - 1].user, values: data});
+
+                } else if (pos == 3) {
+                  var startDate = moment(data[data.length - 1].time).hour(12).minute(0);
+                  var endDate = moment(data[data.length - 1].time).hour(14).minute(0);
+                  data = data.filter(function (d) {
+                    return (d.time >= startDate) && (d.time <= endDate);
+                  });
+                  if (data.length == 0) return;
+
+                  database.push({user: data[data.length - 1].user, values: data});
+                }
+                if (index == -1) {
+                  users2.push(data[data.length - 1].user);
+                }
+              }
+
+
+              if (pos == 1) {
                 stepsXScale = [
                   d3.min(database, function (c) {
                     return d3.min(c.values, function (v) {
@@ -552,21 +572,12 @@ angular.module('citizensemakersApp')
                     });
                   })
                 ];
+
                 //set scales for calculating
                 //TODO - can be done in animation phase
                 xScale.domain(stepsXScale);
                 yScale.domain(stepsYScale);
-
               } else if (pos == 3) {
-                console.log('pos3');
-                var startDate = moment(data[data.length - 1].time).hour(12).minute(0);
-                var endDate = moment(data[data.length - 1].time).hour(14).minute(0);
-                data = data.filter(function (d) {
-                  return (d.time >= startDate) && (d.time <= endDate);
-                });
-                console.log(data.length);
-                if (data.length == 0) return;
-                database.push({user: data[data.length - 1].user, values: data});
                 stepsXScale2 = [
                   d3.min(database, function (c) {
                     return d3.min(c.values, function (v) {
@@ -579,7 +590,6 @@ angular.module('citizensemakersApp')
                     });
                   })
                 ];
-
                 stepsYScale2 = [
                   d3.min(database, function (c) {
                     return d3.min(c.values, function (v) {
@@ -596,11 +606,9 @@ angular.module('citizensemakersApp')
                 //TODO - can be done in animation phase
                 xScale.domain(stepsXScale2);
                 yScale.domain(stepsYScale2);
+              }
 
-              }
-              if (index == -1) {
-                users2.push(data[data.length - 1].user);
-              }
+              //Rewrite domain
               color.domain(users2);
 
 
@@ -672,35 +680,39 @@ angular.module('citizensemakersApp')
 
             //Render graph based on incoming 'data'
             scope.renderHearts = function (data, pos, database) {
-              // process data
               data = JSON.parse(JSON.stringify(data));
+              // process data
+              var index = users3.indexOf(data[data.length - 1].user);
               //Check if we have to remove data
               if (data[data.length - 1].remove) {
-                var index = users3.indexOf(data[data.length - 1].user);
                 if (index != -1) {
                   users3.splice(index, 1);
-                  //TODO - make more generic
-                  filterOut(database, data[data.length - 1].user);
-
-                } else {
-                  return;
                 }
-              }
-              //proccess data
-              data.forEach(function (d) {
-                d.time = new Date(d.time * 1000);
-              });
-
-              if (pos == 2) {
-                var startDate = moment(data[data.length - 1].time).hour(9).minute(0);
-                var endDate = moment(data[data.length - 1].time).hour(12).minute(0);
-                data = data.filter(function (d) {
-                  return (d.time >= startDate) && (d.time <= endDate);
+                //TODO - make more generic
+                filterOut(database, data[data.length - 1].user);
+              } else {
+                //proccess data
+                data.forEach(function (d) {
+                  d.time = new Date(d.time * 1000);
                 });
 
-                if (data.length == 0) return;
-                database.push({user: data[data.length - 1].user, values: data});
+                if (pos == 2) {
+                  var startDate = moment(data[data.length - 1].time).hour(9).minute(0);
+                  var endDate = moment(data[data.length - 1].time).hour(12).minute(0);
+                  data = data.filter(function (d) {
+                    return (d.time >= startDate) && (d.time <= endDate);
+                  });
 
+                  if (data.length == 0) return;
+                  database.push({user: data[data.length - 1].user, values: data});
+
+                }
+                if (index == -1) {
+                  users3.push(data[data.length - 1].user);
+                }
+              }
+
+              if (pos == 2) {
                 heartsXScale = [
                   d3.min(database, function (c) {
                     return d3.min(c.values, function (v) {
@@ -726,10 +738,6 @@ angular.module('citizensemakersApp')
                     });
                   })
                 ];
-
-              }
-              if (index == -1) {
-                users3.push(data[data.length - 1].user);
               }
 
               //Set our scale's domains
@@ -1165,10 +1173,6 @@ angular.module('citizensemakersApp')
                 stepsData = [];
               } else {
                 if (newVal.length > 0) {
-                  //scope.renderSteps(newVal);
-                  //clean up steps
-                  //content.selectAll(".steps").remove();
-                  console.log("newSteps");
                   scope.renderSteps(newVal, 1, stepsData);
                   scope.renderSteps(newVal, 3, stepsData2);
 
