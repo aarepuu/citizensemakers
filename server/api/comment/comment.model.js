@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 
 var CommentSchema = new mongoose.Schema({
   user: String,
+  name: String,
   startDate: Date,
   endDate: Date,
   text: String,

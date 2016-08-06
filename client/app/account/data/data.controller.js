@@ -53,6 +53,8 @@
         if (typeof val != 'undefined') {
           self.fitbitId = self.getCurrentUser.fitbitId;
           self.userId = self.getCurrentUser._id;
+          //push currentuser to users array
+          self.users.push(self.userId);
           //TODO - change the names of right arrays. make it more explicit
           self.rights = self.getCurrentUser.rights.you;
           //default comment
@@ -128,8 +130,10 @@
     }
 
     getAvatar(userId) {
+      if (!this.userList) return '../../assets/images/user.png';
+      if(userId == this.userId) return this.getCurrentUser.avatar;
       var avatar = this.$filter('filter')(this.userList, {_id: userId});
-      return (typeof(avatar) != 'undefined' && avatar != null) ? (avatar[0].avatar.length > 0) ? avatar[0].avatar : '../../assets/images/user.png' : '../../assets/images/user.png';
+      return (typeof(avatar[0]) != 'undefined' && avatar[0] != null) ? (avatar[0].avatar.length > 0) ? avatar[0].avatar : '../../assets/images/user.png' : '../../assets/images/user.png';
     }
 
     addData(right) {
@@ -153,7 +157,9 @@
             this.graphData[2] = response.data;
         });
       } else {
-        this.graphData[0] = this.graphData[1] = this.graphData[2] = [{user: right.fitbitId, remove: true}];
+        this.graphData[0] = [{user: right.fitbitId, remove: true}];
+        this.graphData[1] = [{user: right.fitbitId, remove: true}];
+        this.graphData[2] = [{user: right.fitbitId, remove: true}];
       }
     }
 
@@ -212,6 +218,7 @@
       section.createdAt = moment();
       section.text = this.currentPersonalComment;
       section.user = this.userId;
+      section.name = this.getCurrentUser.name;
       this.currentPersonalComment = '';
       section.stepId = e.target.id.substr(e.target.id.indexOf('-') + 1);
       if (this.brushValue) {
@@ -249,11 +256,12 @@
     }
 
     comment(e, values) {
-      if (!this.currentComment || this.users.length == 0) return;
+      if (!this.currentComment || this.users.length == 1) return;
       var section = {};
       section.createdAt = moment();
       section.text = this.currentComment;
       section.user = this.userId;
+      section.name = this.getCurrentUser.name;
       this.currentComment = '';
       section.stepId = e.target.id.substr(e.target.id.indexOf('-') + 1);
       if (this.brushValue) {
@@ -330,10 +338,12 @@
       var index = this.users.indexOf(userId);
       if (index == -1) {
         this.users.push(userId);
+        this.users.sort();
         return userId;
       }
       else {
         this.users.splice(index, 1);
+        this.users.sort();
         return false;
       }
     }

@@ -114,8 +114,8 @@ export function getCommentsByDate(req, res) {
       .catch(handleError(res));
   } else {
     return Comment.find({
-      user: req.body.user,
       $and: [{"startDate": {$gte: req.body.startDate}}, {"endDate": {$lte: req.body.endDate}}],
+      //users: { $in :req.body.users},
       users: req.body.users,
       personal: req.body.personal,
     }).sort({step: -1}).exec()

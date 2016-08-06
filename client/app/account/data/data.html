@@ -58,7 +58,7 @@
 						<img src="{{vm.getCurrentUser.avatar}}" alt="" class="public-comment--avatar circle responsive-img">
 
 						<p class="public-comment--user">
-							{{ section.user }}
+							{{ vm.getCurrentUser.name }}
 						</p>
 
 						<p class="public-comment--text">
@@ -101,7 +101,7 @@
 					<img class="profile-section--avatar" src="{{vm.getCurrentUser.avatar}}">
 
 					<div class="profile-section--name">
-						{{ vm.getCurrentUser.name }}
+						{{ section.name }}
 					</div>
 
 					<div class="profile-section--last-sync">
@@ -131,10 +131,10 @@
 
 						<div class="public-comment" ng-repeat="section in value" ng-click="vm.goToComment([section.startDate,section.endDate])">
 
-							<img src="{{vm.getCurrentUser.avatar}}" alt="" class="public-comment--avatar circle responsive-img">
+							<img src="{{ vm.getAvatar(section.user) }}" alt="" class="public-comment--avatar circle responsive-img">
 
 							<p class="public-comment--user">
-								{{ section.user }}
+								{{ section.name }}
 							</p>
 
 							<p class="public-comment--text">
@@ -181,7 +181,6 @@
 
 	$(window).scroll(function (event) {
 		var scroll = $(window).scrollTop();
-		console.log(scroll);
 		if (scroll > 100)
 		{
 			$('.column-label-header').addClass('visible');
