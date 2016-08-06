@@ -17,8 +17,6 @@ angular.module('citizensemakersApp')
         d3Service.d3().then(function (d3) {
 
           function graphScroll() {
-            //console.log(element.find('sectio));
-            //console.log(d3.selectAll('#sections > section'));
 
             var windowHeight,
               dispatch = d3.dispatch("scroll", "active"),
@@ -197,11 +195,9 @@ angular.module('citizensemakersApp')
 
 
           //TODO - not a good way, make dynamic;
-          //console.log(d3.selectAll('#sections2')[0]);
           $scope.$watch('ready', function (val) {
-            //console.log(val);
+            //early return hack when comments are not ready
             if (val != 2) return;
-            //console.log(d3.selectAll('#sections2 > section'));
             var lastI = -1
             var activeI = 0
             graphScroll()
@@ -210,26 +206,22 @@ angular.module('citizensemakersApp')
               .rightsections(d3.selectAll('#sections2 > section'))
               .leftsections(d3.selectAll('#sections > section'))
               .on('active', function (i) {
-                //console.log(i);
-                if (updateFunctions.length === 0) return;
-                activeI = i
-                //call all fns last and active index
-                var sign = activeI - lastI < 0 ? -1 : 1
-                d3.range(lastI + sign, activeI + sign, sign).forEach(function (i) {
-                  updateFunctions[i]()
-                })
-
-                lastI = activeI
-
+                activeI = i;
+                //animation for sections
                 d3.selectAll('#sections > section')
                   .transition().duration(function (d, i) {
                     return i == activeI ? 0 : 600
                   })
                   .style('opacity', function (d, i) {
                     return i == activeI ? 1 : i == activeI + 1 ? .2 : .001
-                  })
-                //console.log(d);
-
+                  });
+                //call all fns last and active index
+                if (updateFunctions.length === 0 || typeof (updateFunctions[i]) == 'undefined') return;
+                var sign = activeI - lastI < 0 ? -1 : 1
+                d3.range(lastI + sign, activeI + sign, sign).forEach(function (i) {
+                  updateFunctions[i]()
+                });
+                lastI = activeI
                 //$scope.active({args: i});
               });
           });
@@ -876,11 +868,9 @@ angular.module('citizensemakersApp')
             }
 
             function drawMorning() {
-              console.log("drawMorning");
               if (stepsXScale) {
                 xScale.domain(stepsXScale);
                 yScale.domain(stepsYScale);
-                console.log(xScale.domain())
                 yAxisGen.tickFormat(yScale.tickFormat(10));
                 var t = d3.transition().transition().duration(3500);
                 t.select(".x.axis").style("opacity", 1).call(xAxisGen);
@@ -1014,11 +1004,9 @@ angular.module('citizensemakersApp')
             }
 
             function drawLunch() {
-              console.log("drawLunch");
               if (stepsXScale2) {
                 xScale.domain(stepsXScale2);
                 yScale.domain(stepsYScale2);
-                console.log(stepsXScale2);
                 yAxisGen.tickFormat(yScale.tickFormat(10));
                 var t = d3.transition().transition().duration(3500);
                 t.select(".x.axis").style("opacity", 1).call(xAxisGen);
@@ -1134,7 +1122,6 @@ angular.module('citizensemakersApp')
                 heartsData = [];
               } else {
                 if (newVal.length > 0) {
-                  console.log("newHearts");
                   scope.renderHearts(newVal, 2, heartsData);
                 }
               }
@@ -1154,7 +1141,6 @@ angular.module('citizensemakersApp')
                 sleepData = [];
               } else {
                 if (newVal.length > 0) {
-                  console.log("newSleep");
                   scope.renderSleep(newVal, 0, sleepData);
                 }
               }

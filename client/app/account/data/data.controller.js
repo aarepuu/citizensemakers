@@ -59,12 +59,6 @@
           self.init();
         }
       });
-      this.$scope.$watch("vm.startDate", function (val) {
-        moment(self.startDate);
-        console.log(self.startDate)
-      });
-
-
     }
 
 
@@ -72,22 +66,7 @@
       this.$http.get('/api/users/all').then(response => {
         this.userList = response.data;
       });
-
       //TODO - build proper component and only fetch data when query parameters change
-      //you can only select data from others which you have
-      /*this.$http.get('/api/data/hearts/' + this.fitbitId + '/minmax')
-       .then(response => {
-       var minM = moment.unix(response.data[0].min);
-       var maxM = moment.unix(response.data[0].max);
-       this.minDate = minM.toISOString();
-       this.maxDate = maxM.toISOString();
-       this.startDate = moment(maxM).startOf('day');
-       this.endDate = maxM;
-       //TODO - use promises
-       this.getData();
-       this.getPersonalComments();
-       this.getComments();
-       });*/
       var minM = moment(this.getCurrentUser.lastSync).subtract(1, "week").startOf('day');
       var maxM = moment(this.getCurrentUser.lastSync);
       this.minDate = minM.toISOString();
@@ -218,30 +197,11 @@
         section.endDate = (moment(this.startDate, "MM/DD/YYYY")).endOf('day');
       }
       section.personal = true;
-
-
-      console.log(section);
       values.unshift(section);
 
       this.$http.post("/api/comments", section).then(response => {
         section = response.data;
       });
-      /*
-       if (!section.stepId) {
-       section.stepId = e.target.id.substr(e.target.id.indexOf('-') + 1);
-       if (this.brushValue) {
-       section.startDate = this.brushValue[0];
-       section.endDate = this.brushValue[1];
-       } else {
-       section.startDate = (moment(this.startDate, "MM/DD/YYYY")).toDate();
-       section.endDate = (moment(this.startDate, "MM/DD/YYYY")).endOf('day').toDate();
-       }
-       section.personal = true;
-
-       }
-       this.$http.post("/api/comments", section).then(response => {
-       section = response.data;
-       });*/
     }
 
     comment(e, values) {
