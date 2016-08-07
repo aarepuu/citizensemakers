@@ -31,9 +31,10 @@ export function setup(User, config) {
             email: '',
             role: 'user',
             username: '',
+            avatar: profile._json.user.avatar,
             provider: 'fitbit',
             fitbitId: profile.id,
-            fitbit: profile._json
+            fitbit: profile._json.user
           });
           user.save()
             .then(user => {
