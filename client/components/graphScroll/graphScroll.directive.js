@@ -14,6 +14,7 @@ angular.module('citizensemakersApp')
         //added self parameter because of d3 service
         var self = this;
         var updateFunctions = [];
+        $scope.activeStep = 0;
         d3Service.d3().then(function (d3) {
 
           function graphScroll() {
@@ -192,6 +193,10 @@ angular.module('citizensemakersApp')
             //console.log(updateFunctions);
 
           };
+          self.getActiveStep = function () {
+            return $scope.activeStep;
+          };
+
           function setChartScale() {
             var width = Math.min(960, $window.innerWidth - 240)
             d3.select('#graph')
@@ -214,29 +219,29 @@ angular.module('citizensemakersApp')
             //early return hack when comments are not ready
             if (val != 2) return;
             var lastI = -1
-            var activeI = 0
             graphScroll()
               .container(d3.select('.container-fluid'))
               .graph(d3.selectAll('#graph'))
               .rightsections(d3.selectAll('#sections2 > section'))
               .leftsections(d3.selectAll('#sections > section'))
               .on('active', function (i) {
-                activeI = i;
+                $scope.activeStep = i;
                 //animation for sections
                 d3.selectAll('#sections > section')
                   .transition().duration(function (d, i) {
-                    return i == activeI ? 0 : 600
+                    return i == $scope.activeStep ? 0 : 600
                   })
                   .style('opacity', function (d, i) {
-                    return i == activeI ? 1 : i == activeI + 1 ? .2 : .001
+                    return i == $scope.activeStep ? 1 : i == $scope.activeStep + 1 ? .2 : .001
                   });
                 //call all fns last and active index
                 if (updateFunctions.length === 0 || typeof (updateFunctions[i]) == 'undefined') return;
-                var sign = activeI - lastI < 0 ? -1 : 1
-                d3.range(lastI + sign, activeI + sign, sign).forEach(function (i) {
+                var sign = $scope.activeStep - lastI < 0 ? -1 : 1
+                d3.range(lastI + sign, $scope.activeStep + sign, sign).forEach(function (i) {
                   updateFunctions[i]()
                 });
-                lastI = activeI
+                lastI = $scope.activeStep
+                //$scope.activeStep = activeI;
                 //$scope.active({args: i});
               });
           });
@@ -506,7 +511,8 @@ angular.module('citizensemakersApp')
               graphCtrl.addGraph(drawSleep, 0);
 
               //init first graph
-              drawSleep();
+              if (graphCtrl.getActiveStep() == 0)
+                drawSleep();
 
 
             };
@@ -725,6 +731,15 @@ angular.module('citizensemakersApp')
                 graphCtrl.addGraph(drawEvening, pos);
               }
 
+              if (graphCtrl.getActiveStep() == 1) {
+                drawMorning();
+              } else if (graphCtrl.getActiveStep() == 3) {
+                drawLunch();
+              } else if (graphCtrl.getActiveStep() == 5) {
+                drawEvening;
+              }
+
+
             };
 
             //Render graph based on incoming 'data'
@@ -859,6 +874,11 @@ angular.module('citizensemakersApp')
                 graphCtrl.addGraph(drawAfternoon, pos);
               }
 
+              if (graphCtrl.getActiveStep() == 2) {
+                drawHrMorning();
+              } else if (graphCtrl.getActiveStep() == 4) {
+                drawAfternoon();
+              }
 
             };
 
@@ -935,9 +955,8 @@ angular.module('citizensemakersApp')
                 return area(d.values);
               });
 
-              users1.forEach(function(d,i){
-                console.log(d);
-                var path = d3.selectAll("path#sleep"+d).attr("d", function (d) {
+              users1.forEach(function (d, i) {
+                var path = d3.selectAll("path#sleep" + d).attr("d", function (d) {
                   //console.log(d.values);
                   return line(d.values);
                 });
@@ -1338,20 +1357,12 @@ angular.module('citizensemakersApp')
 
             //heartrates
             scope.$watch('data[0]', function (newVal, oldVal) {
-              //newVal = newVal[0];
-              //if (oldVal.length > 0) {
-              //values.concat(oldVal);
-              //}
-              //TODO - send only user id when you want to delete it
-              //reset after date switch
               if (newVal === [] || typeof newVal === 'undefined') {
                 users3 = [];
                 heartsData = [];
               } else {
-                if (newVal.length > 0) {
-                  scope.renderHearts(newVal, 2, heartsData);
-                  scope.renderHearts(newVal, 4, heartsData2);
-                }
+                scope.renderHearts(newVal.data, 2, heartsData);
+                scope.renderHearts(newVal.data, 4, heartsData2);
               }
 
             });
@@ -1368,9 +1379,7 @@ angular.module('citizensemakersApp')
                 users1 = [];
                 sleepData = [];
               } else {
-                if (newVal.length > 0) {
-                  scope.renderSleep(newVal, 0, sleepData);
-                }
+                scope.renderSleep(newVal.data, 0, sleepData);
               }
 
             });
@@ -1386,12 +1395,9 @@ angular.module('citizensemakersApp')
                 users2 = [];
                 stepsData = [];
               } else {
-                if (newVal.length > 0) {
-                  scope.renderSteps(newVal, 1, stepsData);
-                  scope.renderSteps(newVal, 3, stepsData2);
-                  scope.renderSteps(newVal, 5, stepsData3);
-
-                }
+                scope.renderSteps(newVal.data, 1, stepsData);
+                scope.renderSteps(newVal.data, 3, stepsData2);
+                scope.renderSteps(newVal.data, 5, stepsData3);
               }
 
             });

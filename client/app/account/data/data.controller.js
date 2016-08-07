@@ -120,22 +120,25 @@
         //TODO - make this into a function
         this.$http.post("/api/data/hearts", right).then(response => {
           if (response.data.length > 0)
-            this.graphData[0] = response.data;
+            this.graphData[0] = response;
         });
         this.$http.post("/api/data/sleeps", right).then(response => {
           if (response.data.length > 0)
-            this.graphData[1] = response.data;
+            this.graphData[1] = response;
         });
         this.$http.post("/api/data/steps", right).then(response => {
           if (response.data.length > 0)
-            this.graphData[2] = response.data;
+            this.graphData[2] = response;
         });
       } else {
         target.css({"border": "none"});
         target.removeClass('friend-selected');
-        this.graphData[0] = [{user: right.fitbitId, remove: true}];
-        this.graphData[1] = [{user: right.fitbitId, remove: true}];
-        this.graphData[2] = [{user: right.fitbitId, remove: true}];
+        //TODO - hacky way of cleaning data, change
+        var response = {};
+        response.data = [{user: right.fitbitId, remove: true}];
+        this.graphData[0] = response;
+        this.graphData[1] = response;
+        this.graphData[2] = response;
       }
     }
 
@@ -176,16 +179,19 @@
     getData() {
       this.$http.get('/api/data/hearts/' + this.fitbitId + '/' + (moment(this.startDate, "MM/DD/YYYY").unix()) + '/' + (moment(this.startDate, "MM/DD/YYYY").endOf('day').unix()))
         .then(response => {
-          this.graphData[0] = response.data;
+          if (response.data.length > 0)
+            this.graphData[0] = response;
         });
       //console.log(moment(this.startDate, "MM/DD/YYYY").toDate()+' '+moment(this.startDate, "MM/DD/YYYY").endOf('day').toDate());
       this.$http.get('/api/data/sleeps/' + this.fitbitId + '/' + (moment(this.startDate, "MM/DD/YYYY").unix()) + '/' + (moment(this.startDate, "MM/DD/YYYY").endOf('day').unix()))
         .then(response => {
-          this.graphData[1] = response.data;
+          if (response.data.length > 0)
+            this.graphData[1] = response;
         });
       this.$http.get('/api/data/steps/' + this.fitbitId + '/' + (moment(this.startDate, "MM/DD/YYYY").unix()) + '/' + (moment(this.startDate, "MM/DD/YYYY").endOf('day').unix()))
         .then(response => {
-          this.graphData[2] = response.data;
+          if (response.data.length > 0)
+            this.graphData[2] = response;
         });
     }
 
