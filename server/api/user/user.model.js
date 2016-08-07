@@ -5,6 +5,8 @@ import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
 import {Schema} from 'mongoose';
 
+const authTypes = ['fitbit'];
+
 var RightSchema = new Schema({
     weekendtime: {type: Array, "default": [0, 23]},
     weektime: {type: Array, "default": [0, 23]},
@@ -20,7 +22,13 @@ var UserSchema = new Schema({
   email: {
     type: String,
     lowercase: true,
-    required: true
+    required: function() {
+      if (authTypes.indexOf(this.provider) === -1) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   },
   role: {
     type: String,
@@ -40,10 +48,17 @@ var UserSchema = new Schema({
   },
   password: {
     type: String,
-    required: true
+    required: function() {
+      if (authTypes.indexOf(this.provider) === -1) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   },
   provider: String,
   salt: String,
+  fitbit: {},
   rights: {
     you: [RightSchema],
     them: [RightSchema]
@@ -57,7 +72,7 @@ var UserSchema = new Schema({
 // Public profile information
 UserSchema
   .virtual('profile')
-  .get(function () {
+  .get(function() {
     return {
       'name': this.name,
       'role': this.role
@@ -67,7 +82,7 @@ UserSchema
 // Non-sensitive info we'll be putting in the token
 UserSchema
   .virtual('token')
-  .get(function () {
+  .get(function() {
     return {
       '_id': this._id,
       'role': this.role
@@ -81,25 +96,33 @@ UserSchema
 // Validate empty email
 UserSchema
   .path('email')
-  .validate(function (email) {
+  .validate(function(email) {
+    if (authTypes.indexOf(this.provider) !== -1) {
+      return true;
+    }
     return email.length;
   }, 'Email cannot be blank');
 
 // Validate empty password
 UserSchema
   .path('password')
-  .validate(function (password) {
+  .validate(function(password) {
+    if (authTypes.indexOf(this.provider) !== -1) {
+      return true;
+    }
     return password.length;
   }, 'Password cannot be blank');
 
 // Validate email is not taken
 UserSchema
   .path('email')
-  .validate(function (value, respond) {
+  .validate(function(value, respond) {
     var self = this;
-
-    return this.constructor.findOne({email: value}).exec()
-      .then(function (user) {
+    if (authTypes.indexOf(this.provider) !== -1) {
+      return respond(true);
+    }
+    return this.constructor.findOne({ email: value }).exec()
+      .then(function(user) {
         if (user) {
           if (self.id === user.id) {
             return respond(true);
@@ -108,12 +131,12 @@ UserSchema
         }
         return respond(true);
       })
-      .catch(function (err) {
+      .catch(function(err) {
         throw err;
       });
   }, 'The specified email address is already in use.');
 
-var validatePresenceOf = function (value) {
+var validatePresenceOf = function(value) {
   return value && value.length;
 };
 
@@ -121,14 +144,18 @@ var validatePresenceOf = function (value) {
  * Pre-save hook
  */
 UserSchema
-  .pre('save', function (next) {
+  .pre('save', function(next) {
     // Handle new/update passwords
     if (!this.isModified('password')) {
       return next();
     }
 
     if (!validatePresenceOf(this.password)) {
-      return next(new Error('Invalid password'));
+      if (authTypes.indexOf(this.provider) === -1) {
+        return next(new Error('Invalid password'));
+      } else {
+        return next();
+      }
     }
 
     // Make salt with a callback
