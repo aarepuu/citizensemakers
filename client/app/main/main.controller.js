@@ -11,12 +11,6 @@
       this.isConnected = Auth.isConnected;
       this.currentuser = Auth.getCurrentUser();
       this.me = Auth.getCurrentUser()._id;
-      var self = this;
-
-      $scope.$watch('main',function (val) {
-        console.log("watch main");
-        self.me = Auth.getCurrentUser()._id
-      });
     }
 
     showFitbit() {

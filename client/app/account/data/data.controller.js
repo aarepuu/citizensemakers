@@ -109,11 +109,11 @@
 
     addData(e, right) {
       var target = $(e.target).find('img');
-      target.css({"border": "3px solid rgb(31, 119, 180)"});
-
       var user = this.populateUsers(right.userId);
       this.getComments();
       if (user) {
+        target.css({"border": "3px solid rgb(31, 119, 180)"});
+        target.addClass('friend-selected');
         //add dates
         right.start = (moment(this.startDate, "MM/DD/YYYY").unix());
         right.end = (moment(this.startDate, "MM/DD/YYYY").endOf('day').unix());
@@ -131,6 +131,8 @@
             this.graphData[2] = response.data;
         });
       } else {
+        target.css({"border": "none"});
+        target.removeClass('friend-selected');
         this.graphData[0] = [{user: right.fitbitId, remove: true}];
         this.graphData[1] = [{user: right.fitbitId, remove: true}];
         this.graphData[2] = [{user: right.fitbitId, remove: true}];
