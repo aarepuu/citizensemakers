@@ -263,7 +263,7 @@ angular.module('citizensemakersApp')
         d3Service.d3().then(function (d3) {
             var xScale, yScale, xScale2, yScale2, xAxisGen, xAxisGen2,
               yAxisGen, color, brush, content, overview, sleepScale,
-              stepsXScale, stepsYScale, stepsXScale2, stepsYScale2,
+              stepsXScale, stepsYScale, stepsXScale2, stepsYScale2, stepsXScale3, stepsYScale3,
               heartsXScale, heartsYScale, heartsXScale2, heartsYScale2;
 
 
@@ -549,6 +549,15 @@ angular.module('citizensemakersApp')
                   if (data.length == 0) return;
 
                   database.push({user: data[data.length - 1].user, values: data});
+                } else if (pos == 5) {
+                  var startDate = moment(data[data.length - 1].time).hour(17).minute(0);
+                  var endDate = moment(data[data.length - 1].time).hour(23).minute(0);
+                  data = data.filter(function (d) {
+                    return (d.time >= startDate) && (d.time <= endDate);
+                  });
+                  if (data.length == 0) return;
+
+                  database.push({user: data[data.length - 1].user, values: data});
                 }
                 if (index == -1) {
                   users2.push(data[data.length - 1].user);
@@ -615,6 +624,35 @@ angular.module('citizensemakersApp')
                 //TODO - can be done in animation phase
                 xScale.domain(stepsXScale2);
                 yScale.domain(stepsYScale2);
+              } else if (pos == 5) {
+                stepsXScale3 = [
+                  d3.min(database, function (c) {
+                    return d3.min(c.values, function (v) {
+                      return v.time;
+                    });
+                  }),
+                  d3.max(database, function (c) {
+                    return d3.max(c.values, function (v) {
+                      return v.time;
+                    });
+                  })
+                ];
+                stepsYScale3 = [
+                  d3.min(database, function (c) {
+                    return d3.min(c.values, function (v) {
+                      return v.value;
+                    });
+                  }),
+                  d3.max(database, function (c) {
+                    return d3.max(c.values, function (v) {
+                      return v.value;
+                    });
+                  })
+                ];
+                //set scales for calculating
+                //TODO - can be done in animation phase
+                xScale.domain(stepsXScale3);
+                yScale.domain(stepsYScale3);
               }
 
               //Rewrite domain
@@ -683,6 +721,8 @@ angular.module('citizensemakersApp')
                 graphCtrl.addGraph(drawMorning, pos);
               } else if (pos == 3) {
                 graphCtrl.addGraph(drawLunch, pos);
+              } else if (pos == 5) {
+                graphCtrl.addGraph(drawEvening, pos);
               }
 
             };
@@ -825,7 +865,7 @@ angular.module('citizensemakersApp')
             function drawSleep() {
               if (sleepScale) {
                 xScale.domain(sleepScale);
-                xScale2.domain(heartsXScale);
+                //xScale2.domain(heartsXScale);
                 yScale2.domain(heartsYScale);
                 yScale.domain([0, 4]);
                 yAxisGen.tickFormat(sleepFormat);
@@ -835,7 +875,8 @@ angular.module('citizensemakersApp')
                 t.select(".y.axis").style("opacity", 1).call(yAxisGen);
                 t.select(".text").style("opacity", 1);
                 d3.select(".nodata").style("opacity", 0);
-                overview.select(".x.axis").call(xAxisGen2);
+                d3.select(".brush").style("opacity", 1);
+                //overview.select(".x.axis").call(xAxisGen2);
                 t.selectAll("rect.steps").attr("y", function (d, i) {
                     return height - yScale(d.value);
                   })
@@ -844,6 +885,7 @@ angular.module('citizensemakersApp')
                   });
               } else {
                 d3.select(".nodata").style("opacity", 1);
+                d3.select(".brush").style("opacity", 0);
 
               }
 
@@ -936,6 +978,7 @@ angular.module('citizensemakersApp')
                 var t = d3.transition().transition().duration(3500);
                 t.select(".x.axis").style("opacity", 1).call(xAxisGen);
                 t.select(".y.axis").style("opacity", 1).call(yAxisGen);
+                d3.select(".brush").style("opacity", 1);
                 //t.selectAll(".step").style("opacity",1);
                 //t.select(".text").style("opacity", 0);
                 d3.select(".nodata").style("opacity", 0);
@@ -947,6 +990,7 @@ angular.module('citizensemakersApp')
                   });
               } else {
                 d3.select(".nodata").style("opacity", 1);
+                d3.select(".brush").style("opacity", 0);
 
               }
               /*
@@ -1009,6 +1053,7 @@ angular.module('citizensemakersApp')
                 t.select(".y.axis").style("opacity", 1).call(yAxisGen);
                 t.select(".text").style("opacity", 0);
                 d3.select(".nodata").style("opacity", 0);
+                d3.select(".brush").style("opacity", 1);
                 t.selectAll("rect.steps").attr("y", function (d, i) {
                     return height - yScale(d.value);
                   })
@@ -1024,7 +1069,7 @@ angular.module('citizensemakersApp')
 
               } else {
                 d3.select(".nodata").style("opacity", 1);
-
+                d3.select(".brush").style("opacity", 0);
               }
 
               var line = d3.svg.line()
@@ -1040,7 +1085,7 @@ angular.module('citizensemakersApp')
                 return line(d.values);
               }).style("opacity", 1);
 
-              if (hrPath.node != null) {
+              if (hrPath.node() != null) {
                 var totalLength = hrPath.node().getTotalLength();
                 hrPath
                   .attr("stroke-dasharray", totalLength + " " + totalLength)
@@ -1074,6 +1119,7 @@ angular.module('citizensemakersApp')
                 t.select(".y.axis").style("opacity", 1).call(yAxisGen);
                 //t.selectAll(".step").style("opacity",1);
                 //t.select(".text").style("opacity", 0);
+                d3.select(".brush").style("opacity", 1);
                 d3.select(".nodata").style("opacity", 0);
                 t.selectAll("rect.step-3").attr("y", function (d, i) {
                     return height - yScale(d.value);
@@ -1083,6 +1129,7 @@ angular.module('citizensemakersApp')
                   });
               } else {
                 d3.select(".nodata").style("opacity", 1);
+                d3.select(".brush").style("opacity", 0);
 
               }
               /*
@@ -1145,6 +1192,7 @@ angular.module('citizensemakersApp')
                 t.select(".x.axis").style("opacity", 1).call(xAxisGen);
                 t.select(".y.axis").style("opacity", 1).call(yAxisGen);
                 t.select(".text").style("opacity", 0);
+                d3.select(".brush").style("opacity", 1);
                 d3.select(".nodata").style("opacity", 0);
                 t.selectAll("rect.steps").attr("y", function (d, i) {
                     return height - yScale(d.value);
@@ -1161,7 +1209,7 @@ angular.module('citizensemakersApp')
 
               } else {
                 d3.select(".nodata").style("opacity", 1);
-
+                d3.select(".brush").style("opacity", 0);
               }
 
               var line = d3.svg.line()
@@ -1177,7 +1225,7 @@ angular.module('citizensemakersApp')
                 return line(d.values);
               }).style("opacity", 1);
 
-              if (hrPath.node != null) {
+              if (hrPath.node() != null) {
                 var totalLength = hrPath.node().getTotalLength();
                 hrPath
                   .attr("stroke-dasharray", totalLength + " " + totalLength)
@@ -1200,6 +1248,52 @@ angular.module('citizensemakersApp')
               }
 
 
+            }
+
+            function drawEvening() {
+              if (stepsXScale3) {
+                xScale.domain(stepsXScale3);
+                yScale.domain(stepsYScale3);
+                yAxisGen.tickFormat(yScale.tickFormat(10));
+                var t = d3.transition().transition().duration(3500);
+                t.select(".x.axis").style("opacity", 1).call(xAxisGen);
+                t.select(".y.axis").style("opacity", 1).call(yAxisGen);
+                //t.selectAll(".step").style("opacity",1);
+                //t.select(".text").style("opacity", 0);
+                d3.select(".brush").style("opacity", 1);
+                d3.select(".nodata").style("opacity", 0);
+                t.selectAll("rect.step-5").attr("y", function (d, i) {
+                    return height - yScale(d.value);
+                  })
+                  .attr("height", function (d, i) {
+                    return yScale(d.value);
+                  });
+              } else {
+                d3.select(".nodata").style("opacity", 1);
+                d3.select(".brush").style("opacity", 0);
+              }
+
+              var sleepsPath = d3.selectAll("path.sleep");
+              if (sleepsPath.node() != null) {
+                var totalLength = sleepsPath.node().getTotalLength();
+                sleepsPath
+                  .transition()
+                  .duration(2000)
+                  .ease("linear")
+                  .attr("stroke-dashoffset", totalLength).style("opacity", 0);
+
+              }
+              var hrPath = d3.selectAll("path.step-4");
+              if (hrPath.node() != null) {
+                var totalLength = hrPath.node().getTotalLength();
+
+                hrPath
+                  .transition()
+                  .duration(2000)
+                  .ease("linear")
+                  .attr("stroke-dashoffset", totalLength).style("opacity", 0);
+
+              }
             }
 
 
@@ -1291,7 +1385,7 @@ angular.module('citizensemakersApp')
                 if (newVal.length > 0) {
                   scope.renderSteps(newVal, 1, stepsData);
                   scope.renderSteps(newVal, 3, stepsData2);
-                  //scope.renderSteps(newVal, 5, stepsData3);
+                  scope.renderSteps(newVal, 5, stepsData3);
 
                 }
               }
@@ -1303,7 +1397,7 @@ angular.module('citizensemakersApp')
             graphCtrl.addGraph(drawHrMorning, 2);
             graphCtrl.addGraph(drawLunch, 3);
             graphCtrl.addGraph(drawAfternoon, 4);
-            //graphCtrl.addGraph(drawEvening, 5);
+            graphCtrl.addGraph(drawEvening, 5);
             drawNoData('graphsvg');
 
             scope.$watch('extent', function (newVal, oldVal) {

@@ -130,7 +130,10 @@ export function getDataByDate(req, res) {
     "time": {$gte: req.params.start, $lte: req.params.end}
   }, '-day -hour').sort({time: 1}).exec()
     .then(sleeps => {
-      return Sleep.find({"logId": sleeps[0].logId}
+      var logId = 0;
+      console.log(sleeps[0]);
+      if (typeof (sleeps[0]) != 'undefined') logId = sleeps[0].logId;
+      return Sleep.find({"logId": logId}
       ).sort({time: 1}).exec()
         .then(respondWithResult(res))
         .catch(handleError(res));

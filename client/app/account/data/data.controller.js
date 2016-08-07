@@ -100,12 +100,17 @@
 
     getAvatar(userId) {
       if (!this.userList) return '../../assets/images/user.png';
-      if(userId == this.userId) return this.getCurrentUser.avatar;
+      if (userId == this.userId) {
+        return (this.getCurrentUser.avatar.length > 0) ? this.getCurrentUser.avatar : '../../assets/images/user.png';
+      }
       var avatar = this.$filter('filter')(this.userList, {_id: userId});
       return (typeof(avatar[0]) != 'undefined' && avatar[0] != null) ? (avatar[0].avatar.length > 0) ? avatar[0].avatar : '../../assets/images/user.png' : '../../assets/images/user.png';
     }
 
-    addData(right) {
+    addData(e, right) {
+      var target = $(e.target).find('img');
+      target.css({"border": "3px solid rgb(31, 119, 180)"});
+
       var user = this.populateUsers(right.userId);
       this.getComments();
       if (user) {

@@ -67,7 +67,7 @@
             <div class="note public-comment" ng-repeat="section in element"
                  ng-click="vm.goToComment([section.startDate,section.endDate])">
 
-              <img src="{{vm.getCurrentUser.avatar}}" alt="" class="public-comment--avatar circle responsive-img">
+              <img src="{{ vm.getAvatar(vm.userId) }}" alt="" class="public-comment--avatar circle responsive-img">
 
               <p class="public-comment--user">
                 {{ vm.getCurrentUser.name }}
@@ -109,12 +109,11 @@
 
       <h3 class="column-header">Your Profile</h3>
 
-      <div class="profile-section--content">
+      <div ng-model="vm.userId" class="profile-section--content">
 
-        <img class="profile-section--avatar" src="{{vm.getCurrentUser.avatar}}">
-
+        <img  class="profile-section--avatar" src="{{ vm.getAvatar(vm.userId) }}">
         <div class="profile-section--name">
-          {{ section.name }}
+
         </div>
 
         <div class="profile-section--last-sync">
@@ -176,11 +175,11 @@
         <span class="add-friend--text">Add Friend</span>
       </li>
       <li class="friends-list--friend-wrapper">
-        <img src="{{vm.getCurrentUser.avatar}}">
-        <span class="friend-name">You</span>
+        <img class="my-avatar" src="{{ vm.getAvatar(vm.userId) }}">
+        <span class="friend-name me">You</span>
       </li>
       <li ng-model="vm.rights" ng-repeat="right in vm.rights" ng-show="right.week || right.weekend"
-          ng-click="vm.addData(right)" class="friends-list--friend-wrapper">
+          ng-click="vm.addData($event,right)" class="friends-list--friend-wrapper">
         <img src="{{vm.getAvatar(right.userId)}}">
         <span class="friend-name">{{right.name}}</span>
       </li>

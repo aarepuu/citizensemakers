@@ -31,4 +31,12 @@ Run `gulp build` for building and `gulp serve` for preview.
 ## Testing
 
 Running `npm test` will run the unit tests with karma.
+
+## Deploying
+
+1. Create ecosystem.json file
+2. Run deploy to get the code from git
+3. pm2 startOrRestart ecosystem.json --env production
+
 =======
+
