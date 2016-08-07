@@ -935,21 +935,25 @@ angular.module('citizensemakersApp')
                 return area(d.values);
               });
 
-              var path = d3.selectAll("path.sleep").attr("d", function (d) {
-                //console.log(d.values);
-                return line(d.values);
+              users1.forEach(function(d,i){
+                console.log(d);
+                var path = d3.selectAll("path#sleep"+d).attr("d", function (d) {
+                  //console.log(d.values);
+                  return line(d.values);
+                });
+
+                if (path.node() != null) {
+                  var sleepLength = path.node().getTotalLength();
+                  path
+                    .attr("stroke-dasharray", sleepLength + " " + sleepLength)
+                    .attr("stroke-dashoffset", sleepLength)
+                    .transition()
+                    .duration(2000)
+                    .ease("linear")
+                    .attr("stroke-dashoffset", 0).style("opacity", 1);
+                }
               });
 
-              if (path.node() != null) {
-                var sleepLength = path.node().getTotalLength();
-                path
-                  .attr("stroke-dasharray", sleepLength + " " + sleepLength)
-                  .attr("stroke-dashoffset", sleepLength)
-                  .transition()
-                  .duration(2000)
-                  .ease("linear")
-                  .attr("stroke-dashoffset", 0).style("opacity", 1);
-              }
 
               var stepsPath = d3.selectAll("rect.steps-1");
               if (stepsPath.node() != null) {
