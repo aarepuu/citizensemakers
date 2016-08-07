@@ -192,18 +192,19 @@ angular.module('citizensemakersApp')
             //console.log(updateFunctions);
 
           };
-          function setChartScale(){
+          function setChartScale() {
             var width = Math.min(960, $window.innerWidth - 240)
             d3.select('#graph')
-              .style('transform', 'scale(' + width/960 +')')
-              .style('-webkit-transform', 'scale(' + width/960 +')')
-              .style('-moz-transform', 'scale(' + width/960 +')')
-              .style('-o-transform', 'scale(' + width/960 +')')
-              .style('-ms-transform', 'scale(' + width/960 +')')
-              .style('margin-left', -(960-width)/2 + 'px')
-              .style('margin-top' , -(960-width)/3 + 'px')
+              .style('transform', 'scale(' + width / 960 + ')')
+              .style('-webkit-transform', 'scale(' + width / 960 + ')')
+              .style('-moz-transform', 'scale(' + width / 960 + ')')
+              .style('-o-transform', 'scale(' + width / 960 + ')')
+              .style('-ms-transform', 'scale(' + width / 960 + ')')
+              .style('margin-left', -(960 - width) / 2 + 'px')
+              .style('margin-top', -(960 - width) / 3 + 'px')
 
           }
+
           d3.select($window).on('resize.calcScale', _.debounce(setChartScale, 200))
           setChartScale();
 
@@ -292,8 +293,7 @@ angular.module('citizensemakersApp')
               .attr("xmlns", "http://www.w3.org/2000/svg")
               .attr("width", width + margin.left + margin.right)
               .attr("height", height + margin.top + margin.bottom);
-            //.append("g")
-            //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 
             xScale = d3.time.scale()
               .range([0, width]);
@@ -306,17 +306,23 @@ angular.module('citizensemakersApp')
               .range([height2, 0]);
 
             xAxisGen = d3.svg.axis()
-              //.tickValues(["1944","2015"])
-              //.tickValues(d3.range(hei, 80, 4));
               .ticks(20)
               .scale(xScale)
+              //.tickSize(-(width), 0)
+              .tickPadding(6)
               .orient("bottom");
+
+            yAxisGen = d3.svg.axis()
+              .scale(yScale)
+              .orient("left")
+              .innerTickSize(-width)
+              .outerTickSize(0)
+              .tickPadding(10);
 
             xAxisGen2 = d3.svg.axis()
               .scale(xScale2)
               .orient("bottom")
               .tickSize(height2, 0);
-            //.tickPadding(6);
 
             //1 ("asleep"), 2 ("awake"), or 3 ("really awake").
             function sleepFormat(d) {
@@ -330,14 +336,7 @@ angular.module('citizensemakersApp')
               return "";
             }
 
-            yAxisGen = d3.svg.axis()
-              .scale(yScale)
-              .orient("left")
-              .innerTickSize(-width)
-              .outerTickSize(0)
-              .tickPadding(10);
-            //.tickFormat(sleepFormat);
-
+            // add brush
             brush = d3.svg.brush()
               .x(xScale)
               .on("brush", brushed);
@@ -345,38 +344,56 @@ angular.module('citizensemakersApp')
             color = d3.scale.category10();
 
 
-            //canvas for the stuff
+            //canvas for the d3 stuff
             content = svg.append("g")
               .attr("id", "content")
               .attr("class", "content")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             //overview chart
-            /*overview = svg.append("g")
-             .attr("id", "overview")
-             .attr("class", "overview")
-             .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");*/
+            overview = svg.append("g")
+              .attr("id", "overview")
+              .attr("class", "overview")
+              .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
-            //Render X axis
+            //x axis for overview
+            overview.append("g")
+              .attr("class", "x axis")
+            //.attr("transform", "translate(0," + height2 + ")")
+
+
+            // x axis for the main content
             content.append("g")
               .attr("class", "x axis")
-              .attr("transform", "translate(0," + height + ")")
-            //.attr("transform", "translate(0,180)");
-            //.call(xAxisGen);
+              .attr("transform", "translate(0," + height + ")");
 
 
-            //Render Y axis
+            // y axis
             content.append("g")
               .attr("class", "y axis")
               //.attr("transform", "translate(20,0)")
-              //.call(yAxisGen)
               .append("text")
-              .attr("transform", "rotate(-90)")
+              //.attr("transform", "rotate(-90)")
               .attr("y", 6)
               .attr("dy", ".71em")
               .style("text-anchor", "end")
-            //.text("Beats per minute");
+              .text("Sleep Stage");
 
+
+            //add brush
+            content.append("g")
+              .attr("class", "x brush")
+              .call(brush)
+              .selectAll("rect")
+              .attr("y", -6)
+              .attr("height", height + 7);
+
+            content.append("text")
+              .attr("class", "title")
+              .attr("x", width / 2)
+              .attr("y", 0 - (margin.top / 2))
+              .attr("text-anchor", "middle")
+              .text("Testing");
 
             //Render graph based on incoming 'data'
             scope.renderSleep = function (data, pos, database) {
@@ -468,7 +485,7 @@ angular.module('citizensemakersApp')
 
               sleep.append("path")
                 .attr("class", function (d) {
-                  return "sleep step-" + pos +" path" + d.user;
+                  return "sleep step-" + pos + " path" + d.user;
                 })
                 .attr("id", function (d) {
                   return "sleep" + d.user;
@@ -478,29 +495,13 @@ angular.module('citizensemakersApp')
                 })
                 .style("opacity", 1);
 
-              content.selectAll('.brush').remove();
 
-              //add brush
-              content.append("g")
-                .attr("class", "x brush")
-                .call(brush)
-                .selectAll("rect")
-                .attr("y", -6)
-                .attr("height", height + 7);
+              overview.append("path")
+                .data(heartsData)
+                .attr("class", "area")
+                .attr("id", "hrarea")
+              //.attr("d", area);
 
-              /*
-               overview.append("g")
-               .attr("class", "x axis")
-               .attr("transform", "translate(0," + height2 + ")")
-               //.attr("transform", "translate(0,180)")
-               //.call(xAxisGen2);
-
-               overview.append("path")
-               .data(heartsData)
-               .attr("class", "area")
-               .attr("id", "hrarea")
-               //.attr("d", area);
-               */
               //add functions
               graphCtrl.addGraph(drawSleep, 0);
 
@@ -714,6 +715,16 @@ angular.module('citizensemakersApp')
                   if (data.length == 0) return;
                   database.push({user: data[data.length - 1].user, values: data});
 
+                } else if (pos == 4) {
+                  var startDate = moment(data[data.length - 1].time).hour(14).minute(0);
+                  var endDate = moment(data[data.length - 1].time).hour(17).minute(0);
+                  data = data.filter(function (d) {
+                    return (d.time >= startDate) && (d.time <= endDate);
+                  });
+
+                  if (data.length == 0) return;
+                  database.push({user: data[data.length - 1].user, values: data});
+
                 }
                 if (index == -1) {
                   users3.push(data[data.length - 1].user);
@@ -735,6 +746,32 @@ angular.module('citizensemakersApp')
                 ];
 
                 heartsYScale = [
+                  d3.min(database, function (c) {
+                    return d3.min(c.values, function (v) {
+                      return v.value;
+                    });
+                  }),
+                  d3.max(database, function (c) {
+                    return d3.max(c.values, function (v) {
+                      return v.value;
+                    });
+                  })
+                ];
+              } else if (pos == 4) {
+                heartsXScale2 = [
+                  d3.min(database, function (c) {
+                    return d3.min(c.values, function (v) {
+                      return v.time;
+                    });
+                  }),
+                  d3.max(database, function (c) {
+                    return d3.max(c.values, function (v) {
+                      return v.time;
+                    });
+                  })
+                ];
+
+                heartsYScale2 = [
                   d3.min(database, function (c) {
                     return d3.min(c.values, function (v) {
                       return v.value;
@@ -776,7 +813,11 @@ angular.module('citizensemakersApp')
 
 
               //add functions
-              graphCtrl.addGraph(drawHearts, pos);
+              if (pos == 2) {
+                graphCtrl.addGraph(drawHrMorning, pos);
+              } else if (pos == 4) {
+                graphCtrl.addGraph(drawAfternoon, pos);
+              }
 
 
             };
@@ -784,6 +825,8 @@ angular.module('citizensemakersApp')
             function drawSleep() {
               if (sleepScale) {
                 xScale.domain(sleepScale);
+                xScale2.domain(heartsXScale);
+                yScale2.domain(heartsYScale);
                 yScale.domain([0, 4]);
                 yAxisGen.tickFormat(sleepFormat);
 
@@ -792,6 +835,7 @@ angular.module('citizensemakersApp')
                 t.select(".y.axis").style("opacity", 1).call(yAxisGen);
                 t.select(".text").style("opacity", 1);
                 d3.select(".nodata").style("opacity", 0);
+                overview.select(".x.axis").call(xAxisGen2);
                 t.selectAll("rect.steps").attr("y", function (d, i) {
                     return height - yScale(d.value);
                   })
@@ -844,16 +888,15 @@ angular.module('citizensemakersApp')
                   return yScale2(d.value);
                 });
 
-              /*var overview = svg.selectAll("path.area").attr("d", function (d) {
-               //console.log(d.values);
-               return area(d.values);
-               });*/
+              var over = svg.selectAll("path.area").attr("d", function (d) {
+                //console.log(d.values);
+                return area(d.values);
+              });
 
               var path = d3.selectAll("path.sleep").attr("d", function (d) {
                 //console.log(d.values);
                 return line(d.values);
               });
-              console.log(path);
 
               if (path.node() != null) {
                 var sleepLength = path.node().getTotalLength();
@@ -867,7 +910,6 @@ angular.module('citizensemakersApp')
               }
 
               var stepsPath = d3.selectAll("rect.steps-1");
-              console.log(stepsPath);
               if (stepsPath.node() != null) {
                 var totalLength = stepsPath.node().getTotalLength();
                 stepsPath
@@ -956,7 +998,7 @@ angular.module('citizensemakersApp')
 
             }
 
-            function drawHearts() {
+            function drawHrMorning() {
               if (heartsXScale) {
                 xScale.domain(heartsXScale);
                 yScale.domain(heartsYScale);
@@ -993,7 +1035,7 @@ angular.module('citizensemakersApp')
                   return yScale(d.value);
                 }).interpolate('basis');
 
-              var hrPath = d3.selectAll("path.hr").attr("d", function (d) {
+              var hrPath = d3.selectAll("path.step-2").attr("d", function (d) {
                 //console.log(d.values);
                 return line(d.values);
               }).style("opacity", 1);
@@ -1078,7 +1120,7 @@ angular.module('citizensemakersApp')
                   .attr("stroke-dashoffset", totalLength).style("opacity", 0);
 
               }
-              var hrPath = d3.selectAll("path.hr");
+              var hrPath = d3.selectAll("path.step-2");
               if (hrPath.node() != null) {
                 var totalLength = hrPath.node().getTotalLength();
 
@@ -1092,6 +1134,74 @@ angular.module('citizensemakersApp')
 
 
             }
+
+            function drawAfternoon() {
+              if (heartsXScale2) {
+                xScale.domain(heartsXScale2);
+                yScale.domain(heartsYScale2);
+                //yAxisGen.tickFormat(sleepFormat);
+
+                var t = content.transition().duration(3500);
+                t.select(".x.axis").style("opacity", 1).call(xAxisGen);
+                t.select(".y.axis").style("opacity", 1).call(yAxisGen);
+                t.select(".text").style("opacity", 0);
+                d3.select(".nodata").style("opacity", 0);
+                t.selectAll("rect.steps").attr("y", function (d, i) {
+                    return height - yScale(d.value);
+                  })
+                  .attr("height", function (d, i) {
+                    return 0;
+                  });
+                t.selectAll("rect.step").attr("y", function (d, i) {
+                    return height - yScale(d.value);
+                  })
+                  .attr("height", function (d, i) {
+                    return 0;
+                  });
+
+              } else {
+                d3.select(".nodata").style("opacity", 1);
+
+              }
+
+              var line = d3.svg.line()
+                .x(function (d) {
+                  return xScale(d.time);
+                })
+                .y(function (d) {
+                  return yScale(d.value);
+                }).interpolate('basis');
+
+              var hrPath = d3.selectAll("path.step-4").attr("d", function (d) {
+                //console.log(d.values);
+                return line(d.values);
+              }).style("opacity", 1);
+
+              if (hrPath.node != null) {
+                var totalLength = hrPath.node().getTotalLength();
+                hrPath
+                  .attr("stroke-dasharray", totalLength + " " + totalLength)
+                  .attr("stroke-dashoffset", totalLength)
+                  .transition()
+                  .duration(2000)
+                  .ease("linear")
+                  .attr("stroke-dashoffset", 0);
+              }
+              var stepsPath = d3.selectAll("path.steps");
+              if (stepsPath.node() != null) {
+                var totalLength = stepsPath.node().getTotalLength();
+
+                stepsPath
+                  .transition()
+                  .duration(2000)
+                  .ease("linear")
+                  .attr("stroke-dashoffset", totalLength).style("opacity", 0);
+
+              }
+
+
+            }
+
 
             function brushed() {
               scope.brushed({args: brush.extent()});
@@ -1142,6 +1252,7 @@ angular.module('citizensemakersApp')
               } else {
                 if (newVal.length > 0) {
                   scope.renderHearts(newVal, 2, heartsData);
+                  scope.renderHearts(newVal, 4, heartsData2);
                 }
               }
 
@@ -1180,6 +1291,7 @@ angular.module('citizensemakersApp')
                 if (newVal.length > 0) {
                   scope.renderSteps(newVal, 1, stepsData);
                   scope.renderSteps(newVal, 3, stepsData2);
+                  //scope.renderSteps(newVal, 5, stepsData3);
 
                 }
               }
@@ -1188,8 +1300,10 @@ angular.module('citizensemakersApp')
             //init all functions
             graphCtrl.addGraph(drawSleep, 0);
             graphCtrl.addGraph(drawMorning, 1);
-            graphCtrl.addGraph(drawHearts, 2);
-            graphCtrl.addGraph(drawLunch, 3)
+            graphCtrl.addGraph(drawHrMorning, 2);
+            graphCtrl.addGraph(drawLunch, 3);
+            graphCtrl.addGraph(drawAfternoon, 4);
+            //graphCtrl.addGraph(drawEvening, 5);
             drawNoData('graphsvg');
 
             scope.$watch('extent', function (newVal, oldVal) {
@@ -1227,4 +1341,5 @@ angular.module('citizensemakersApp')
       }
     }
       ;
-  }]);
+  }])
+;
