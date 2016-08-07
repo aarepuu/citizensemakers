@@ -149,6 +149,9 @@
       if (this.currentCalValue == this.startDate) return;
       //reset dataset
       this.graphData = [];
+      this.users = [];
+      this.users.push(this.userId);
+
       //get new data
       this.getData();
       this.getComments();

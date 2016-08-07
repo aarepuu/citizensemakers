@@ -192,6 +192,20 @@ angular.module('citizensemakersApp')
             //console.log(updateFunctions);
 
           };
+          function setChartScale(){
+            var width = Math.min(960, $window.innerWidth - 240)
+            d3.select('#graph')
+              .style('transform', 'scale(' + width/960 +')')
+              .style('-webkit-transform', 'scale(' + width/960 +')')
+              .style('-moz-transform', 'scale(' + width/960 +')')
+              .style('-o-transform', 'scale(' + width/960 +')')
+              .style('-ms-transform', 'scale(' + width/960 +')')
+              .style('margin-left', -(960-width)/2 + 'px')
+              .style('margin-top' , -(960-width)/3 + 'px')
+
+          }
+          d3.select($window).on('resize.calcScale', _.debounce(setChartScale, 200))
+          setChartScale();
 
 
           //TODO - not a good way, make dynamic;
@@ -318,8 +332,10 @@ angular.module('citizensemakersApp')
 
             yAxisGen = d3.svg.axis()
               .scale(yScale)
-              //.ticks(5)
               .orient("left")
+              .innerTickSize(-width)
+              .outerTickSize(0)
+              .tickPadding(10);
             //.tickFormat(sleepFormat);
 
             brush = d3.svg.brush()
@@ -442,17 +458,17 @@ angular.module('citizensemakersApp')
 
 
               // remove data before rendering
-              content.selectAll(".sleep").remove();
+              content.selectAll(".step-" + pos).remove();
 
-              var sleep = content.selectAll(".sleep")
+              var sleep = content.selectAll(".step-" + pos)
                 .data(database)
                 .enter().append("g")
-                .attr("class", "graph sleep")
+                .attr("class", "sleep step-" + pos)
 
 
               sleep.append("path")
                 .attr("class", function (d) {
-                  return "sleep line u" + d.user;
+                  return "sleep step-" + pos +" path" + d.user;
                 })
                 .attr("id", function (d) {
                   return "sleep" + d.user;
@@ -837,6 +853,8 @@ angular.module('citizensemakersApp')
                 //console.log(d.values);
                 return line(d.values);
               });
+              console.log(path);
+
               if (path.node() != null) {
                 var sleepLength = path.node().getTotalLength();
                 path
@@ -848,7 +866,8 @@ angular.module('citizensemakersApp')
                   .attr("stroke-dashoffset", 0).style("opacity", 1);
               }
 
-              var stepsPath = d3.selectAll("path.steps-1");
+              var stepsPath = d3.selectAll("rect.steps-1");
+              console.log(stepsPath);
               if (stepsPath.node() != null) {
                 var totalLength = stepsPath.node().getTotalLength();
                 stepsPath
