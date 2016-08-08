@@ -135,11 +135,8 @@
       <h5 ng-hide="main.showFitbit()">Start exploring your data!</h5>
 
       <!--<a ng-hide="main.isLoggedIn()" ui-sref="login" id="login-button" class="btn-large waves-effect waves-light">Get Started</a>-->
-      <a ng-show="main.showData()" ui-sref="data" id="data-button" class="btn-large waves-effect waves-light">To the
-        Data</a>
-      <a ng-show="main.showFitbit()" ng-href="/api/token/fitbit?user={{main.me}}" target="_self" id="fitbit-button2"
-         class="btn-large waves-effect waves-light">Connect with Your Fitbit</a>
-      <!--<a href="http://localhost:9000/auth/fitbit?user={{main.currentuser}}"  target="_self" id="fitbit-button" class="btn-large waves-effect waves-light teal lighten-1">Connect with Your Fitbit</a>-->
+      <a ng-show="main.getCurrentUser().lastSync" ui-sref="data" id="data-button" class="btn-large waves-effect waves-light">To the Data</a>
+      <p ng-hide="main.getCurrentUser().lastSync">Syncing</p>
         <oauth-buttons ng-hide="main.isLoggedIn()" classes="btn-block"></oauth-buttons>
 
     </div>

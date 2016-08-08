@@ -4,12 +4,16 @@ class NavbarController {
   //end-non-standard
 
   //start-non-standard
-  constructor(Auth) {
+  constructor(Auth, $scope) {
+    this.$scope = $scope;
     this.isLoggedIn = Auth.isLoggedIn;
     this.isAdmin = Auth.isAdmin;
     this.getCurrentUser = Auth.getCurrentUser;
     this.isConnected = Auth.isConnected;
+    this.lastSync = this.getCurrentUser().lastSync;
+
   }
+
 
 }
 
