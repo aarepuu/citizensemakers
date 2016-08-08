@@ -417,7 +417,7 @@ li.friends-list--friend-wrapper img {
   line-height: 30px;
 }
 li.friends-list--friend-wrapper img.my-avatar {
-  border: 3px solid rgb(31, 119, 180);
+  border: 3px solid #3366cc;
 }
 /* Add Friends */
 .friends-list ul li.add-friend {

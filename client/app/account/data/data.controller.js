@@ -112,21 +112,24 @@
       var user = this.populateUsers(right.userId);
       this.getComments();
       if (user) {
-        target.css({"border": "3px solid rgb(31, 119, 180)"});
+        target.css({"border": "3px solid "+this.getUserColor(right.userId)});
         target.addClass('friend-selected');
         //add dates
         right.start = (moment(this.startDate, "MM/DD/YYYY").unix());
         right.end = (moment(this.startDate, "MM/DD/YYYY").endOf('day').unix());
         //TODO - make this into a function
         this.$http.post("/api/data/hearts", right).then(response => {
+          response.color = this.getUserColor(right.userId);
           if (response.data.length > 0)
             this.graphData[0] = response;
         });
         this.$http.post("/api/data/sleeps", right).then(response => {
+          response.color = this.getUserColor(right.userId);
           if (response.data.length > 0)
             this.graphData[1] = response;
         });
         this.$http.post("/api/data/steps", right).then(response => {
+          response.color = this.getUserColor(right.userId);
           if (response.data.length > 0)
             this.graphData[2] = response;
         });
@@ -179,17 +182,20 @@
     getData() {
       this.$http.get('/api/data/hearts/' + this.fitbitId + '/' + (moment(this.startDate, "MM/DD/YYYY").unix()) + '/' + (moment(this.startDate, "MM/DD/YYYY").endOf('day').unix()))
         .then(response => {
+          response.color = this.getUserColor(this.userId);
           if (response.data.length > 0)
             this.graphData[0] = response;
         });
       //console.log(moment(this.startDate, "MM/DD/YYYY").toDate()+' '+moment(this.startDate, "MM/DD/YYYY").endOf('day').toDate());
       this.$http.get('/api/data/sleeps/' + this.fitbitId + '/' + (moment(this.startDate, "MM/DD/YYYY").unix()) + '/' + (moment(this.startDate, "MM/DD/YYYY").endOf('day').unix()))
         .then(response => {
+          response.color = this.getUserColor(this.userId);
           if (response.data.length > 0)
             this.graphData[1] = response;
         });
       this.$http.get('/api/data/steps/' + this.fitbitId + '/' + (moment(this.startDate, "MM/DD/YYYY").unix()) + '/' + (moment(this.startDate, "MM/DD/YYYY").endOf('day').unix()))
         .then(response => {
+          response.color = this.getUserColor(this.userId);
           if (response.data.length > 0)
             this.graphData[2] = response;
         });
@@ -303,14 +309,18 @@
       var index = this.users.indexOf(userId);
       if (index == -1) {
         this.users.push(userId);
-        this.users.sort();
         return userId;
       }
       else {
         this.users.splice(index, 1);
-        this.users.sort();
         return false;
       }
+    }
+
+    getUserColor(userId) {
+      var n = this.users.indexOf(userId);
+      var colores_g = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
+      return colores_g[n % colores_g.length];
     }
 
   }

@@ -284,6 +284,7 @@ angular.module('citizensemakersApp')
             var heartsData = [];
             var heartsData2 = [];
             var heartsData3 = [];
+            var colours = [];
 
             var margin = {top: 10, right: 10, bottom: 100, left: 40},
               margin2 = {top: 430, right: 10, bottom: 20, left: 40},
@@ -346,8 +347,12 @@ angular.module('citizensemakersApp')
               .x(xScale)
               .on("brush", brushed);
 
-            color = d3.scale.category10();
-
+            //color = d3.scale.category10();
+            color = d3.scale.ordinal();
+            function getUserColor(n) {
+              //var colores_g = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
+              return colours[n];
+            }
 
             //canvas for the d3 stuff
             content = svg.append("g")
@@ -402,7 +407,8 @@ angular.module('citizensemakersApp')
 
             //Render graph based on incoming 'data'
             scope.renderSleep = function (data, pos, database) {
-              var data = JSON.parse(JSON.stringify(data));
+              var userColor = data.color;
+              var data = JSON.parse(JSON.stringify(data.data));
               //process data
               var index = users1.indexOf(data[data.length - 1].user);
               //Check if we have to remove data
@@ -420,6 +426,7 @@ angular.module('citizensemakersApp')
                   d.time = moment(d.time * 1000);
                 });
                 users1.push(data[data.length - 1].user);
+                colours[data[data.length - 1].user] = userColor;
                 database.push({user: data[data.length - 1].user, values: data});
               }
 
@@ -447,38 +454,39 @@ angular.module('citizensemakersApp')
 
               //Legend for all the charts
               //TODO - make it stuck and make it into a menu
-              var legend = d3.select('#people').append('svg').append("g")
-                .attr("class", "legend")
-                //.attr("transform", "translate(" + 780 + "," + 320 + ")");
-                .attr("transform", "translate(50,30)");
-              legend.selectAll(".legend-dots")
-                .data(color.domain())
-                .enter().append("circle")
-                .attr("class", "legend legend-dots")
-                .attr("cx", 0)
-                .attr("cy", function (d, i) {
-                  return i * 23
-                })
-                .attr("r", 8)
-                .style("fill", function (d) {
-                  return color(d)
-                })
-                .style("opacity", 1);
+              /*
+               var legend = d3.select('#people').append('svg').append("g")
+               .attr("class", "legend")
+               //.attr("transform", "translate(" + 780 + "," + 320 + ")");
+               .attr("transform", "translate(50,30)");
+               legend.selectAll(".legend-dots")
+               .data(color.domain())
+               .enter().append("circle")
+               .attr("class", "legend legend-dots")
+               .attr("cx", 0)
+               .attr("cy", function (d, i) {
+               return i * 23
+               })
+               .attr("r", 8)
+               .style("fill", function (d) {
+               return getUserColor(d)
+               })
+               .style("opacity", 1);
 
-              legend.selectAll(".legend-labels")
-                .data(color.domain())
-                .enter().append("text")
-                .attr("class", "legend legend-labels")
-                .attr("x", 14)
-                .attr("y", function (d, i) {
-                  return 3 + (i * 24)
-                })
-                .text(function (d) {
-                  return d
-                })
-                .style("opacity", 1);
+               legend.selectAll(".legend-labels")
+               .data(color.domain())
+               .enter().append("text")
+               .attr("class", "legend legend-labels")
+               .attr("x", 14)
+               .attr("y", function (d, i) {
+               return 3 + (i * 24)
+               })
+               .text(function (d) {
+               return d
+               })
+               .style("opacity", 1);
 
-
+               */
               // remove data before rendering
               content.selectAll(".step-" + pos).remove();
 
@@ -496,7 +504,7 @@ angular.module('citizensemakersApp')
                   return "sleep" + d.user;
                 })
                 .style("stroke", function (d) {
-                  return color(d.user);
+                  return getUserColor(d.user);
                 })
                 .style("opacity", 1);
 
@@ -520,7 +528,8 @@ angular.module('citizensemakersApp')
 
             //Render graph based on incoming 'data'
             scope.renderSteps = function (data, pos, database) {
-              var data = JSON.parse(JSON.stringify(data));
+              var userColor = data.color;
+              var data = JSON.parse(JSON.stringify(data.data));
               // process data
               var index = users2.indexOf(data[data.length - 1].user);
               //Check if we have to remove data
@@ -567,6 +576,7 @@ angular.module('citizensemakersApp')
                 }
                 if (index == -1) {
                   users2.push(data[data.length - 1].user);
+                  colours[data[data.length - 1].user] = userColor;
                 }
               }
 
@@ -694,7 +704,7 @@ angular.module('citizensemakersApp')
                 })
                 .attr("height", 0)
                 .style("fill", function (d) {
-                  return color(d.user);
+                  return getUserColor(d.user);
                 })
                 .style("opacity", 1);
 
@@ -744,7 +754,8 @@ angular.module('citizensemakersApp')
 
             //Render graph based on incoming 'data'
             scope.renderHearts = function (data, pos, database) {
-              data = JSON.parse(JSON.stringify(data));
+              var userColor = data.color;
+              var data = JSON.parse(JSON.stringify(data.data));
               // process data
               var index = users3.indexOf(data[data.length - 1].user);
               //Check if we have to remove data
@@ -783,6 +794,7 @@ angular.module('citizensemakersApp')
                 }
                 if (index == -1) {
                   users3.push(data[data.length - 1].user);
+                  colours[data[data.length - 1].user] = userColor;
                 }
               }
 
@@ -862,7 +874,7 @@ angular.module('citizensemakersApp')
                   return d.user;
                 })
                 .style("stroke", function (d) {
-                  return color(d.user);
+                  return getUserColor(d.user);
                 })
                 .style("opacity", 0);
 
@@ -1361,8 +1373,8 @@ angular.module('citizensemakersApp')
                 users3 = [];
                 heartsData = [];
               } else {
-                scope.renderHearts(newVal.data, 2, heartsData);
-                scope.renderHearts(newVal.data, 4, heartsData2);
+                scope.renderHearts(newVal, 2, heartsData);
+                scope.renderHearts(newVal, 4, heartsData2);
               }
 
             });
@@ -1379,7 +1391,7 @@ angular.module('citizensemakersApp')
                 users1 = [];
                 sleepData = [];
               } else {
-                scope.renderSleep(newVal.data, 0, sleepData);
+                scope.renderSleep(newVal, 0, sleepData);
               }
 
             });
@@ -1395,9 +1407,9 @@ angular.module('citizensemakersApp')
                 users2 = [];
                 stepsData = [];
               } else {
-                scope.renderSteps(newVal.data, 1, stepsData);
-                scope.renderSteps(newVal.data, 3, stepsData2);
-                scope.renderSteps(newVal.data, 5, stepsData3);
+                scope.renderSteps(newVal, 1, stepsData);
+                scope.renderSteps(newVal, 3, stepsData2);
+                scope.renderSteps(newVal, 5, stepsData3);
               }
 
             });
