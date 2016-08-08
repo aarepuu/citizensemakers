@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" media="screen"
-      title="no title" charset="utf-8">
+      title="no title" charset="utf-8" xmlns="http://www.w3.org/1999/html">
 
 <style media="screen">
   .hero-home {
@@ -131,12 +131,14 @@
 
       <h2>Citizense Makers</h2>
 
-      <h5 ng-show="main.showFitbit()">Compare your data with friends!</h5>
-      <h5 ng-hide="main.showFitbit()">Start exploring your data!</h5>
+
+      <h5 ng-hide="main.isLoggedIn()">Start exploring your data!</h5>
+      <h5 ng-show="main.isLoggedIn() && main.getCurrentUser().lastSync">Compare your data with friends!</h5>
 
       <!--<a ng-hide="main.isLoggedIn()" ui-sref="login" id="login-button" class="btn-large waves-effect waves-light">Get Started</a>-->
-      <a ng-show="main.getCurrentUser().lastSync" ui-sref="data" id="data-button" class="btn-large waves-effect waves-light">To the Data</a>
-      <p ng-hide="main.getCurrentUser().lastSync">Syncing</p>
+      <a ng-show="main.isLoggedIn() && main.getCurrentUser().lastSync" ui-sref="data" id="data-button" class="btn-large waves-effect waves-light">To the Data</a>
+      <h4 ng-show="main.isLoggedIn() && !main.getCurrentUser().lastSync"> <i class="fa fa-info-circle fa-6" aria-hidden="true"></i></br> Currently syncinc with the Fitbit Server. Come back in few moments!</h4>
+
         <oauth-buttons ng-hide="main.isLoggedIn()" classes="btn-block"></oauth-buttons>
 
     </div>
