@@ -21,6 +21,20 @@ h1 {
   height: 200px;
 }
 
+#toast-container {
+  top:0%;
+  right:40%;
+}
+
+.chart-title {
+  font-family: Arial,Helvetica,"san-serif";
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  color: #767676;
+  line-height: 1.2em;
+}
+
 .axis path,
 .axis line {
   fill: none;
@@ -294,6 +308,7 @@ Accordion
   position: absolute;
   top: 0;
   z-index: 2;
+  cursor: pointer;
 }
 
 .date-picker .date-picker--ui {
@@ -406,7 +421,8 @@ Accordion
 }
 
 li.friends-list--friend-wrapper img {
-  pointer-events: none;
+  /*pointer-events: none;*/
+  cursor: pointer;
 
 }
 

@@ -23,7 +23,7 @@
 
     <div class="date-picker-section pinned-section">
 
-      <div class="date-picker">
+      <div tooltipped data-position="bottom" data-delay="150"  data-tooltip="Change date" class="date-picker">
 
         <input input-date class="date-picker--input date-selector" name="start" id="dateSelect" ng-model="vm.startDate"
                container="body" format="mm/dd/yyyy" months-full="{{ vm.month }}"
@@ -94,7 +94,7 @@
     <div class="welcome-banner">
       <h3 class="welcome-banner--headline">Welcome, {{vm.getCurrentUser.name}}</h3>
       <h5 class="welcome-banner--subtitle">This is an online platform to allow you as the participants to visualise your
-        quantified activity data and compare it to friends colleagues.</h5>
+        quantified activity data and compare it to friends and colleagues. <strong>Scroll down to start looking at your day!</strong></h5>
     </div>
 
     <graph-scroll ready="vm.ready" active="vm.active(args)">
@@ -133,15 +133,18 @@
       <h3 class="column-header">Discussion Board</h3>
 
       <p class="column-subtext">
-        Share comments and notes about you or your friends data for everyone to see.
+        Share comments and notes about you or your friend's data to spark up the discussion. Only currently selected friends see these comments.
       </p>
 
       <div id="sections2" class="sections">
 
         <section class="section" ng-repeat="(key, value) in vm.sections track by $index" ng-model="value"
                  id="steps-{{$index+1}}" class="step">
-          <input placeholder="Join the discussion!" ng-model="vm.currentComment" type="text" id="comments-{{$index+1}}"
-                 ng-keyup="$event.keyCode == 13 && vm.comment($event, value)" ng-blur="vm.comment($event, value)">
+            <input ng-if="vm.others" placeholder="Join the discussion!" ng-model="vm.currentComment" type="text" id="comments-{{$index+1}}"
+                   ng-keyup="$event.keyCode == 13 && vm.comment($event, value)" ng-blur="vm.comment($event, value)">
+
+            <input ng-if="!vm.others" message="Comment not saved! Add people to start discussion." toast="blur || keypress"  placeholder="Join the discussion!" ng-model="vm.currentComment" type="text" id="comments-{{$index+1}}"
+                   ng-keyup="$event.keyCode == 13 && vm.comment($event, value)" ng-blur="vm.comment($event, value)">
           <div class="section-comments">
             <div class="public-comment" ng-repeat="section in value"
                  ng-click="vm.goToComment([section.startDate,section.endDate])">
@@ -178,9 +181,9 @@
         <img class="my-avatar" src="{{ vm.getAvatar(vm.userId) }}">
         <span class="friend-name me">You</span>
       </li>
-      <li ng-model="vm.rights" ng-repeat="right in vm.rights" ng-show="right.week || right.weekend"
-          ng-click="vm.addData($event,right)" class="friends-list--friend-wrapper">
-        <img src="{{vm.getAvatar(right.userId)}}">
+      <li  ng-model="vm.rights" ng-repeat="right in vm.rights" ng-show="right.week || right.weekend"
+           class="friends-list--friend-wrapper">
+        <img tooltipped data-position="top" data-delay="150"  data-tooltip="Click to add {{right.name}}" ng-click="vm.addData($event,right)" class="friends-list--friend-img" src="{{vm.getAvatar(right.userId)}}">
         <span class="friend-name">{{right.name}}</span>
       </li>
       <div class="" id="people"></div>

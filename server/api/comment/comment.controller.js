@@ -109,7 +109,7 @@ export function getCommentsByDate(req, res) {
       user: req.body.user,
       $and: [{"startDate": {$gte: req.body.startDate}}, {"endDate": {$lte: req.body.endDate}}],
       personal: req.body.personal
-    }, '-users').sort({step: -1}).exec()
+    }, '-users').sort({createdAt: -1}).exec()
       .then(respondWithResult(res))
       .catch(handleError(res));
   } else {
@@ -118,7 +118,7 @@ export function getCommentsByDate(req, res) {
       //users: { $in :req.body.users},
       users: req.body.users.sort(),
       personal: req.body.personal,
-    }).sort({step: -1}).exec()
+    }).sort({createdAt: -1}).exec()
       .then(respondWithResult(res))
       .catch(handleError(res));
   }

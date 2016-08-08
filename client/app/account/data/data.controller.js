@@ -33,6 +33,7 @@
       this.currentPersonalComment = '';
       this.ready = 0;
       this.extent = 0;
+      this.others = false;
 
       this.getCurrentUser = this.Auth.getCurrentUser();
       var self = this;
@@ -108,11 +109,13 @@
     }
 
     addData(e, right) {
-      var target = $(e.target).find('img');
+      //var target = $(e.target).find('img');
+      console.log(e);
+      var target = $(e.target);
       var user = this.populateUsers(right.userId);
       this.getComments();
       if (user) {
-        target.css({"border": "3px solid "+this.getUserColor(right.userId)});
+        target.css({"border": "3px solid " + this.getUserColor(right.userId)});
         target.addClass('friend-selected');
         //add dates
         right.start = (moment(this.startDate, "MM/DD/YYYY").unix());
@@ -164,6 +167,7 @@
       this.graphData = [];
       this.users = [];
       this.users.push(this.userId);
+      $('.friends-list--friend-img').css({"border": "none"});
 
       //get new data
       this.getData();
@@ -309,10 +313,13 @@
       var index = this.users.indexOf(userId);
       if (index == -1) {
         this.users.push(userId);
+        this.others = true;
         return userId;
       }
       else {
         this.users.splice(index, 1);
+        if (this.users.length <= 1)
+          this.others = false;
         return false;
       }
     }

@@ -66,9 +66,9 @@
         <div class="connection-status-section">
 
           <h1>Connection Status</h1>
-
+            
           <div class="chip">
-            Fitbit connected - last sync {{ vm.lastSync | amDateFormat:'MMMM Do YYYY, h:mm:ss a' }}
+            <img src="../../../assets/images/fitbit-icon.png">Fitbit connected - last sync {{ vm.lastSync | amDateFormat:'MMMM Do YYYY, h:mm:ss a' }}
           </div>
 
         </div>
@@ -117,27 +117,27 @@
 
                 <div class="collapsible-body">
 
-                  <input type="checkbox" ng-checked="rights.week" ng-model="rights.week" id="week_{{user._id}}"
+                  <input type="checkbox" message="Rights saved!" toast="click" duration="500" ng-checked="rights.week" ng-model="rights.week" id="week_{{user._id}}"
                          ng-change="vm.setRights(user._id,rights)"/>
 
                   <label for="week_{{user._id}}">Weekdays</label>
-
+                  <div message="Rights saved!" toast="click" duration="500">
                   <div uislider ng-disabled="!rights.week" connect="vm.connect" tooltips="vm.connect"
                        ng-model="rights.weektime" min="0" max="23" step="1" slide="vm.setRights(user._id,rights)"></div>
-
+                  </div>
                   </br></br>
 
-                  <input type="checkbox" ng-checked="rights.weekend" ng-model="rights.weekend"
+                  <input type="checkbox" message="Rights saved!" toast="click" duration="500" ng-checked="rights.weekend" ng-model="rights.weekend"
                          id="weekends_{{user._id}}"
                          ng-change="vm.setRights(user._id,rights)"/>
 
                   <label for="weekends_{{user._id}}">Weekends</label>
-
+                  <div message="Rights saved!" toast="click" duration="500">
                   <div ng-disabled="!rights.weekend" id="slider_{{user._id}}" uislider connect="vm.connect"
                        tooltips="vm.connect" ng-model="rights.weekendtime" min="0" max="23" step="1"
                        slide="vm.setRights(user._id,rights)"></div>
                 </div>
-
+                </div>
               </li>
 
             </ul>
