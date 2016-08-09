@@ -182,20 +182,36 @@ Accordion
 }
 
 #graph, #graph2 {
+  /* background-color: purple; */
   position: fixed;
-  top: 240px;
-  margin-left: -480px;
+  top: 200px;
+  left: 280px;
   padding: 20px 0 0 0;
-  width: 960px;
+  width: calc(100% - (280px * 2));
+  max-width: 960px;
   display: block;
   overflow: hidden;
   transition: all 0.3s ease-in-out;
+
+
+
+  transform-origin: 50% 0%;
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  -o-transform-origin: 50% 0%;
+  -ms-transform-origin: 50% 0%;
+}
+@media (min-width: 1520px) {
+	#graph, #graph2 {
+		left: 50%;
+		margin-left: -480px;
+	}
 }
 
 #graph.graph-scroll-fixed, #graph2.graph-scroll-fixed {
   /* top: 0px; */
   /* Always fixed */
-  top: 240px;
+  top: 200px;
 }
 
 .pinned-section {
@@ -203,14 +219,20 @@ Accordion
   border-bottom: #e1e1e1 1px solid;
   box-sizing: border-box;
   display: block;
-  height: 186px;
-  padding: 30px 0;
+  height: 166px;
+  padding: 20px;
   position: fixed;
   top: 64px;
   z-index: 100;
-  min-width: calc(((1460px) - 960px) / 2);
-  max-width: 360px;
-  width: calc((100% - 960px) / 2);
+  width: 280px;
+}
+
+.pinned-section.pinned-left {
+	left: 0px;
+}
+
+.pinned-section.pinned-right {
+	right: 0px;
 }
 
 .profile-section .column-header {
@@ -219,15 +241,14 @@ Accordion
 
 /* Welcome Banner */
 .welcome-banner {
-  padding: 40px 20px;
+  padding: 10px 10px;
   text-align: center;
 
   position: fixed;
-  top: 60px;
-  left: 50%;
-  margin-left: -480px;
+  top: 40px;
+  left: 280px;
   padding: 50px 0;
-  width: 960px;
+  width: calc(100% - (280px * 2));
   display: block;
   overflow: hidden;
   transition: all 0.3s ease-in-out;
@@ -235,15 +256,15 @@ Accordion
 
 .welcome-banner--headline {
   color: #31AFA3;
-  font-size: 34px;
+  font-size: 26px;
   font-weight: 500;
-  margin: 0 0 30px 0;
+  margin: 0 0 20px 0;
   padding: 0;
 }
 
 .welcome-banner--subtitle {
   color: #666;
-  font-size: 15px;
+  font-size: 14px;
   margin: 0 auto;
   max-width: 640px;
   padding: 0;
@@ -252,36 +273,41 @@ Accordion
 /* Layout */
 .container-fluid {
   margin: 0 auto;
-  max-width: 1800px;
-  min-width: 1460px;
+  /*max-width: 1800px;*/
   padding: 0;
 }
 
 /* Columns */
 #left-column {
+  /* background-color: purple; */
   box-sizing: border-box;
   position: relative;
   float: left;
-  padding: 30px;
-  top: 160px;
+  padding: 20px;
+  top: 140px;
   overflow: hidden;
-  width: calc((100% - 960px) / 2);
+  min-height: 400px;
+  width: 280px;
 }
 
 #center-column {
+  /* background-color: purple; */
   box-sizing: border-box;
   position: relative;
   float: left;
-  width: 960px;
+  min-height: 400px;
+  width: calc(100% - (280px * 2));
 }
 
 #right-column {
+  /* background-color: purple; */
   box-sizing: border-box;
   position: relative;
   float: left;
-  padding: 30px;
-  top: 160px;
-  width: calc((100% - 960px) / 2);
+  padding: 20px;
+  top: 140px;
+  min-height: 400px;
+  width: 280px;
 }
 
 .column-header {
@@ -361,9 +387,9 @@ Accordion
   padding: 0;
   position: fixed;
   bottom: 0px;
-  width: 960px;
-  left: 50%;
-  margin-left: -480px;
+  left: 280px;
+  right: 280px;
+  width: calc(100% - (280px * 2));
 }
 
 .friends-list ul {
@@ -408,7 +434,7 @@ Accordion
   overflow: hidden;
   padding: 10px;
   text-align: center;
-  width: calc(100% / 10);
+  width: 100px;
 }
 
 .friends-list ul li.friends-list--friend-wrapper img {
@@ -469,7 +495,7 @@ li.friends-list--friend-wrapper img.my-avatar {
 
 .profile-section--avatar {
   border-radius: 50%;
-  height: 80px;
+  height: 60px;
   position: absolute;
   left: 0;
   top: 0;
@@ -525,11 +551,4 @@ li.friends-list--friend-wrapper img.my-avatar {
   color: #999;
   margin: 0;
   padding: 0;
-}
-
-@media (max-width: 1460px) {
-  .friends-list, .welcome-banner, #graph, #graph2 {
-    left: 250px;
-    margin-left: 0px;
-  }
 }

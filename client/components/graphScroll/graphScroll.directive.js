@@ -198,15 +198,62 @@ angular.module('citizensemakersApp')
           };
 
           function setChartScale() {
-            var width = Math.min(960, $window.innerWidth - 240)
-            d3.select('#graph')
-              .style('transform', 'scale(' + width / 960 + ')')
-              .style('-webkit-transform', 'scale(' + width / 960 + ')')
-              .style('-moz-transform', 'scale(' + width / 960 + ')')
-              .style('-o-transform', 'scale(' + width / 960 + ')')
-              .style('-ms-transform', 'scale(' + width / 960 + ')')
-              .style('margin-left', -(960 - width) / 2 + 'px')
-              .style('margin-top', -(960 - width) / 3 + 'px')
+			  var width = $window.innerWidth - (280 * 2);
+			  console.log(width);
+			  width = (width > 960) ? 960 : width;
+			  var height = 200;
+
+			//   .style('transform', 'scale(' + width / 960 + ')')
+				// .attr("width", width)
+				// .attr("height", height)
+
+
+				d3.select('#graph')
+				.style('transform', 'scale(' + width / (280 * 2) + ')')
+				.style('-webkit-transform', 'scale(' + width / (280 * 2) + ')')
+				.style('-moz-transform', 'scale(' + width / (280 * 2) + ')')
+				.style('-o-transform', 'scale(' + width / (280 * 2) + ')')
+				.style('-ms-transform', 'scale(' + width / (280 * 2) + ')');
+
+
+			setTimeout(function() { updateFunctions[0](); }, 2000);
+
+    // -webkit-transform-origin : 50% 100%;
+    // -moz-transform-origin : 50% 100%;
+    // -o-transform-origin : 50% 100%;
+    // -ms-transform-origin : 50% 100%;
+    // transform-origin : 50% 100%;
+
+
+
+				// .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+                // .style('margin-left', -(960 - width) / 2 + 'px')
+                // .style('margin-top', -(960 - width) / 3 + 'px')
+
+				// var graphh = d3.select('#graph');
+				//
+	            // graphh[0][0].childNodes[0]
+	            //   .attr("xmlns", "http://www.w3.org/2000/svg")
+	            //   .attr("width", width)
+	            //   .attr("height", height);
+
+
+			                // .style('transform', 'scale(' + width / 960 + ')')
+			                // .style('-webkit-transform', 'scale(' + width / 960 + ')')
+			                // .style('-moz-transform', 'scale(' + width / 960 + ')')
+			                // .style('-o-transform', 'scale(' + width / 960 + ')')
+			                // .style('-ms-transform', 'scale(' + width / 960 + ')');
+
+            // var width = Math.min(960, $window.innerWidth - 240)
+            // d3.select('#graph')
+            //   .style('transform', 'scale(' + width / 960 + ')')
+            //   .style('-webkit-transform', 'scale(' + width / 960 + ')')
+            //   .style('-moz-transform', 'scale(' + width / 960 + ')')
+            //   .style('-o-transform', 'scale(' + width / 960 + ')')
+            //   .style('-ms-transform', 'scale(' + width / 960 + ')')
+            //   .style('margin-left', -(960 - width) / 2 + 'px')
+            //   .style('margin-top', -(960 - width) / 3 + 'px')
 
           }
 
@@ -288,7 +335,7 @@ angular.module('citizensemakersApp')
 
             var margin = {top: 10, right: 10, bottom: 100, left: 40},
               margin2 = {top: 430, right: 10, bottom: 20, left: 40},
-              width = 960 - margin.left - margin.right,
+              width = ($window.innerWidth - (280 * 2)) - margin.left - margin.right,
               height = 500 - margin.top - margin.bottom,
               height2 = 500 - margin2.top - margin2.bottom;
 
