@@ -41,29 +41,6 @@ var all = {
     }
   },
 
-  //fitbit config
-  fitbit: {
-    creds: {
-      clientID: '227F3K',
-      clientSecret: '018e3981c06e59b6affd8ca5d8283296'
-    },
-    uris: {
-      authorizationUri: 'https://www.fitbit.com',
-      authorizationPath: '/oauth2/authorize',
-      tokenUri: 'https://api.fitbit.com',
-      tokenPath: '/oauth2/token'
-    },
-    authorization_uri: {
-      //redirect_uri: 'http://localhost:9000/auth/fitbit/callback',
-      redirect_uri: 'http://citizensemakers.co.uk/auth/fitbit/callback',
-      response_type: 'code',
-      scope: ['activity','heartrate','location','profile', 'sleep', 'social', 'nutrition', 'weight', 'settings'],
-      //scope: "activity nutrition profile settings sleep social weight heartrate",
-      state: '3(#0/!~'
-    },
-    timeout: 6000
-  }
-
 };
 
 // Export the config object based on the NODE_ENV

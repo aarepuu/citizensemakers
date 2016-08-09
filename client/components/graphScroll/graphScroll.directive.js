@@ -198,52 +198,51 @@ angular.module('citizensemakersApp')
           };
 
           function setChartScale() {
-			  var width = $window.innerWidth - (280 * 2);
-			  console.log(width);
-			  width = (width > 960) ? 960 : width;
-			  var height = 200;
+            var width = $window.innerWidth - (280 * 2);
+            //console.log(width);
+            width = (width > 960) ? 960 : width;
+            var height = 500;
 
-			//   .style('transform', 'scale(' + width / 960 + ')')
-				// .attr("width", width)
-				// .attr("height", height)
-
-
-				d3.select('#graph')
-				.style('transform', 'scale(' + width / (280 * 2) + ')')
-				.style('-webkit-transform', 'scale(' + width / (280 * 2) + ')')
-				.style('-moz-transform', 'scale(' + width / (280 * 2) + ')')
-				.style('-o-transform', 'scale(' + width / (280 * 2) + ')')
-				.style('-ms-transform', 'scale(' + width / (280 * 2) + ')');
+            //   .style('transform', 'scale(' + width / 960 + ')')
+            // .attr("width", width)
+            // .attr("height", height)
 
 
-			setTimeout(function() { updateFunctions[0](); }, 2000);
-
-    // -webkit-transform-origin : 50% 100%;
-    // -moz-transform-origin : 50% 100%;
-    // -o-transform-origin : 50% 100%;
-    // -ms-transform-origin : 50% 100%;
-    // transform-origin : 50% 100%;
-
+            d3.select('#graph')
+              .style('transform', 'scale(' + width / (280 * 2) + ')')
+              .style('-webkit-transform', 'scale(' + width / (280 * 2) + ')')
+              .style('-moz-transform', 'scale(' + width / (280 * 2) + ')')
+              .style('-o-transform', 'scale(' + width / (280 * 2) + ')')
+              .style('-ms-transform', 'scale(' + width / (280 * 2) + ')');
 
 
-				// .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+            //setTimeout(function() { updateFunctions[0](); }, 2000);
 
-                // .style('margin-left', -(960 - width) / 2 + 'px')
-                // .style('margin-top', -(960 - width) / 3 + 'px')
-
-				// var graphh = d3.select('#graph');
-				//
-	            // graphh[0][0].childNodes[0]
-	            //   .attr("xmlns", "http://www.w3.org/2000/svg")
-	            //   .attr("width", width)
-	            //   .attr("height", height);
+            // -webkit-transform-origin : 50% 100%;
+            // -moz-transform-origin : 50% 100%;
+            // -o-transform-origin : 50% 100%;
+            // -ms-transform-origin : 50% 100%;
+            // transform-origin : 50% 100%;
 
 
-			                // .style('transform', 'scale(' + width / 960 + ')')
-			                // .style('-webkit-transform', 'scale(' + width / 960 + ')')
-			                // .style('-moz-transform', 'scale(' + width / 960 + ')')
-			                // .style('-o-transform', 'scale(' + width / 960 + ')')
-			                // .style('-ms-transform', 'scale(' + width / 960 + ')');
+            // .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+            // .style('margin-left', -(960 - width) / 2 + 'px')
+            // .style('margin-top', -(960 - width) / 3 + 'px')
+
+            // var graphh = d3.select('#graph');
+            //
+            // graphh[0][0].childNodes[0]
+            //   .attr("xmlns", "http://www.w3.org/2000/svg")
+            //   .attr("width", width)
+            //   .attr("height", height);
+
+
+            // .style('transform', 'scale(' + width / 960 + ')')
+            // .style('-webkit-transform', 'scale(' + width / 960 + ')')
+            // .style('-moz-transform', 'scale(' + width / 960 + ')')
+            // .style('-o-transform', 'scale(' + width / 960 + ')')
+            // .style('-ms-transform', 'scale(' + width / 960 + ')');
 
             // var width = Math.min(960, $window.innerWidth - 240)
             // d3.select('#graph')
@@ -257,8 +256,8 @@ angular.module('citizensemakersApp')
 
           }
 
-          d3.select($window).on('resize.calcScale', _.debounce(setChartScale, 200))
-          setChartScale();
+          //d3.select($window).on('resize.calcScale', _.debounce(setChartScale, 200))
+          //setChartScale();
 
 
           //TODO - not a good way, make dynamic;
@@ -348,6 +347,61 @@ angular.module('citizensemakersApp')
               .attr("height", height + margin.top + margin.bottom);
 
 
+            function render() {
+              console.log("RENDER");
+              //get dimensions based on window size
+              var windowWidth = ($window.innerWidth - (280 * 2) > 960) ? 960 : ($window.innerWidth - (280 * 2));
+              //console.log(windowWidth);
+              updateDimensions(windowWidth);
+
+              //update x and y scales to new dimensions
+              xScale.range([0, width]);
+              yScale.range([height, 0]);
+
+              //update svg elements to new dimensions
+              svg
+                .attr('width', width + margin.right + margin.left)
+                .attr('height', height + margin.top + margin.bottom);
+              content.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+
+              //update the axis and other components
+              xAxisGen.scale(xScale);
+              yAxisGen.scale(yScale);
+              brush.x(xScale);
+
+              svg.select('.x.axis')
+                .attr('transform', 'translate(0,' + height + ')');
+
+
+              renderCurrentChart();
+
+              //Update brush position and text
+              content.select(".brush").selectAll("rect").attr("y", -6)
+                .attr("height", height + 7);
+
+              content.select(".chart-title")
+                .attr("x", width / 2)
+                .attr("y", height + (margin.bottom / 2));
+
+              content.select(".nodata").attr("transform", "translate(" + (width / 2 - 220) + "," + (height / 2) + ")")
+
+              //path.attr('d', line);
+            }
+
+            function updateDimensions(winWidth) {
+              margin.top = 10;
+              margin.right = 10;
+              margin.left = 40;
+              margin.bottom = 100;
+
+
+              width = winWidth - margin.left - margin.right;
+              //height = 500 - margin.top - margin.bottom;
+              height = .5 * width;
+            }
+
+
             xScale = d3.time.scale()
               .range([0, width]);
             xScale2 = d3.time.scale()
@@ -394,10 +448,9 @@ angular.module('citizensemakersApp')
               .x(xScale)
               .on("brush", brushed);
 
-            //color = d3.scale.category10();
+
             color = d3.scale.ordinal();
             function getUserColor(n) {
-              //var colores_g = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
               return colours[n];
             }
 
@@ -433,6 +486,7 @@ angular.module('citizensemakersApp')
               //.attr("transform", "rotate(-90)")
               //.attr("y", 6)
               //.attr("dy", ".31em")
+              .attr("class", "title")
               .attr("dx", "-.31em")
               .style("text-anchor", "end")
               .style("opacity", 0);
@@ -566,10 +620,8 @@ angular.module('citizensemakersApp')
               //add functions
               graphCtrl.addGraph(drawSleep, 0);
 
-              //init first graph
-              if (graphCtrl.getActiveStep() == 0)
-                drawSleep();
 
+              render();
 
             };
 
@@ -753,8 +805,7 @@ angular.module('citizensemakersApp')
                 .attr("height", 0)
                 .style("fill", function (d) {
                   return getUserColor(d.user);
-                })
-                .style("opacity", 1);
+                });
 
 
               /*
@@ -789,14 +840,7 @@ angular.module('citizensemakersApp')
                 graphCtrl.addGraph(drawEvening, pos);
               }
 
-              if (graphCtrl.getActiveStep() == 1) {
-                drawMorning();
-              } else if (graphCtrl.getActiveStep() == 3) {
-                drawLunch();
-              } else if (graphCtrl.getActiveStep() == 5) {
-                drawEvening();
-              }
-
+              render();
 
             };
 
@@ -934,35 +978,32 @@ angular.module('citizensemakersApp')
                 graphCtrl.addGraph(drawAfternoon, pos);
               }
 
-              if (graphCtrl.getActiveStep() == 2) {
-                drawHrMorning();
-              } else if (graphCtrl.getActiveStep() == 4) {
-                drawAfternoon();
-              }
+              render();
+
 
             };
 
             function drawSleep() {
+              var t = d3.transition().transition().duration(2500);
+              content.selectAll("rect.steps").transition().duration(600)
+                .attr("height", function (d, i) {
+                  0
+                });
+
+              t.select(".chart-title").text("Last night's sleep").style("opacity", 1);
               if (sleepScale) {
                 xScale.domain(sleepScale);
                 //xScale2.domain(heartsXScale);
                 yScale.domain([0, 4]);
                 yAxisGen.tickFormat(sleepFormat);
-
-                var t = content.transition().duration(3500);
-                t.select(".x.axis").style("opacity", 1).call(xAxisGen);
-                t.select(".y.axis").style("opacity", 1).call(yAxisGen);
+                d3.select(".y.axis").style("opacity", 1);
+                d3.select(".x.axis").style("opacity", 1);
+                t.select(".x.axis").call(xAxisGen);
+                t.select(".y.axis").call(yAxisGen);
                 t.select(".y.axis text").text("Stage").style("opacity", 1);
-                t.select(".chart-title").text("Last night's sleep").style("opacity", 1);
                 d3.select(".nodata").style("opacity", 0);
                 d3.select(".brush").style("opacity", 1);
                 //overview.select(".x.axis").call(xAxisGen2);
-                t.selectAll("rect.steps").attr("y", function (d, i) {
-                    return height - yScale(d.value);
-                  })
-                  .attr("height", function (d, i) {
-                    return 0;
-                  });
               } else {
                 chartNoData();
               }
@@ -1040,24 +1081,37 @@ angular.module('citizensemakersApp')
             }
 
             function drawMorning() {
+              var t = d3.transition().transition().duration(2500);
+              content.selectAll("rect.steps").transition().duration(600)
+                .attr("height", function (d, i) {
+                  0
+                });
+              t.select(".chart-title").text("Morning actvities").style("opacity", 1);
               if (stepsXScale) {
                 xScale.domain(stepsXScale);
                 yScale.domain(stepsYScale);
                 yAxisGen.tickFormat(yScale.tickFormat(10));
-                var t = d3.transition().transition().duration(3500);
-                t.select(".x.axis").style("opacity", 1).call(xAxisGen);
-                t.select(".y.axis").style("opacity", 1).call(yAxisGen);
+                d3.select(".y.axis").style("opacity", 1);
+                d3.select(".x.axis").style("opacity", 1);
+                t.select(".x.axis").call(xAxisGen);
+                t.select(".y.axis").call(yAxisGen);
                 t.select(".y.axis text").text("Steps").style("opacity", 1);
                 t.select(".brush").style("opacity", 1);
-                t.select(".chart-title").text("Morning actvities").style("opacity", 1);
 
                 d3.select(".nodata").style("opacity", 0);
-                t.selectAll("rect.step-1").attr("y", function (d, i) {
-                    return height - yScale(d.value);
+
+                content.selectAll("rect.step-1").transition()
+                  .delay(function (d, i) {
+                    return 20 * (i + 1);
                   })
-                  .attr("height", function (d, i) {
+                  .duration(600)
+                  .attr("height", function (d) {
                     return yScale(d.value);
-                  });
+                  }).attr("y", function (d, i) {
+                  return height - yScale(d.value);
+                }).attr("x", function (d, i) {
+                  return xScale(d.time);
+                });
               } else {
                 chartNoData();
               }
@@ -1093,26 +1147,22 @@ angular.module('citizensemakersApp')
             }
 
             function drawHrMorning() {
+              var t = d3.transition().transition().duration(2500);
+              content.selectAll("rect.steps").transition().duration(600)
+                .attr("height", function (d, i) {
+                  0
+                });
+              t.select(".chart-title").text("Morning heart rate").style("opacity", 1);
               if (heartsXScale) {
                 xScale.domain(heartsXScale);
                 yScale.domain(heartsYScale);
-                //yAxisGen.tickFormat(sleepFormat);
-
-                var t = content.transition().duration(3500);
-                t.select(".x.axis").style("opacity", 1).call(xAxisGen);
-                t.select(".y.axis").style("opacity", 1).call(yAxisGen);
+                d3.select(".y.axis").style("opacity", 1);
+                d3.select(".x.axis").style("opacity", 1);
+                t.select(".x.axis").call(xAxisGen);
+                t.select(".y.axis").call(yAxisGen);
                 t.select(".y.axis text").text("Bpm").style("opacity", 1);
-                t.select(".chart-title").text("Morning heart rate").style("opacity", 1);
-
                 d3.select(".nodata").style("opacity", 0);
                 d3.select(".brush").style("opacity", 1);
-                t.selectAll("rect.steps").attr("y", function (d, i) {
-                    return height - yScale(d.value);
-                  })
-                  .attr("height", function (d, i) {
-                    return 0;
-                  });
-
               } else {
                 chartNoData();
               }
@@ -1142,42 +1192,42 @@ angular.module('citizensemakersApp')
                     .attr("stroke-dashoffset", 0).style("opacity", 1);
                 }
               });
-
-
-              var stepsPath = d3.selectAll("path.steps");
-              if (stepsPath.node() != null) {
-                var totalLength = stepsPath.node().getTotalLength();
-
-                stepsPath
-                  .transition()
-                  .duration(2000)
-                  .ease("linear")
-                  .attr("stroke-dashoffset", totalLength).style("opacity", 0);
-
-              }
-
             }
 
             function drawLunch() {
+              var t = d3.transition().transition().duration(2500);
+
+              content.selectAll("rect.steps").transition().duration(600)
+                .attr("height", function (d, i) {
+                  0
+                });
+
+              t.select(".chart-title").text("Lunchtime activities").style("opacity", 1);
               if (stepsXScale2) {
                 xScale.domain(stepsXScale2);
                 yScale.domain(stepsYScale2);
                 yAxisGen.tickFormat(yScale.tickFormat(10));
-                var t = d3.transition().transition().duration(3500);
-                t.select(".x.axis").style("opacity", 1).call(xAxisGen);
-                t.select(".y.axis").style("opacity", 1).call(yAxisGen);
+                d3.select(".y.axis").style("opacity", 1);
+                d3.select(".x.axis").style("opacity", 1);
+                t.select(".x.axis").call(xAxisGen);
+                t.select(".y.axis").call(yAxisGen);
                 t.select(".y.axis text").text("Steps").style("opacity", 1);
-                t.select(".chart-title").text("Lunchtime activities").style("opacity", 1);
                 //t.selectAll(".step").style("opacity",1);
                 //t.select(".text").style("opacity", 0);
                 d3.select(".brush").style("opacity", 1);
                 d3.select(".nodata").style("opacity", 0);
-                t.selectAll("rect.step-3").attr("y", function (d, i) {
-                    return height - yScale(d.value);
+                content.selectAll("rect.step-3").transition()
+                  .delay(function (d, i) {
+                    return 20 * (i + 1);
                   })
-                  .attr("height", function (d, i) {
+                  .duration(600)
+                  .attr("height", function (d) {
                     return yScale(d.value);
-                  });
+                  }).attr("y", function (d, i) {
+                  return height - yScale(d.value);
+                }).attr("x", function (d, i) {
+                  return xScale(d.time);
+                });
               } else {
                 chartNoData();
               }
@@ -1198,31 +1248,23 @@ angular.module('citizensemakersApp')
             }
 
             function drawAfternoon() {
+              var t = d3.transition().transition().duration(2500);
+              content.selectAll("rect.steps").transition().duration(600)
+                .attr("height", function (d, i) {
+                  0
+                });
+              t.select(".chart-title").text("Afternoon heart rate").style("opacity", 1);
               if (heartsXScale2) {
                 xScale.domain(heartsXScale2);
                 yScale.domain(heartsYScale2);
                 //yAxisGen.tickFormat(sleepFormat);
-
-                var t = content.transition().duration(3500);
-                t.select(".x.axis").style("opacity", 1).call(xAxisGen);
-                t.select(".y.axis").style("opacity", 1).call(yAxisGen);
+                d3.select(".y.axis").style("opacity", 1);
+                d3.select(".x.axis").style("opacity", 1);
+                t.select(".x.axis").call(xAxisGen);
+                t.select(".y.axis").call(yAxisGen);
                 t.select(".y.axis text").text("Bpm").style("opacity", 1);
-                t.select(".chart-title").text("Afternoon heart rate").style("opacity", 1);
                 d3.select(".brush").style("opacity", 1);
                 d3.select(".nodata").style("opacity", 0);
-                t.selectAll("rect.steps").attr("y", function (d, i) {
-                    return height - yScale(d.value);
-                  })
-                  .attr("height", function (d, i) {
-                    return 0;
-                  });
-                t.selectAll("rect.step").attr("y", function (d, i) {
-                    return height - yScale(d.value);
-                  })
-                  .attr("height", function (d, i) {
-                    return 0;
-                  });
-
               } else {
                 chartNoData();
               }
@@ -1250,42 +1292,44 @@ angular.module('citizensemakersApp')
                   .ease("linear")
                   .attr("stroke-dashoffset", 0);
               }
-              var stepsPath = d3.selectAll("path.steps");
-              if (stepsPath.node() != null) {
-                var totalLength = stepsPath.node().getTotalLength();
-
-                stepsPath
-                  .transition()
-                  .duration(2000)
-                  .ease("linear")
-                  .attr("stroke-dashoffset", totalLength).style("opacity", 0);
-
-              }
 
 
             }
 
             function drawEvening() {
+              var t = d3.transition().transition().duration(2500);
+              content.selectAll("rect.steps").transition().duration(600)
+                .attr("height", function (d, i) {
+                  0
+                });
+              t.select(".chart-title").text("Evening activities").style("opacity", 1);
               if (stepsXScale3) {
                 xScale.domain(stepsXScale3);
                 yScale.domain(stepsYScale3);
                 yAxisGen.tickFormat(yScale.tickFormat(10));
-                var t = d3.transition().transition().duration(3500);
-                t.select(".x.axis").style("opacity", 1).call(xAxisGen);
-                t.select(".y.axis").style("opacity", 1).call(yAxisGen);
+                d3.select(".y.axis").style("opacity", 1);
+                d3.select(".x.axis").style("opacity", 1);
+                t.select(".x.axis").call(xAxisGen);
+                t.select(".y.axis").call(yAxisGen);
                 t.select(".y.axis text").text("Steps").style("opacity", 1);
-                t.select(".chart-title").text("Evening activities").style("opacity", 1);
                 d3.select(".brush").style("opacity", 1);
                 d3.select(".nodata").style("opacity", 0);
-                t.selectAll("rect.step-5").attr("y", function (d, i) {
-                    return height - yScale(d.value);
+                content.selectAll("rect.step-5").transition()
+                  .delay(function (d, i) {
+                    return 20 * (i + 1);
                   })
-                  .attr("height", function (d, i) {
+                  .duration(600)
+                  .attr("height", function (d) {
                     return yScale(d.value);
-                  });
+                  }).attr("y", function (d, i) {
+                  return height - yScale(d.value);
+                }).attr("x", function (d, i) {
+                  return xScale(d.time);
+                });
               } else {
                 chartNoData();
               }
+
 
               var sleepsPath = d3.selectAll("path.sleep");
               if (sleepsPath.node() != null) {
@@ -1416,35 +1460,45 @@ angular.module('citizensemakersApp')
 
             function drawNoData(canvas_div_name) {
 
-              var div_width = $('#' + canvas_div_name).width();
-              var div_height = 400;
 
-              var svg = d3.select('#' + canvas_div_name).append("svg")
-                .attr("class", "nodatasvg")
-                .attr("width", div_width)
-                .attr("height", div_height)
-                .attr("preserveAspectRatio", "xMidYMid")
-                .append("g")
-                .attr("transform", "translate(" + (div_width / 2 - 50) + "," + (div_height / 2 - 50) + ")");
+              content.append("g")
 
-              svg.append("text")
+                .append("text")
                 .attr("class", "nodata")
-                .text("No Data")
-                .style("font-size", "40px")
+                //.attr("transform", "translate(" + (width / 2 - 30) + "," + (height / 2 - 30) + ")")
+                .text("No data to display at this point, scroll up or down")
+                .style("font-size", "20px")
                 .style("opacity", 0);
             }
 
             function chartNoData() {
               d3.select(".nodata").style("opacity", 1);
-              d3.select(".steps").style("opacity", 0);
-              d3.select(".hr").style("opacity", 0);
-              d3.select(".sleep").style("opacity", 0);
               d3.select(".y.axis").style("opacity", 0);
               d3.select(".x.axis").style("opacity", 0);
               d3.select(".brush").style("opacity", 0);
-              d3.select(".chart-title").style("opacity", 0);
+              //d3.select(".chart-title").style("opacity", 0);
               d3.select(".y.axis text").style("opacity", 0);
             }
+
+            function renderCurrentChart() {
+              if (graphCtrl.getActiveStep() == 0) {
+                drawSleep();
+              } else if (graphCtrl.getActiveStep() == 1) {
+                drawMorning();
+              } else if (graphCtrl.getActiveStep() == 3) {
+                drawLunch();
+              } else if (graphCtrl.getActiveStep() == 5) {
+                drawEvening();
+              } else if (graphCtrl.getActiveStep() == 2) {
+                drawHrMorning();
+              } else if (graphCtrl.getActiveStep() == 4) {
+                drawAfternoon();
+              }
+            }
+
+            d3.select($window).on('resize.calcScale', _.debounce(render, 200));
+            //d3.select($window).on('resize', render());
+
 
           }
         );

@@ -55,6 +55,9 @@ h1 {
 .y.axis path {
   stroke: #fff;
 }
+.y.axis text.title{
+  font-weight: bold;
+}
 
 .tick {
   stroke-dasharray: 5, 3;
