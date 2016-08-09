@@ -899,7 +899,6 @@ angular.module('citizensemakersApp')
               if (sleepScale) {
                 xScale.domain(sleepScale);
                 //xScale2.domain(heartsXScale);
-                yScale2.domain(heartsYScale);
                 yScale.domain([0, 4]);
                 yAxisGen.tickFormat(sleepFormat);
 
@@ -1390,6 +1389,9 @@ angular.module('citizensemakersApp')
 
             function chartNoData() {
               d3.select(".nodata").style("opacity", 1);
+              d3.select(".steps").style("opacity", 0);
+              d3.select(".hr").style("opacity", 0);
+              d3.select(".sleep").style("opacity", 0);
               d3.select(".y.axis").style("opacity", 0);
               d3.select(".x.axis").style("opacity", 0);
               d3.select(".brush").style("opacity", 0);

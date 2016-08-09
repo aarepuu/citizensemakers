@@ -54,8 +54,8 @@ var all = {
       tokenPath: '/oauth2/token'
     },
     authorization_uri: {
-      redirect_uri: 'http://localhost:9000/auth/fitbit/callback',
-      //redirect_uri: 'http://139.59.168.24:8080/api/token/callback',
+      //redirect_uri: 'http://localhost:9000/auth/fitbit/callback',
+      redirect_uri: 'http://citizensemakers.co.uk/auth/fitbit/callback',
       response_type: 'code',
       scope: ['activity','heartrate','location','profile', 'sleep', 'social', 'nutrition', 'weight', 'settings'],
       //scope: "activity nutrition profile settings sleep social weight heartrate",

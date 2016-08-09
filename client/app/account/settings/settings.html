@@ -66,7 +66,7 @@
         <div class="connection-status-section">
 
           <h1>Connection Status</h1>
-            
+
           <div class="chip">
             <img src="../../../assets/images/fitbit-icon.png">Fitbit connected - last sync {{ vm.lastSync | amDateFormat:'MMMM Do YYYY, h:mm:ss a' }}
           </div>
@@ -117,7 +117,7 @@
 
                 <div class="collapsible-body">
 
-                  <input type="checkbox" message="Rights saved!" toast="click" duration="500" ng-checked="rights.week" ng-model="rights.week" id="week_{{user._id}}"
+                  <input type="checkbox" message="Rights saved!" toast="click" duration="1000" ng-checked="rights.week" ng-model="rights.week" id="week_{{user._id}}"
                          ng-change="vm.setRights(user._id,rights)"/>
 
                   <label for="week_{{user._id}}">Weekdays</label>

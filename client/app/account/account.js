@@ -2,7 +2,8 @@
 
 angular.module('citizensemakersApp')
   .config(function ($stateProvider) {
-    $stateProvider.state('login', {
+    $stateProvider
+      .state('login', {
         url: '/login',
         templateUrl: 'app/account/login/login.html',
         controller: 'LoginController',
