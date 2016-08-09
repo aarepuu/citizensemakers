@@ -110,7 +110,7 @@
 
     addData(e, right) {
       //var target = $(e.target).find('img');
-      console.log(e);
+      //console.log(e);
       var target = $(e.target);
       var user = this.populateUsers(right.userId);
       this.getComments();

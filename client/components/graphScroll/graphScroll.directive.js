@@ -348,7 +348,7 @@ angular.module('citizensemakersApp')
 
 
             function render() {
-              console.log("RENDER");
+              //console.log("RENDER");
               //get dimensions based on window size
               var windowWidth = ($window.innerWidth - (280 * 2) > 960) ? 960 : ($window.innerWidth - (280 * 2));
               //console.log(windowWidth);
