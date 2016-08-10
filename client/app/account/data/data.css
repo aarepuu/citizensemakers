@@ -155,7 +155,7 @@ Accordion
   float: left;
   top: 0px;
   z-index: 90;
- /* padding-bottom: 200px;*/
+ padding-bottom: 200px;
 }
 
 #sections2 {
@@ -165,7 +165,7 @@ Accordion
   float: right;
   top: 0px;
   z-index: 90;
-  /* padding-bottom: 200px;*/
+  padding-bottom: 200px;
 }
 
 #sections > section, #sections2 > section {

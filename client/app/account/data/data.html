@@ -33,7 +33,7 @@
                select-years="15" on-start="vm.onStart()" on-render="vm.onRender()" on-open="vm.onOpen()"
                on-close="vm.onClose()" on-set="vm.onSet()" on-stop="vm.onStop()">
 
-        <div ng-model="vm.startDate" class="date-picker--ui">
+        <div name="{{(vm.startDate | amDateFormat: 'Do of MMMM')}}" ng-model="vm.startDate" class="date-picker--ui">
           <h3 class="date-selector--month">{{ (vm.startDate | amDateFormat:'MMM').toUpperCase() }}</h3>
           <h1 class="date-selector--day">{{ vm.startDate | amDateFormat:'D' }}</h1>
           <h4 class="date-selector--year">{{ vm.startDate | amDateFormat:'YYYY' }}</h4>

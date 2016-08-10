@@ -600,7 +600,7 @@ angular.module('citizensemakersApp')
 
               sleep.append("path")
                 .attr("class", function (d) {
-                  return "sleep step-" + pos + " path" + d.user;
+                  return "sleep step-" + pos + " sleep" + d.user;
                 })
                 .attr("id", function (d) {
                   return "sleep" + d.user;
@@ -990,7 +990,21 @@ angular.module('citizensemakersApp')
                   0
                 });
 
-              t.select(".chart-title").text("Last night's sleep").style("opacity", 1);
+              users3.forEach(function (d, i) {
+                var hrPath = d3.select("path.hr.line" + d);
+                if (hrPath.node() != null) {
+                  var totalLength = hrPath.node().getTotalLength();
+
+                  hrPath
+                    .transition()
+                    .duration(2000)
+                    .ease("linear")
+                    .attr("stroke-dashoffset", totalLength).style("opacity", 0);
+
+                }
+              });
+
+              t.select(".chart-title").text("Sleep from " + $('.date-picker--ui').attr("name")).style("opacity", 1);
               if (sleepScale) {
                 xScale.domain(sleepScale);
                 //xScale2.domain(heartsXScale);
@@ -1055,7 +1069,7 @@ angular.module('citizensemakersApp')
               });
 
               users1.forEach(function (d, i) {
-                var path = d3.select("path#sleep" + d).attr("d", function (d) {
+                var path = d3.select("path.sleep" + d).attr("d", function (d) {
                   //console.log(d.values);
                   return line(d.values);
                 });
@@ -1072,6 +1086,19 @@ angular.module('citizensemakersApp')
                 }
               });
 
+              users3.forEach(function (d, i) {
+                var hrPath = d3.selectAll("path.hr.line" + d);
+                if (hrPath.node() != null) {
+                  var totalLength = hrPath.node().getTotalLength();
+
+                  hrPath
+                    .transition()
+                    .duration(2000)
+                    .ease("linear")
+                    .attr("stroke-dashoffset", totalLength).style("opacity", 0);
+
+                }
+              });
 
               //default brush
               brush.extent(xScale.domain());
@@ -1118,7 +1145,7 @@ angular.module('citizensemakersApp')
 
 
               users1.forEach(function (d, i) {
-                var sleepPath = d3.selectAll("path#sleep" + d);
+                var sleepPath = d3.select("path.sleep" + d);
                 if (sleepPath.node() != null) {
                   var totalLength = sleepPath.node().getTotalLength();
                   sleepPath
@@ -1131,7 +1158,7 @@ angular.module('citizensemakersApp')
               });
 
               users3.forEach(function (d, i) {
-                var hrPath = d3.select("path.hr.step-2.line.line" + d);
+                var hrPath = d3.selectAll("path.hr.line" + d);
                 if (hrPath.node() != null) {
                   var totalLength = hrPath.node().getTotalLength();
 
@@ -1174,6 +1201,20 @@ angular.module('citizensemakersApp')
                 .y(function (d) {
                   return yScale(d.value);
                 }).interpolate('basis');
+
+              users1.forEach(function (d, i) {
+                var sleepPath = d3.select("path.sleep" + d);
+                if (sleepPath.node() != null) {
+                  var totalLength = sleepPath.node().getTotalLength();
+                  sleepPath
+                    .transition()
+                    .duration(2000)
+                    .ease("linear")
+                    .attr("stroke-dashoffset", totalLength).style("opacity", 0);
+
+                }
+              });
+
 
               users3.forEach(function (d, i) {
                 var path = d3.select("path.step-2.line" + d).attr("d", function (d) {
@@ -1243,7 +1284,18 @@ angular.module('citizensemakersApp')
                     .attr("stroke-dashoffset", pathLenght).style("opacity", 0);
                 }
               });
+              users1.forEach(function (d, i) {
+                var sleepPath = d3.select("path.sleep" + d);
+                if (sleepPath.node() != null) {
+                  var totalLength = sleepPath.node().getTotalLength();
+                  sleepPath
+                    .transition()
+                    .duration(2000)
+                    .ease("linear")
+                    .attr("stroke-dashoffset", totalLength).style("opacity", 0);
 
+                }
+              });
 
             }
 
@@ -1331,27 +1383,32 @@ angular.module('citizensemakersApp')
               }
 
 
-              var sleepsPath = d3.selectAll("path.sleep");
-              if (sleepsPath.node() != null) {
-                var totalLength = sleepsPath.node().getTotalLength();
-                sleepsPath
-                  .transition()
-                  .duration(2000)
-                  .ease("linear")
-                  .attr("stroke-dashoffset", totalLength).style("opacity", 0);
+              users1.forEach(function (d, i) {
+                var sleepPath = d3.select("path.sleep" + d);
+                if (sleepPath.node() != null) {
+                  var totalLength = sleepPath.node().getTotalLength();
+                  sleepPath
+                    .transition()
+                    .duration(2000)
+                    .ease("linear")
+                    .attr("stroke-dashoffset", totalLength).style("opacity", 0);
 
-              }
-              var hrPath = d3.selectAll("path.step-4");
-              if (hrPath.node() != null) {
-                var totalLength = hrPath.node().getTotalLength();
+                }
+              });
 
-                hrPath
-                  .transition()
-                  .duration(2000)
-                  .ease("linear")
-                  .attr("stroke-dashoffset", totalLength).style("opacity", 0);
+              users3.forEach(function (d, i) {
+                var hrPath = d3.selectAll("path.hr.line" + d);
+                if (hrPath.node() != null) {
+                  var totalLength = hrPath.node().getTotalLength();
 
-              }
+                  hrPath
+                    .transition()
+                    .duration(2000)
+                    .ease("linear")
+                    .attr("stroke-dashoffset", totalLength).style("opacity", 0);
+
+                }
+              });
             }
 
 
