@@ -70,17 +70,34 @@
       this.$http.get('/api/users/all').then(response => {
         this.userList = response.data;
       });
+
+
+      this.$http.get('/api/data/steps/' + this.fitbitId + '/minmax')
+        .then(response => {
+
+          var minM = moment.unix(response.data[0].min);
+          var maxM = moment.unix(response.data[0].max);
+          this.minDate = minM.toISOString();
+          this.maxDate = maxM.toISOString();
+          this.startDate = moment(maxM);
+          this.endDate = maxM;
+          //TODO - use promises
+          this.getData();
+          this.getPersonalComments();
+          this.getComments();
+        });
+
       //TODO - build proper component and only fetch data when query parameters change
-      var minM = moment(this.getCurrentUser.lastSync).subtract(1, "week").startOf('day');
-      var maxM = moment(this.getCurrentUser.lastSync);
-      this.minDate = minM.toISOString();
-      this.maxDate = maxM.toISOString();
-      this.startDate = maxM;
-      this.endDate = maxM;
-      //TODO - use promises
-      this.getData();
-      this.getPersonalComments();
-      this.getComments();
+      /*var minM = moment(this.getCurrentUser.lastSync).subtract(1, "week").startOf('day');
+       var maxM = moment(this.getCurrentUser.lastSync);
+       this.minDate = minM.toISOString();
+       this.maxDate = maxM.toISOString();
+       this.startDate = maxM;
+       this.endDate = maxM;
+       //TODO - use promises
+       this.getData();
+       this.getPersonalComments();
+       this.getComments();*/
 
     }
 

@@ -106,8 +106,8 @@ export function getMinMax(req, res) {
   return Step.aggregate([{$match: {"user": req.params.user}}, {
     $group: {
       "_id": "$user",
-      "min": {$first: "$time"},
-      "max": {$last: "$time"}
+      "min": {$min: "$time"},
+      "max": {$max: "$time"}
     }
   }]).exec()
     //return Data.find().exec()
