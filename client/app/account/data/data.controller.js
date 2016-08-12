@@ -79,7 +79,7 @@
           var maxM = moment.unix(response.data[0].max);
           this.minDate = minM.toISOString();
           this.maxDate = maxM.toISOString();
-          this.startDate = moment(maxM);
+          this.startDate = moment(maxM).startOf('day');
           this.endDate = maxM;
           //TODO - use promises
           this.getData();
@@ -269,7 +269,7 @@
         section.endDate = (moment(this.startDate, "MM/DD/YYYY")).endOf('day').toDate();
       }
       section.personal = false;
-      section.users = this.users;
+      section.users = this.users.sort();
 
 
       values.unshift(section);

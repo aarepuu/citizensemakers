@@ -1101,9 +1101,7 @@ angular.module('citizensemakersApp')
               });
 
               //default brush
-              brush.extent(xScale.domain());
-              brush(d3.select(".brush").transition());
-              brush.event(d3.select(".brush").transition().delay(1000))
+              defaultBrush();
 
             }
 
@@ -1170,6 +1168,7 @@ angular.module('citizensemakersApp')
 
                 }
               });
+              defaultBrush();
 
             }
 
@@ -1233,6 +1232,7 @@ angular.module('citizensemakersApp')
                     .attr("stroke-dashoffset", 0).style("opacity", 1);
                 }
               });
+              defaultBrush();
             }
 
             function drawLunch() {
@@ -1296,6 +1296,7 @@ angular.module('citizensemakersApp')
 
                 }
               });
+              defaultBrush();
 
             }
 
@@ -1345,7 +1346,7 @@ angular.module('citizensemakersApp')
                   .attr("stroke-dashoffset", 0);
               }
 
-
+              defaultBrush();
             }
 
             function drawEvening() {
@@ -1409,6 +1410,7 @@ angular.module('citizensemakersApp')
 
                 }
               });
+              defaultBrush();
             }
 
 
@@ -1551,6 +1553,12 @@ angular.module('citizensemakersApp')
               } else if (graphCtrl.getActiveStep() == 4) {
                 drawAfternoon();
               }
+            }
+
+            function defaultBrush() {
+              brush.extent(xScale.domain());
+              brush(d3.select(".brush").transition());
+              brush.event(d3.select(".brush").transition().delay(1000))
             }
 
             d3.select($window).on('resize.calcScale', _.debounce(render, 200));
