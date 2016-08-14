@@ -15,15 +15,36 @@
   .column-label-header.visible {
     opacity: 1;
   }
+
+  .btn-discuss {
+    margin-top: .5em;
+  }
+
+  .nav-title {
+    margin-left: 30px;
+  }
 </style>
 
 <div class="container-fluid">
+  <ul id="nav-mobile" class="side-nav">
+    <li>
+      <div class="nav-title"><strong>List of discussions your data is displayed in</strong></div>
+    </li>
+    <li>
+      <div class="divider"></div>
+    </li>
+    <li ng-repeat="alert in vm.notifications | unique: 'datestep' ">
+      <a class="waves-effect" ng-click="vm.goToDiscussion(alert)" href="data#comments-{{alert.stepId}}">{{vm.sectionNames[alert.stepId-1]}}
+        on {{ (alert.startDate | amDateFormat:'Do of MMMM') }}</a>
+    </li>
+  </ul>
+
 
   <div id="left-column">
 
     <div class="date-picker-section pinned-section pinned-left">
 
-      <div tooltipped data-position="bottom" data-delay="150"  data-tooltip="Change date" class="date-picker">
+      <div tooltipped data-position="bottom" data-delay="150" data-tooltip="Change date" class="date-picker">
 
         <input input-date class="date-picker--input date-selector" name="start" id="dateSelect" ng-model="vm.startDate"
                container="body" format="mm/dd/yyyy" months-full="{{ vm.month }}"
@@ -91,18 +112,35 @@
   </div>
 
   <div id="center-column">
+
     <div class="welcome-banner">
       <h3 class="welcome-banner--headline">Welcome, {{vm.getCurrentUser.name}}</h3>
       <h5 class="welcome-banner--subtitle">This is an online platform to allow you as the participants to visualise your
-        quantified activity data and compare it to friends and colleagues. <strong>Scroll down to start looking at your day!</strong></h5>
+        quantified activity data and compare it to friends and colleagues. <strong>Scroll down to start looking at your
+          day!</strong></h5>
+      <a href="#" data-activates="nav-mobile" class="btn btn-discuss waves-effect waves-light red lighten-3 top-nav"
+         data-sidenav="left" data-menuwidth="500"
+         data-closeonclick="true">Conversations with your data
+      </a>
     </div>
+
 
     <graph-scroll ready="vm.ready" active="vm.active(args)">
       <graph id="graph" extent="vm.extent" data="vm.graphData" brushed="vm.brushed(args)" interpolate="vm.interpolate">
       </graph>
-    </graph-scroll>
-  </div>
 
+    </graph-scroll>
+
+
+  </div>
+  <div id="prompt-container">
+    <div id="scroll-prompt" class="hover-animation">
+      <p>scroll</p>
+      <svg width="40" height="10">
+        <path d="M0,0L40,0L20,10Z" fill="#000" stroke="none"></path>
+      </svg>
+    </div>
+  </div>
   <div id="right-column">
 
     <div class="profile-section pinned-section pinned-right">
@@ -111,7 +149,7 @@
 
       <div ng-model="vm.userId" class="profile-section--content">
 
-        <img  class="profile-section--avatar" src="{{ vm.getAvatar(vm.userId) }}">
+        <img class="profile-section--avatar" src="{{ vm.getAvatar(vm.userId) }}">
         <div class="profile-section--name">
 
         </div>
@@ -126,6 +164,7 @@
         Discussion Board
       </div>
 
+
     </div>
 
     <div class="public-discussion-section">
@@ -133,23 +172,29 @@
       <h3 class="column-header">Discussion Board</h3>
 
       <p class="column-subtext">
-        Share comments and notes about you or your friend's data to spark up the discussion. Only currently selected friends see these comments.
+        Share comments and notes about you or your friend's data to spark up the discussion. Only currently selected
+        friends see these comments.
       </p>
 
       <div id="sections2" class="sections">
 
         <section class="section" ng-repeat="(key, value) in vm.sections track by $index" ng-model="value"
                  id="steps-{{$index+1}}" class="step">
-            <input ng-if="vm.others" placeholder="Join the discussion!" ng-model="vm.currentComment" type="text" id="comments-{{$index+1}}"
-                   ng-keyup="$event.keyCode == 13 && vm.comment($event, value)" ng-blur="vm.comment($event, value)">
+          <input ng-if="vm.others" placeholder="Join the discussion!" ng-model="vm.currentComment" type="text"
+                 id="comments-{{$index+1}}"
+                 ng-keyup="$event.keyCode == 13 && vm.comment($event, value)" ng-blur="vm.comment($event, value)">
 
-            <input ng-if="!vm.others" message="Comment not saved! Add people to start discussion." toast="blur || keypress"  placeholder="Join the discussion!" ng-model="vm.currentComment" type="text" id="comments-{{$index+1}}"
-                   ng-keyup="$event.keyCode == 13 && vm.comment($event, value)" ng-blur="vm.comment($event, value)">
+          <input ng-if="!vm.others" message="Comment not saved! Add people to start discussion."
+                 toast="blur || keypress" placeholder="Join the discussion!" ng-model="vm.currentComment"
+                 type="text"
+                 id="comments-{{$index+1}}"
+                 ng-keyup="$event.keyCode == 13 && vm.comment($event, value)" ng-blur="vm.comment($event, value)">
           <div class="section-comments">
             <div class="public-comment" ng-repeat="section in value"
                  ng-click="vm.goToComment([section.startDate,section.endDate])">
 
-              <img src="{{ vm.getAvatar(section.user) }}" alt="" class="public-comment--avatar circle responsive-img">
+              <img src="{{ vm.getAvatar(section.user) }}" alt=""
+                   class="public-comment--avatar circle responsive-img">
 
               <p class="public-comment--user">
                 {{ section.name }}
@@ -181,9 +226,12 @@
         <img class="my-avatar" src="{{ vm.getAvatar(vm.userId) }}">
         <span class="friend-name me">You</span>
       </li>
-      <li  ng-model="vm.rights" ng-repeat="right in vm.rights" ng-show="right.week || right.weekend"
-           class="friends-list--friend-wrapper">
-        <img tooltipped data-position="top" data-delay="150"  data-tooltip="Click to add {{right.name}}" ng-click="vm.addData($event,right)" class="friends-list--friend-img" src="{{vm.getAvatar(right.userId)}}">
+      <li ng-model="vm.rights" ng-repeat="right in vm.rights" ng-show="right.week || right.weekend"
+          class="friends-list--friend-wrapper">
+        <img id="user-{{right.userId}}" tooltipped data-position="top" data-delay="150"
+             data-tooltip="Click to add {{right.name}}"
+             ng-click="vm.addData($event,right)" class="friends-list--friend-img"
+             src="{{vm.getAvatar(right.userId)}}">
         <span class="friend-name">{{right.name}}</span>
       </li>
       <div class="" id="people"></div>
@@ -202,9 +250,11 @@
     var scroll = $(window).scrollTop();
     if (scroll > 100) {
       $('.column-label-header').addClass('visible');
+      $('#scroll-prompt').addClass('invisible');
     }
     else if (scroll < 80) {
       $('.column-label-header').removeClass('visible');
+      $('#scroll-prompt').removeClass('invisible');
     }
   });
 

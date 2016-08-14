@@ -1330,6 +1330,20 @@ angular.module('citizensemakersApp')
                   return yScale(d.value);
                 }).interpolate('basis');
 
+
+              users1.forEach(function (d, i) {
+                var sleepPath = d3.select("path.sleep" + d);
+                if (sleepPath.node() != null) {
+                  var totalLength = sleepPath.node().getTotalLength();
+                  sleepPath
+                    .transition()
+                    .duration(2000)
+                    .ease("linear")
+                    .attr("stroke-dashoffset", totalLength).style("opacity", 0);
+
+                }
+              });
+
               var hrPath = d3.selectAll("path.step-4").attr("d", function (d) {
                 //console.log(d.values);
                 return line(d.values);

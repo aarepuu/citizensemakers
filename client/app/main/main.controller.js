@@ -18,7 +18,7 @@
       //this.getCurrentUser = Auth.getCurrentUser();
 
       this.$scope.$watch("main.lastSync", function(val){
-        console.log(val);
+        //console.log(val);
       });
 
     }

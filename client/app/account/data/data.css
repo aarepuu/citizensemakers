@@ -555,3 +555,57 @@ li.friends-list--friend-wrapper img.my-avatar {
   margin: 0;
   padding: 0;
 }
+
+#prompt-container {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  bottom: 100px;
+}
+#scroll-prompt {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+
+#scroll-prompt p {
+  text-transform: uppercase;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0;
+}
+
+#scroll-prompt svg {
+  margin: 0 auto;
+}
+
+.hover-animation {
+  -moz-animation-duration: 0.8s;
+  -webkit-animation-duration: 0.8s;
+  -moz-animation-name: slidein;
+  -webkit-animation-name: slidein;
+  -moz-animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-direction: alternate;
+  -webkit-animation-direction: alternate;
+}
+
+@-moz-keyframes slidein {
+  from {
+    bottom: 0;
+  }
+
+  to {
+    bottom: 10px;
+  }
+}
+
+@-webkit-keyframes slidein {
+  from {
+    bottom: 10px;
+  }
+
+  to {
+    bottom: 0;
+  }
+}

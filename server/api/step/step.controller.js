@@ -137,7 +137,8 @@ export function getDataByDate(req, res) {
 // get allowed data from specific user
 export function limitData(req, res) {
   var query;
-  if (req.body.week) {
+  var query;
+  if (req.body.week && !req.body.weekend) {
     query = {
       "user": req.body.fitbitId,
       "time": {$gte: req.body.start, $lte: req.body.end},
@@ -150,7 +151,7 @@ export function limitData(req, res) {
 
     }
     ;
-  } else if (req.body.weekend) {
+  } else if (req.body.weekend && !req.body.week) {
     query = {
       "user": req.body.fitbitId,
       "time": {$gte: req.body.start, $lte: req.body.end}, $and: [{"day": {$gt: 5}}, {

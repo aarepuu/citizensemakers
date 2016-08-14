@@ -5,7 +5,7 @@
   class DataController {
 
 
-    constructor($http, $scope, $filter, Auth) {
+    constructor($http, $scope, $filter, Auth, $rootScope, $location, $anchorScroll) {
       this.Auth = Auth;
       this.$scope = $scope;
       this.$http = $http;
@@ -35,10 +35,32 @@
       this.extent = 0;
       this.others = false;
       this.usedColors = [];
+      this.origcolors = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
       this.colors = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
-
+      this.sectionNames = ["Sleep", "Morning activities", "Morning Heart Rate", "Lunchtime Activities","Afternoon Heart Rate", "Evening Activities"];
+      this.notifications = [];
       this.getCurrentUser = this.Auth.getCurrentUser();
       var self = this;
+
+
+
+      //route
+      /*$rootScope.$on('$routeChangeSuccess', function (newRoute, oldRoute) {
+        if ($location.hash()) {
+          $anchorScroll.yOffset = -200;
+          $anchorScroll();
+        }
+      });*/
+
+
+
+      this.$http.get('/api/comments/discuss').then(response => {
+        response.data.forEach(function(d){
+          d.datestep = moment(d.startDate).format('YYYYMMDD'+ d.stepId + d.users.toString());
+        });
+        //console.log(response.data);
+        this.notifications = response.data;
+      });
       //to get rid of racing conditions
       this.$scope.$watch("vm.getCurrentUser.rights", function (val) {
         if (typeof val != 'undefined') {
@@ -48,7 +70,7 @@
           self.users.push(self.userId);
           self.usedColors[self.userId] = self.colors.shift();
           //TODO - change the names of right arrays. make it more explicit
-          self.rights = self.getCurrentUser.rights.you;
+          self.rights = self.getCurrentUser.rights.you
           //default comment
           self.defaultcomment = {
             user: self.userId,
@@ -181,14 +203,17 @@
       this.currentCalValue = this.startDate;
     }
 
-    onClose(e) {
+    onClose() {
       //TODO - there is better way, server side maybe
       //avoid same queries
       if (this.currentCalValue == this.startDate) return;
       //reset dataset
       this.graphData = [];
       this.users = [];
+      this.usedColors = [];
+      this.colors = JSON.parse(JSON.stringify(this.origcolors));
       this.users.push(this.userId);
+      this.usedColors[this.userId] = this.colors.shift();
       $('.friends-list--friend-img').css({"border": "none"});
 
       //get new data
@@ -261,6 +286,7 @@
       section.name = this.getCurrentUser.name;
       this.currentComment = '';
       section.stepId = e.target.id.substr(e.target.id.indexOf('-') + 1);
+
       if (this.brushValue) {
         section.startDate = this.brushValue[0];
         section.endDate = this.brushValue[1];
@@ -331,7 +357,7 @@
         this.addData(this.rights[0]);
     }
 
-    populateUsers(userId) {
+    populateUsers(userId, notification) {
       var index = this.users.indexOf(userId);
       if (index == -1) {
         this.users.push(userId);
@@ -340,6 +366,9 @@
         return userId;
       }
       else {
+        //don't ever move yourself form users
+        if (this.userId == userId || notification)
+          return false;
         this.users.splice(index, 1);
         this.colors.push(this.usedColors[userId]);
         delete this.usedColors[userId];
@@ -351,6 +380,63 @@
 
     getUserColor(userId) {
       return this.usedColors[userId];
+    }
+
+    goToDiscussion(talk) {
+      //if (this.currentCalValue == this.startDate) return;
+      //reset dataset
+      this.graphData = [];
+      this.users = [];
+      this.usedColors = [];
+      this.colors = JSON.parse(JSON.stringify(this.origcolors));
+      this.users.push(this.userId);
+      this.usedColors[this.userId] = this.colors.shift();
+      $('.friends-list--friend-img').css({"border": "none"});
+
+      //get new data
+
+      this.startDate = moment(talk.startDate).format("MM/DD/YYYY");
+      this.endDate = moment(talk.endDate).format("MM/DD/YYYY");
+      this.getData();
+      var self = this;
+
+      talk.users.forEach(function (userId) {
+        //var target = $(e.target).find('img');
+        if (userId == self.userId) return;
+        var target = $("#user-" + userId);
+        self.populateUsers(userId, true);
+        //console.log(this.getUserColor(right.userId));
+        target.css({"border": "3px solid " + self.getUserColor(userId)});
+        target.addClass('friend-selected');
+        var right = self.$filter('filter')(self.rights, {userId: userId})[0];
+        right.start = (moment(self.startDate, "MM/DD/YYYY").unix());
+        right.end = (moment(self.startDate, "MM/DD/YYYY").endOf('day').unix());
+        //TODO - make this into a function
+        self.$http.post("/api/data/hearts", right).then(response => {
+          response.color = self.getUserColor(right.userId);
+          if (response.data.length > 0)
+            self.graphData[0] = response;
+        });
+        self.$http.post("/api/data/sleeps", right).then(response => {
+          response.color = self.getUserColor(right.userId);
+          if (response.data.length > 0)
+            self.graphData[1] = response;
+        });
+        self.$http.post("/api/data/steps", right).then(response => {
+          response.color = self.getUserColor(right.userId);
+          if (response.data.length > 0)
+            self.graphData[2] = response;
+        });
+
+      });
+
+
+      this.getComments();
+      this.getPersonalComments();
+
+
+      $('html,body').unbind().animate({scrollTop: $('#comments-'+talk.stepId).offset().top - ( $(window).height() - $('#comments-'+talk.stepId).outerHeight(true) ) / 2},'slow');
+
     }
 
   }

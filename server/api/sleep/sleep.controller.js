@@ -131,7 +131,7 @@ export function getDataByDate(req, res) {
   }, '-day -hour').sort({time: 1}).exec()
     .then(sleeps => {
       var logId = 0;
-      console.log(sleeps[0]);
+      //console.log(sleeps[0]);
       if (typeof (sleeps[0]) != 'undefined') logId = sleeps[0].logId;
       return Sleep.find({"logId": logId}
       ).sort({time: 1}).exec()
@@ -160,7 +160,7 @@ export function getDataByDate(req, res) {
 export function limitData(req, res) {
   //console.log(req.body);
   var query;
-  if (req.body.week) {
+  if (req.body.week && !req.body.weekend) {
     query = {
       "user": req.body.fitbitId,
       "time": {$gte: req.body.start, $lte: req.body.end},
@@ -173,7 +173,7 @@ export function limitData(req, res) {
 
     }
     ;
-  } else if (req.body.weekend) {
+  } else if (req.body.weekend && !req.body.week) {
     query = {
       "user": req.body.fitbitId,
       "time": {$gte: req.body.start, $lte: req.body.end}, $and: [{"day": {$gt: 5}}, {
@@ -206,7 +206,7 @@ export function limitData(req, res) {
         }]
     };
   }
-  //console.log(query);
+  console.log(query);
   return Sleep.find(query, '-day -hour').sort({time: 1}).exec()
     .then(sleeps => {
       var logId = (sleeps.length == 0) ? 0 : sleeps[0].logId;
