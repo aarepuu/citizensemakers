@@ -11,6 +11,7 @@
 
 import _ from 'lodash';
 import Sleep from './sleep.model';
+import Log from '../log/log.model';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -171,8 +172,7 @@ export function limitData(req, res) {
         }
       }]
 
-    }
-    ;
+    };
   } else if (req.body.weekend && !req.body.week) {
     query = {
       "user": req.body.fitbitId,
@@ -206,7 +206,13 @@ export function limitData(req, res) {
         }]
     };
   }
-  console.log(query);
+
+  var log = {};
+  log.user = req.user._id;
+  log.req = req.body;
+  Log.create(log)
+    .then(log => console.log(log))
+    .catch(err => console.log(err));
   return Sleep.find(query, '-day -hour').sort({time: 1}).exec()
     .then(sleeps => {
       var logId = (sleeps.length == 0) ? 0 : sleeps[0].logId;

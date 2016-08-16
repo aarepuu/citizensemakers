@@ -12,6 +12,7 @@
 
 import _ from 'lodash';
 import Heart from './heart.model';
+import Log from '../log/log.model'
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -185,6 +186,12 @@ export function limitData(req, res) {
         }]
     };
   }
+  var log = {};
+  log.user = req.user._id;
+  log.req = req.body;
+  Log.create(log)
+    .then(log => console.log(log))
+    .catch(err => console.log(err));
   return Heart.find(query, '-day -hour').sort({time: 1}).exec()
     .then(respondWithResult(res))
     .catch(handleError(res));

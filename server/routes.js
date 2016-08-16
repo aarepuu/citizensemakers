@@ -10,6 +10,7 @@ import path from 'path';
 export default function(app) {
 
   // Insert routes below
+  //app.use('/api/logs', require('./api/log'));
   app.use('/api/comments', require('./api/comment'));
   app.use('/api/data/hearts', require('./api/heart'));
   app.use('/api/data/steps', require('./api/step'));

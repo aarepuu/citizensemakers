@@ -11,6 +11,7 @@
 
 import _ from 'lodash';
 import Step from './step.model';
+import Log from '../log/log.model'
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -137,7 +138,6 @@ export function getDataByDate(req, res) {
 // get allowed data from specific user
 export function limitData(req, res) {
   var query;
-  var query;
   if (req.body.week && !req.body.weekend) {
     query = {
       "user": req.body.fitbitId,
@@ -184,6 +184,12 @@ export function limitData(req, res) {
         }]
     };
   }
+  var log = {};
+  log.user = req.user._id;
+  log.req = req.body;
+  Log.create(log)
+    .then(log => console.log(log))
+    .catch(err => console.log(err));
   return Step.find(query, '-day -hour').sort({time: 1}).exec()
     .then(respondWithResult(res))
     .catch(handleError(res));

@@ -34,6 +34,10 @@ var UserSchema = new Schema({
     type: String,
     default: 'user'
   },
+  lastLogin: {
+    type: Date,
+    default: null
+  },
   avatar: {
     type: String,
     default: ''
