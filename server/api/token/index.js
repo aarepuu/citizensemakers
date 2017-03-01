@@ -2,15 +2,15 @@
 
 var express = require('express');
 var controller = require('./token.controller');
-var fitbit = require('../../fitbit/fitbit.service');
+//var fitbit = require('../../fitbit/fitbit.service');
 var auth = require('../../auth/auth.service');
 
 
 var router = express.Router();
 
 
-router.get('/fitbit', fitbit.redirectFitbit);
-router.get('/callback', fitbit.fitbitCallback);
+//router.get('/fitbit', fitbit.redirectFitbit);
+//router.get('/callback', fitbit.fitbitCallback);
 router.get('/', controller.index);
 router.get('/:id', controller.show);
 router.post('/', controller.create);

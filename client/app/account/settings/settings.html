@@ -98,20 +98,20 @@
 
                 <div class="collapsible-header" ng-init="rights=vm.getRights(user._id, user.fitbitId, user.name)">
 
-                  <img src="{{user.avatar}}" alt="" class="circle"/>
+                  <img src="https://static0.fitbit.com/images/profile/defaultProfile_100_male.gif" alt="" class="circle"/>
 
-                  <strong>{{user.name}}</strong>
+                  <strong>User</strong>
                   <div ng-show="rights.week">
-                    <p>Sharing data with <strong>{{user.name}}</strong> during <strong>weekdays</strong> from hour
+                    <p>Sharing data with <strong>User</strong> during <strong>weekdays</strong> from hour
                       <strong>{{rights.weektime[0]}}
                       </strong> to hour <strong>{{rights.weektime[1]}}</strong></p></div>
 
                   <div ng-show="rights.weekend">
-                    <p>Sharing data with <strong>{{user.name}}</strong> during <strong>weekends</strong> from hour
+                    <p>Sharing data with <strong>User</strong> during <strong>weekends</strong> from hour
                       <strong>{{rights.weekendtime[0]}}
                       </strong> to hour <strong>{{rights.weekendtime[1]}}</strong></p></div>
                   <div ng-hide="rights.weekend || rights.week">
-                    <p><strong>Not</strong> Sharing data with <strong>{{user.name}}</strong>, click to set rights</p>
+                    <p><strong>Not</strong> Sharing data with <strong>User</strong>, click to set rights</p>
                   </div>
                 </div>
 

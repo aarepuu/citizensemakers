@@ -4,10 +4,6 @@ var passport = require('passport');
 var moment = require('moment');
 var FitbitStrategy = require('passport-fitbit-oauth2').FitbitOAuth2Strategy;
 import Token from '../../api/token/token.model';
-//import passport from 'passport';
-//import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
-//import {Strategy as FitbitStrategy} from 'passport-google-oauth20';
-
 
 export function setup(User, config) {
   passport.use(new FitbitStrategy({

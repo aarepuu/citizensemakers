@@ -88,10 +88,10 @@
             <div class="note public-comment" ng-repeat="section in element"
                  ng-click="vm.goToComment([section.startDate,section.endDate])">
 
-              <img src="{{ vm.getAvatar(vm.userId) }}" alt="" class="public-comment--avatar circle responsive-img">
+              <img src="https://static0.fitbit.com/images/profile/defaultProfile_100_male.gif" alt="" class="public-comment--avatar circle responsive-img">
 
               <p class="public-comment--user">
-                {{ vm.getCurrentUser.name }}
+                You
               </p>
 
               <p class="public-comment--text">
@@ -114,7 +114,7 @@
   <div id="center-column">
 
     <div class="welcome-banner">
-      <h3 class="welcome-banner--headline">Welcome, {{vm.getCurrentUser.name}}</h3>
+      <h3 class="welcome-banner--headline">Welcome</h3>
       <h5 class="welcome-banner--subtitle">This is an online platform to allow you as the participants to visualise your
         quantified activity data and compare it to friends and colleagues. <strong>Scroll down to start looking at your
           day!</strong></h5>
@@ -149,7 +149,7 @@
 
       <div ng-model="vm.userId" class="profile-section--content">
 
-        <img class="profile-section--avatar" src="{{ vm.getAvatar(vm.userId) }}">
+        <img class="profile-section--avatar" src="https://static0.fitbit.com/images/profile/defaultProfile_100_male.gif">
         <div class="profile-section--name">
 
         </div>
@@ -193,11 +193,11 @@
             <div class="public-comment" ng-repeat="section in value"
                  ng-click="vm.goToComment([section.startDate,section.endDate])">
 
-              <img src="{{ vm.getAvatar(section.user) }}" alt=""
+              <img src="https://static0.fitbit.com/images/profile/defaultProfile_100_male.gif" alt=""
                    class="public-comment--avatar circle responsive-img">
 
               <p class="public-comment--user">
-                {{ section.name }}
+                User
               </p>
 
               <p class="public-comment--text">
@@ -223,16 +223,16 @@
         <span class="add-friend--text">Add Friend</span>
       </li>
       <li class="friends-list--friend-wrapper">
-        <img class="my-avatar" src="{{ vm.getAvatar(vm.userId) }}">
+        <img class="my-avatar" src="https://static0.fitbit.com/images/profile/defaultProfile_100_male.gif">
         <span class="friend-name me">You</span>
       </li>
       <li ng-model="vm.rights" ng-repeat="right in vm.rights" ng-show="right.week || right.weekend"
           class="friends-list--friend-wrapper">
         <img id="user-{{right.userId}}" tooltipped data-position="top" data-delay="150"
-             data-tooltip="Click to add {{right.name}}"
+             data-tooltip="Click to add User"
              ng-click="vm.addData($event,right)" class="friends-list--friend-img"
-             src="{{vm.getAvatar(right.userId)}}">
-        <span class="friend-name">{{right.name}}</span>
+             src="https://static0.fitbit.com/images/profile/defaultProfile_100_male.gif">
+        <span class="friend-name">User</span>
       </li>
       <div class="" id="people"></div>
     </ul>

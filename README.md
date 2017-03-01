@@ -1,6 +1,6 @@
 # citizensemakers
 
-Initial application for citizens to reclaim and make sense of their data.
+Sensemaking of shared personal informatics.
 
 This project was generated with the [Angular Full-Stack Generator](https://github.com/DaftMonk/generator-angular-fullstack) version 3.7.6.
 
@@ -14,6 +14,10 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
 - [Gulp](http://gulpjs.com/) (`npm install --global gulp`)
 - [MongoDB](https://www.mongodb.org/) - Keep a running daemon with `mongod`
 
+Deployment
+- [PM2](http://pm2.keymetrics.io/) - use ecosystem.json to run node in production
+
+
 ### Developing
 
 1. Run `npm install` to install server dependencies.
@@ -22,9 +26,11 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
 
 3. Run `mongod` in a separate shell to keep an instance of the MongoDB Daemon running
 
-4. Run `gulp serve` to start the development server. It should automatically open the client in your browser when ready.
+4. Modify local.env.sample.js config with your settings
 
-## Build & development
+5. Run `gulp serve` to start the development server. It should automatically open the client in your browser when ready.
+
+## Build and development
 
 Run `gulp build` for building and `gulp serve` for preview.
 
@@ -34,9 +40,7 @@ Running `npm test` will run the unit tests with karma.
 
 ## Deploying
 
-1. Create ecosystem.json file
+1. Modify ecosystem.sample.json for your settings
 2. Run deploy to get the code from git
 3. pm2 startOrRestart ecosystem.json --env production
-
-=======
 
