@@ -1,4 +1,10 @@
 {
+
+  // Use ecosystem.json for environment variables that pm2 will set when you deploy it in prod
+  // Use for your api keys, secrets, etc. This file should not be tracked by git.
+  //
+  // You will need to set these on the server you deploy to.
+
   /**
    * Application configuration section
    * http://pm2.keymetrics.io/docs/usage/application-declaration/

@@ -1,10 +1,11 @@
 'use strict';
 
 /*
-  This is the main logic of the app and one of the ugliest js files ever
+  This is the main logic of the app and one of the ugliest js file ever
   TODO - !!!!! make this file more generic and brake it apart
 
  */
+
 angular.module('citizensemakersApp')
   .directive('graphScroll', ['$window', 'd3Service', function ($window, d3Service) {
     return {

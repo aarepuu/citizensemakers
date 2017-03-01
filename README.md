@@ -44,3 +44,7 @@ Running `npm test` will run the unit tests with karma.
 2. Run deploy to get the code from git
 3. pm2 startOrRestart ecosystem.json --env production
 
+## License
+
+This project is funded by EPSRC and licensed under the [MIT License](https://github.com/aarepuu/citizensemakers/blob/master/LICENSE).
+
