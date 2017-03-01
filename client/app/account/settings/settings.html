@@ -1,96 +1,153 @@
+<style media="screen">
+  .change-password-section, .connection-status-section, .sharing-preferences-section {
+    margin-bottom: 30px;
+  }
+</style>
+
 <div class="container" xmlns="http://www.w3.org/1999/html">
+
   <div class="row">
-    <div class="col-sm-12">
-      <h1>Change Password</h1>
-    </div>
-    <div class="col-sm-12">
-      <form class="form" name="form" ng-submit="vm.changePassword(form)" novalidate>
 
-        <div class="form-group">
-          <label>Current Password</label>
+    <!--<div class="col-md-6 col-md-offset-3">
 
-          <input type="password" name="password" class="form-control" ng-model="vm.user.oldPassword"
-                 mongoose-error/>
-          <p class="help-block" ng-show="form.password.$error.mongoose">
-            {{ vm.errors.other }}
-          </p>
-        </div>
+      <div class="change-password-section">
 
-        <div class="form-group">
-          <label>New Password</label>
+        <h1>Change Password</h1>
 
-          <input type="password" name="newPassword" class="form-control" ng-model="vm.user.newPassword"
-                 ng-minlength="3"
-                 required/>
-          <p class="help-block"
-             ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || vm.submitted)">
-            Password must be at least 3 characters.
-          </p>
-        </div>
+        <form class="form" name="form" ng-submit="vm.changePassword(form)" novalidate>
 
-        <div class="form-group">
-          <label>Confirm New Password</label>
+          <div class="form-group">
+            <label>Current Password</label>
 
-          <input type="password" name="confirmPassword" class="form-control" ng-model="vm.user.confirmPassword"
-                 match="vm.user.newPassword"
-                 ng-minlength="3"
-                 required=""/>
-          <p class="help-block"
-             ng-show="form.confirmPassword.$error.match && vm.submitted">
-            Passwords must match.
-          </p>
+            <input type="password" name="password" class="form-control" ng-model="vm.user.oldPassword" mongoose-error/>
+            <p class="help-block" ng-show="form.password.$error.mongoose">
+              {{ vm.errors.other }}
+            </p>
+          </div>
 
-        </div>
+          <div class="form-group">
+            <label>New Password</label>
 
-        <p class="help-block"> {{ vm.message }} </p>
+            <input type="password" name="newPassword" class="form-control" ng-model="vm.user.newPassword"
+                   ng-minlength="3" required/>
+            <p class="help-block"
+               ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || vm.submitted)">
+              Password must be at least 3 characters.
+            </p>
+          </div>
 
-        <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
-      </form>
-      </br>
-      </br>
-      <div class="chip">
-        <img src="../assets/images/Fitbit-logo-RGB.png" alt="Fitbit Connect">
-        Fitbit connected - last sync {{vm.lastSync}}
+          <div class="form-group">
+            <label>Confirm New Password</label>
+
+            <input type="password" name="confirmPassword" class="form-control" ng-model="vm.user.confirmPassword"
+                   match="vm.user.newPassword"
+                   ng-minlength="3"
+                   required=""/>
+            <p class="help-block" ng-show="form.confirmPassword.$error.match && vm.submitted">
+              Passwords must match.
+            </p>
+
+          </div>
+
+          <p class="help-block"> {{ vm.message }} </p>
+
+          <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
+
+        </form>
+
       </div>
-    </div>
 
+    </div>-->
+
+    <div class="row">
+
+      <div class="col-md-6 col-md-offset-3">
+
+        <div class="connection-status-section">
+
+          <h1>Connection Status</h1>
+
+          <div class="chip">
+            <img src="../../../assets/images/fitbit-icon.png">Fitbit connected - last sync {{ vm.lastSync | amDateFormat:'MMMM Do YYYY, h:mm:ss a' }}
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="col-md-6 col-md-offset-3">
+
+          <!-- <form class="dropzone"
+                method="post"
+                enctype="multipart/form-data"
+                ng-dropzone
+                dropzone="vm.dropzone"
+                dropzone-config="vm.dropzoneConfig"
+                event-handlers="{ 'addedfile': vm.dzAddedFile, 'error': vm.dzError }">
+                </form> -->
+
+          <div class="sharing-preferences-section">
+
+            <h1>Sharing Preferences</h1>
+
+            <ul class="collapsible" data-collapsible="accordion">
+
+              <li class="list-group-item avatar" ng-repeat="user in vm.users">
+
+                <div class="collapsible-header" ng-init="rights=vm.getRights(user._id, user.fitbitId, user.name)">
+
+                  <img src="https://static0.fitbit.com/images/profile/defaultProfile_100_male.gif" alt="" class="circle"/>
+
+                  <strong>User</strong>
+                  <div ng-show="rights.week">
+                    <p>Sharing data with <strong>User</strong> during <strong>weekdays</strong> from hour
+                      <strong>{{rights.weektime[0]}}
+                      </strong> to hour <strong>{{rights.weektime[1]}}</strong></p></div>
+
+                  <div ng-show="rights.weekend">
+                    <p>Sharing data with <strong>User</strong> during <strong>weekends</strong> from hour
+                      <strong>{{rights.weekendtime[0]}}
+                      </strong> to hour <strong>{{rights.weekendtime[1]}}</strong></p></div>
+                  <div ng-hide="rights.weekend || rights.week">
+                    <p><strong>Not</strong> Sharing data with <strong>User</strong>, click to set rights</p>
+                  </div>
+                </div>
+
+                <div class="collapsible-body">
+
+                  <input type="checkbox" message="Rights saved!" toast="click" duration="1000" ng-checked="rights.week" ng-model="rights.week" id="week_{{user._id}}"
+                         ng-change="vm.setRights(user._id,rights)"/>
+
+                  <label for="week_{{user._id}}">Weekdays</label>
+                  <div message="Rights saved!" toast="click" duration="500">
+                  <div uislider ng-disabled="!rights.week" connect="vm.connect" tooltips="vm.connect"
+                       ng-model="rights.weektime" min="0" max="23" step="1" slide="vm.setRights(user._id,rights)"></div>
+                  </div>
+                  </br></br>
+
+                  <input type="checkbox" message="Rights saved!" toast="click" duration="500" ng-checked="rights.weekend" ng-model="rights.weekend"
+                         id="weekends_{{user._id}}"
+                         ng-change="vm.setRights(user._id,rights)"/>
+
+                  <label for="weekends_{{user._id}}">Weekends</label>
+                  <div message="Rights saved!" toast="click" duration="500">
+                  <div ng-disabled="!rights.weekend" id="slider_{{user._id}}" uislider connect="vm.connect"
+                       tooltips="vm.connect" ng-model="rights.weekendtime" min="0" max="23" step="1"
+                       slide="vm.setRights(user._id,rights)"></div>
+                </div>
+                </div>
+              </li>
+
+            </ul>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
   </div>
-  <form class="dropzone"
-        method="post"
-        enctype="multipart/form-data"
-        ng-dropzone
-        dropzone="vm.dropzone"
-        dropzone-config="vm.dropzoneConfig"
-        event-handlers="{ 'addedfile': vm.dzAddedFile, 'error': vm.dzError }">
-  </form>
-</div>
-
-<div class="container">
-  <ul class="collapsible" data-collapsible="accordion">
-    <li class="list-group-item avatar" ng-repeat="user in vm.users">
-      <div class="collapsible-header" ng-init="rights=vm.getRights(user._id, user.fitbitId, user.name)">
-        <img
-          src="{{user.avatar}}" alt=""
-          class="circle"><strong>{{user.name}}</strong>
-        <p> Sharing data with {{user.name}} during weekdays from {{rights.weektime[0]}} am to {{rights.weektime[1]}}
-          pm</p>
-      </div>
-      <div class="collapsible-body">
-        <input type="checkbox" ng-checked="rights.week" ng-model="rights.week"
-               id="week_{{user._id}}"
-               ng-change="vm.setRights(user._id,rights)"/>
-        <label for="week_{{user._id}}">Weekdays</label>
-        <div uislider ng-disabled="!rights.week" connect="vm.connect" tooltips="vm.connect"
-             ng-model="rights.weektime"
-             min="0" max="23" step="1" slide="vm.setRights(user._id,rights)"></div>
-        </br></br>
-        <input type="checkbox" ng-checked="rights.weekend" ng-model="rights.weekend"
-               id="weekends_{{user._id}}"
-               ng-change="vm.setRights(user._id,rights)"/>
-        <label for="weekends_{{user._id}}">Weekends</label>
-        <div ng-disabled="!rights.weekend" id="slider_{{user._id}}" uislider connect="vm.connect" tooltips="vm.connect"
-             ng-model="rights.weekendtime" min="0" max="23" step="1" slide="vm.setRights(user._id,rights)"></div>
-      </div>
-    </li>
-  </ul>
 </div>

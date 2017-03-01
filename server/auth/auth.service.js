@@ -1,6 +1,5 @@
 'use strict';
 
-import passport from 'passport';
 import config from '../config/environment';
 import jwt from 'jsonwebtoken';
 import expressJwt from 'express-jwt';
@@ -17,7 +16,7 @@ var validateJwt = expressJwt({
  */
 export function isAuthenticated() {
   return compose()
-    // Validate jwt
+  // Validate jwt
     .use(function(req, res, next) {
       // allow access_token to be passed through query parameter as well
       if (req.query && req.query.hasOwnProperty('access_token')) {
@@ -34,7 +33,6 @@ export function isAuthenticated() {
           }
           req.user = user;
           next();
-          return user;
         })
         .catch(err => next(err));
     });
@@ -52,7 +50,7 @@ export function hasRole(roleRequired) {
     .use(isAuthenticated())
     .use(function meetsRequirements(req, res, next) {
       if (config.userRoles.indexOf(req.user.role) >=
-          config.userRoles.indexOf(roleRequired)) {
+        config.userRoles.indexOf(roleRequired)) {
         next();
       } else {
         res.status(403).send('Forbidden');

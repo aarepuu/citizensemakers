@@ -24,7 +24,7 @@ function handleError(res, statusCode) {
  * restriction: 'admin'
  */
 export function index(req, res) {
-  return User.find({}, '-salt -password').exec()
+  return User.find({}, '-salt -password -fitbit').exec()
     .then(users => {
       res.status(200).json(users);
     })
@@ -37,8 +37,7 @@ export function index(req, res) {
  *
  */
 export function getNames(req, res) {
-  console.log(req.user._id);
-  return User.find({_id: {$ne: req.user._id}}, '-salt -password -email -provider -role -rights').exec()
+  return User.find({_id: {$ne: req.user._id}}, '-salt -password -email -provider -role -rights -fitbit').exec()
     .then(users => {
       res.status(200).json(users);
     })

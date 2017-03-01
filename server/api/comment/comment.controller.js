@@ -102,23 +102,23 @@ export function destroy(req, res) {
 }
 
 export function getCommentsByDate(req, res) {
-  console.log(req.body);
+  //console.log(req.body);
   var personal = req.body.personal;
   if (personal) {
     return Comment.find({
       user: req.body.user,
       $and: [{"startDate": {$gte: req.body.startDate}}, {"endDate": {$lte: req.body.endDate}}],
       personal: req.body.personal
-    }, '-users').sort({step: -1}).exec()
+    }, '-users').sort({createdAt: -1}).exec()
       .then(respondWithResult(res))
       .catch(handleError(res));
   } else {
     return Comment.find({
-      user: req.body.user,
       $and: [{"startDate": {$gte: req.body.startDate}}, {"endDate": {$lte: req.body.endDate}}],
-      users: req.body.users,
+      //users: { $in :req.body.users},
+      users: req.body.users.sort(),
       personal: req.body.personal,
-    }).sort({step: -1}).exec()
+    }).sort({createdAt: -1}).exec()
       .then(respondWithResult(res))
       .catch(handleError(res));
   }
@@ -141,10 +141,18 @@ export function createOrUpdate(req, res) {
     .catch(handleError(res));
 }
 
+export function getDiscussion(req, res) {
+  var userId = req.user._id;
+  console.log(userId);
+  return Comment.find({
+    users: userId.toString(),
+    personal: false
+  }).sort({createdAt: -1}).exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
 /*
-
-
-
 
  // Find the document
  Model.findOneAndUpdate(query, update, options, function(error, result) {

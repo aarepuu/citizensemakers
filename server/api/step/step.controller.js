@@ -11,6 +11,7 @@
 
 import _ from 'lodash';
 import Step from './step.model';
+import Log from '../log/log.model'
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -106,8 +107,8 @@ export function getMinMax(req, res) {
   return Step.aggregate([{$match: {"user": req.params.user}}, {
     $group: {
       "_id": "$user",
-      "min": {$first: "$time"},
-      "max": {$last: "$time"}
+      "min": {$min: "$time"},
+      "max": {$max: "$time"}
     }
   }]).exec()
     //return Data.find().exec()
@@ -137,7 +138,7 @@ export function getDataByDate(req, res) {
 // get allowed data from specific user
 export function limitData(req, res) {
   var query;
-  if (req.body.week) {
+  if (req.body.week && !req.body.weekend) {
     query = {
       "user": req.body.fitbitId,
       "time": {$gte: req.body.start, $lte: req.body.end},
@@ -150,7 +151,7 @@ export function limitData(req, res) {
 
     }
     ;
-  } else if (req.body.weekend) {
+  } else if (req.body.weekend && !req.body.week) {
     query = {
       "user": req.body.fitbitId,
       "time": {$gte: req.body.start, $lte: req.body.end}, $and: [{"day": {$gt: 5}}, {
@@ -183,6 +184,12 @@ export function limitData(req, res) {
         }]
     };
   }
+  var log = {};
+  log.user = req.user._id;
+  log.req = req.body;
+  Log.create(log)
+    .then(log => console.log(log))
+    .catch(err => console.log(err));
   return Step.find(query, '-day -hour').sort({time: 1}).exec()
     .then(respondWithResult(res))
     .catch(handleError(res));

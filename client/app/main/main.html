@@ -1,24 +1,238 @@
-<div id="index-banner" class="parallax-container">
-  <div class="section no-pad-bot">
-    <div class="container">
-      <br><br>
-      <h1 class="header center teal-text text-lighten-2">Citizense Makers</h1>
-      <div class="row center">
-        <h5 ng-show="main.showFitbit()" class="header col s12 light">Reclaim your data! </h5>
-        <h5 ng-hide="main.showFitbit()" class="header col s12 light">Start exploring! </h5>
-      </div>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" media="screen"
+      title="no title" charset="utf-8" xmlns="http://www.w3.org/1999/html">
 
-      <div class="row center">
-        <a ng-hide="main.isLoggedIn()" ui-sref="login" id="login-button" class="btn-large waves-effect waves-light teal lighten-1">Get Started</a>
-        <a ng-show="main.showData()" ui-sref="data" id="data-button" class="btn-large waves-effect waves-light teal lighten-1">To the Data</a>
-        <!--<a href="http://localhost:9000/auth/fitbit?user={{main.currentuser}}"  target="_self" id="fitbit-button" class="btn-large waves-effect waves-light teal lighten-1">Connect with Your Fitbit</a>-->
-        <a ng-show="main.showFitbit()" ng-href="/api/token/fitbit?user={{main.me}}"  target="_self" id="fitbit-button2" class="btn-large waves-effect waves-light teal lighten-1">Connect with Your Fitbit</a>
-      </div>
-      <br><br>
+<style media="screen">
+  .hero-home {
+    background-image: url('https://static.pexels.com/photos/29578/pexels-photo.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+  }
+
+  .hero-home--overlay {
+    background-color: rgba(0, 0, 0, 0.4);
+    width: 100%;
+  }
+
+  .hero-home--content {
+    color: white;
+    margin: 0 auto;
+    padding: 140px 20px;
+    text-align: center;
+    width: 800px;
+  }
+
+  .hero-home--content h2 {
+    color: white;
+    font-size: 50px;
+    font-weight: 300;
+    margin: 0 0 10px 0;
+    padding: 0;
+  }
+
+  .hero-home--content h5 {
+    color: white;
+    font-size: 22px;
+    font-weight: 300;
+    margin: 0;
+    padding: 0;
+  }
+
+  .hero-home--content .btn-large {
+    margin-top: 20px;
+    text-decoration: none;
+  }
+
+  .hero-home--content .btn-large a {
+    text-decoration: none;
+  }
+
+  .hero-home--content .btn-large:hover {
+    background-color: #2D9389;
+    color: white;
+    text-decoration: none;
+  }
+
+  #feature-container {
+    margin: 30px auto;
+    max-width: 1200px;
+  }
+
+  .feature-tile {
+    margin: 0 auto;
+    max-width: 380px;
+    padding: 30px;
+    text-align: center;
+  }
+
+  .feature-tile h5 {
+    font-size: 20px;
+    font-weight: 200;
+  }
+
+  .feature-tile p {
+    color: #999;
+  }
+
+  .feature-tile .glyphicon, .feature-tile .fa {
+    font-size: 50px;
+    margin-bottom: 15px;
+  }
+
+  #study-info-container {
+    margin: 30px auto;
+    max-width: 1200px;
+  }
+
+  .study-info-tile, .contact-info-tile {
+    background-color: #f4f4f4;
+    padding: 30px;
+    text-align: center;
+  }
+
+  .study-info-tile h5, .contact-info-tile h5 {
+    font-size: 30px;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 20px;
+  }
+
+  .study-info-tile p, .contact-info-tile p {
+    color: #666;
+  }
+
+  .contact-info-tile {
+    /* text-align: left; */
+  }
+
+  /* Footer */
+
+  #floating-footer-container {
+    margin-top: 40px;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #999 !important;
+  }
+
+  #floating-footer-container p {
+    color: #999;
+    margin: 0;
+    padding: 0;
+  }
+</style>
+
+<div class="hero-home">
+
+  <div class="hero-home--overlay">
+
+    <div class="hero-home--content">
+
+      <h2>Citizense Makers</h2>
+
+
+      <h5 ng-hide="main.isLoggedIn()">Start exploring your data!</h5>
+      <h5 ng-show="main.isLoggedIn() && main.getCurrentUser().lastSync">Compare your data with friends!</h5>
+
+      <!--<a ng-hide="main.isLoggedIn()" ui-sref="login" id="login-button" class="btn-large waves-effect waves-light">Get Started</a>-->
+      <a ng-show="main.isLoggedIn() && main.getCurrentUser().lastSync" ui-sref="data" id="data-button" class="btn-large waves-effect waves-light">To the Data</a>
+      <h4 ng-show="main.isLoggedIn() && !main.getCurrentUser().lastSync"> <i class="fa fa-info-circle fa-6" aria-hidden="true"></i></br> Currently syncinc with the Fitbit Server. Come back in few moments!</h4>
+
+        <oauth-buttons ng-hide="main.isLoggedIn()" classes="btn-block"></oauth-buttons>
 
     </div>
+
   </div>
-  <div class="parallax"><img src="../assets/images/background1.jpg" alt="Unsplashed background img 1"></div>
+
+</div>
+
+<div class="container" id="feature-container">
+
+  <div class="row">
+
+    <div class="col-md-4">
+      <div class="feature-tile">
+        <span class="fa fa-heart-o"></span>
+        <h5>Track your Activities</h5>
+        <p>
+          Use your <a href="https://www.fitbit.com/" target="_blank">Fitbit</a> wearable to record data about your day-to-day activities.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="feature-tile">
+        <span class="fa fa-bar-chart"></span>
+        <h5>Compare your Data</h5>
+        <p>
+          Explore your own data and compare it with your friends and colleagues.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="feature-tile">
+        <span class="fa fa-comments-o"></span>
+        <h5>Discuss Events</h5>
+        <p>
+          Find interesting relationships in the data and discuss it together with others.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="container" id="study-info-container">
+
+  <div class="row">
+
+    <div class="col-md-6">
+      <div class="study-info-tile">
+        <h5>About the Study</h5>
+        <p>
+          This research is looking into ways of moving away from centralised mainframe solutions of
+          data analysing and decision making, towards citizen-led collective sensemaking.
+          We are conducting a study into sharing of personal tracker data
+          between occupants in workplaces, and trialling this prototype of an online system
+          for it. This system gives people more ways to explore their data,
+          enabling them to share their data with friends and colleagues and discuss it together.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="contact-info-tile">
+        <h5>Contact researcher</h5>
+        <p>
+          Aare Puussaar<br>
+          <a href="mailto:a.puussaar2@ncl.ac.uk?subject=CitizenseMakers">Email researcher</a><br>
+          Doctoral Trainee,<br>
+          Open Lab,<br>
+          Newcastle University
+          <br><br>
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<div class="container" id="floating-footer-container">
+  <div class="row">
+    <div class="col-xs-12">
+      <p class="p1" style="text-align: center;"><span class="s1">Copyright © 2016 Citizense Makers, a project of <a href="https://openlab.ncl.ac.uk" target="_blank">Open Lab</a>. All Rights Reserved. | <a href="terms#privacy">Privacy</a> | <a href="terms#terms">Terms of Use</a></span></p>
+    </div>
+  </div>
 </div>
 
 
+<script type="text/javascript">
+
+  $(document).ready(function () {
+    $('.parallax').parallax();
+  });
+
+</script>

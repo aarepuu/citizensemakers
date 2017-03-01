@@ -42,8 +42,11 @@ jspm_packages
 
 # confs
 /server/config/local.env.js
+ecosystem.json
 
 # Generated libs
 public
 client/bower_components
 dist
+
+

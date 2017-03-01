@@ -92,7 +92,7 @@ class SettingsController {
     return defaultrights;
   }
   setRights(user,right){
-    console.log(right);
+    //console.log(right);
     //console.log(this.rights);
     //TODO - fix this 2 query hack
     this.$http.post("/api/users/rights", this.rights).then(response => {
