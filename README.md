@@ -46,5 +46,5 @@ Running `npm test` will run the unit tests with karma.
 
 ## License
 
-This project is funded by EPSRC and licensed under the [MIT License](https://github.com/aarepuu/citizensemakers/blob/master/LICENSE).
+This project is funded by [EPSRC](https://www.epsrc.ac.uk/) and licensed under the [MIT License](https://github.com/aarepuu/citizensemakers/blob/master/LICENSE).
 
