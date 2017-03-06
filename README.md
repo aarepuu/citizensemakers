@@ -32,7 +32,7 @@ Deployment
 
 ## Build and development
 
-Run `gulp build` for building and `gulp serve` for preview.
+Run `gulp build --env [development|production]` for building and `gulp serve` for preview.
 
 ## Testing
 
