@@ -1,6 +1,6 @@
 # citizensemakers
 
-Sensemaking of shared personal informatics.
+Sensemaking of shared personal informatics - [LIVE DEMO](citizensemakers.co.uk)
 
 This project was generated with the [Angular Full-Stack Generator](https://github.com/DaftMonk/generator-angular-fullstack) version 3.7.6.
 
@@ -43,6 +43,10 @@ Running `npm test` will run the unit tests with karma.
 1. Modify ecosystem.sample.json for your settings
 2. Run deploy to get the code from git
 3. pm2 startOrRestart ecosystem.json --env production
+
+## How to reference
+
+Aare Puussaar, Adrian K. Clear, and Peter Wright. 2017. Enhancing Personal Informatics Through Social Sensemaking. In Proceedings of the 2017 CHI Conference on Human Factors in Computing Systems (CHI '17). ACM, New York, NY, USA, 6936-6942. DOI: https://doi.org/10.1145/3025453.3025804
 
 ## License
 
